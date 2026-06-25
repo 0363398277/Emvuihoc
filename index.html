@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiếng Anh 4 Global Success</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#e3f2fd,#f5f7fa);
+    margin:0;
+    padding:20px;
+    max-width:900px;
+    margin:auto;
+}
+
+/* Tiêu đề */
+h1{
+    text-align:center;
+    color:white;
+    background:linear-gradient(135deg,#2196f3,#1565c0);
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+    margin-bottom:25px;
+}
+
+/* Bài học */
+details.level1{
+    margin-bottom:12px;
+}
+
+details.level1 > summary{
+    background:linear-gradient(135deg,#2196f3,#1976d2);
+    color:white;
+    padding:16px 20px;
+    border-radius:14px;
+    cursor:pointer;
+    font-size:20px;
+    font-weight:700;
+    box-shadow:0 5px 15px rgba(33,150,243,.3);
+    transition:.25s;
+}
+
+details.level1 > summary:hover{
+    transform:translateY(-2px);
+}
+
+/* Phần */
+details.level2{
+    margin:10px 0 10px 18px;
+}
+
+details.level2 > summary{
+    background:linear-gradient(135deg,#4caf50,#2e7d32);
+    color:white;
+    padding:13px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:17px;
+    font-weight:600;
+    box-shadow:0 4px 12px rgba(76,175,80,.25);
+}
+
+/* VIDEO BOX */
+.video-box{
+    margin:15px 0 15px 18px;
+    background:white;
+    border-radius:16px;
+    padding:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+
+.video-box iframe{
+    width:100%;
+    aspect-ratio:16/9;
+    border:none;
+    border-radius:12px;
+}
+
+/* Nhóm nút */
+.buttons{
+    margin:15px 0 15px 40px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+/* Nút cấp 3 */
+.buttons button{
+    min-width:140px;
+    padding:14px 20px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#ff9800,#f57c00);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 5px 15px rgba(255,152,0,.35);
+    transition:all .25s ease;
+}
+
+.buttons button:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 8px 20px rgba(255,152,0,.45);
+}
+
+.buttons button:active{
+    transform:scale(.96);
+}
+
+/* Mobile */
+@media(max-width:600px){
+    .buttons{
+        margin-left:20px;
+    }
+
+    .buttons button{
+        width:100%;
+    }
+}
+.video-btn{
+    margin:15px 0 10px 18px;
+    padding:12px 18px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#e53935,#c62828);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 5px 15px rgba(229,57,53,.3);
+    transition:.2s;
+}
+
+.video-btn:hover{
+    transform:scale(1.03);
+}
+
+.video-box{
+    margin:10px 0 15px 18px;
+    background:white;
+    border-radius:16px;
+    padding:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+    display:none; /* 👈 ẨN MẶC ĐỊNH */
+}
+
+.video-box iframe{
+    width:100%;
+    aspect-ratio:16/9;
+    border:none;
+    border-radius:12px;
+}
+.flip-btn{
+    display:inline-block;
+    margin:15px auto 20px auto;
+    padding:14px 22px;
+    background:linear-gradient(135deg,#ff9800,#f57c00);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    border:none;
+    border-radius:100px;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(255,152,0,.35);
+    transition:.25s;
+}
+
+.flip-btn:hover{
+    transform:translateY(-2px) scale(1.03);
+}
+
+.flip-btn:active{
+    transform:scale(0.97);
+}
+</style>
+</head>
+<!-- https://loigiaihay.com/tieng-anh-lop-4-unit-1-lesson-1-trang-10-11-global-success-a134612.html -->
+<body>
+
+<h1>Tiếng Anh 4 Global Success</h1>
+<div style="text-align:center;">
+    <button class="flip-btn"
+    onclick="window.location.href='https://online.flipbuilder.com/sdtta/nhxm/'">
+    📚 Mở sách học
+    </button>
+
+    <button class="flip-btn"
+    onclick="window.location.href='English_quiz.html'">
+    📚 English Quiz
+    </button>
+</div>
+
+<!-- BÀI 1 -->
+<details class="level1" id="bai1">
+<summary>📘 STARTED</summary>
+
+<!-- VIDEO (ĐÃ THÊM) -->
+<button class="video-btn" onclick="toggleVideo('video1')">
+🎬 Xem video bài học
+</button>
+
+<div class="video-box" id="video1" style="display:none;">
+    <iframe src="https://www.youtube.com/embed/Qiutyy5p2ts"
+    allowfullscreen></iframe>
+</div>
+
+<details class="level2" id="bai1A">
+<summary>📖 A. HELLO AGAIN!</summary>
+
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52514?type=teacher'">📚 1. Let's Sing.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52515?type=teacher'">📚 2. Listen and tick.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52516?type=teacher'">📚 2. Let's play.</button>
+</div>
+</details>
+
+<details class="level2" id="bai1B">
+<summary>📖 B. CLASSROOM ACTIVITIES</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52517?type=teacher'">📚 1. Let's chant.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52518?type=teacher'">📚 2. Listen and number.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52519?type=teacher'">📚 3. Listen and act out.</button>
+</div>
+</details>
+
+<details class="level2" id="bai1C">
+<summary>📖 C. OUTDOOR ACTIVITIES</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52520?type=teacher'">📚 1. Let's play.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52521?type=teacher'">📚 2. Follow the lines and say.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52522?type=teacher'">📚 3. Read and act out.</button>
+</div>
+</details>
+
+</details>
+
+<!-- BÀI 2 -->
+<details class="level1" id="bai2">
+<summary>📘 Unit 1: My friends</summary>
+
+<!-- VIDEO (ĐÃ THÊM) -->
+<button class="video-btn" onclick="toggleVideo('video2')">
+🎬 Xem video bài học
+</button>
+
+<div class="video-box" id="video2" style="display:none;">
+    <iframe src="https://www.youtube.com/embed/SstYK8l-A_g"
+    allowfullscreen></iframe>
+</div>
+
+<details class="level2" id="bai2A">
+<summary>📖 Kiến thức</summary>
+
+<div class="buttons">
+<button onclick="window.location.href='Unit 1 - TV.html'">📚 1. Từ vựng.</button>
+
+<button onclick="window.location.href='Unit 1 - NP.html'">📚 2. Ngữ pháp.</button>
+</div>
+</details>
+
+<details class="level2" id="bai2B">
+<summary>📖 Lesson 1</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52523'">📚 1. Look, listen and repeat.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52524'">📚 2. Listen, point and say.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52525'">📚 3. Let's talk.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52526'">📚 4. Listen and number.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52527'">📚 5. Look, complete and read.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52528'">📚 6. Let's sing.</button>
+</div>
+</details>
+
+<details class="level2" id="bai2C">
+<summary>📖 Lesson 2</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52529'">📚 1. Look, listen and repeat.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52530'">📚 2. Listen, point and say.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52531'">📚 3. Let's talk.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52532'">📚 4. Listen and tick.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52533'">📚 5. Look, complete and read.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52534'">📚 6. Let's play.</button>
+</div>
+</details>
+
+<details class="level2" id="bai2D">
+<summary>📖 Lesson 3</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52535'">📚 1. Listen and repeat.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52536'">📚 2. Listen and circle.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52537'">📚 3. Let's chant.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52538'">📚 4. Read and tick True or False.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52539'">📚 5. Let's write.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52540'">📚 6. Project.</button>
+</div>
+</details>
+
+</details>
+
+
+<!-- BÀI 3 -->
+<details class="level1" id="bai3">
+<summary>📘 Unit 2: Time and daily routines</summary>
+
+<!-- VIDEO (ĐÃ THÊM) -->
+<button class="video-btn" onclick="toggleVideo('video3')">
+🎬 Xem video bài học
+</button>
+
+<div class="video-box" id="video3" style="display:none;">
+    <iframe src="https://www.youtube.com/embed/36oPTfuqQys"
+    allowfullscreen></iframe>
+</div>
+
+<details class="level2" id="bai3A">
+<summary>📖 Kiến thức</summary>
+
+<div class="buttons">
+<button onclick="window.location.href='Unit 2 - TV.html'">📚 1. Từ vựng.</button>
+
+<button onclick="window.location.href='Unit 2 - NP.html'">📚 2. Ngữ pháp.</button>
+</div>
+</details>
+
+<details class="level2" id="bai3B">
+<summary>📖 Lesson 1</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52541'">📚 1. Look, listen and repeat.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52542'">📚 2. Listen, point and say.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52543'">📚 3. Let's talk.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52544'">📚 4. Listen and tick.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52545'">📚 5. Look, complete and read.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52546'">📚 6. Let's play.</button>
+</div>
+</details>
+
+<details class="level2" id="bai3C">
+<summary>📖 Lesson 2</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52547'">📚 1. Look, listen and repeat.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52548'">📚 2. Listen, point and say.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52549'">📚 3. Let's talk.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52550'">📚 4. Listen and number.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52551'">📚 5. Look, complete and read.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52553'">📚 6. Let's sing.</button>
+</div>
+</details>
+
+<details class="level2" id="bai3D">
+<summary>📖 Lesson 3</summary>
+<div class="buttons">
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52554'">📚 1. Listen and repeat.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52555'">📚 2. Listen and circle.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52556'">📚 3. Let's chant.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52557'">📚 4. Read and match.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52558'">📚 5. Let's write.</button>
+
+<button onclick="window.location.href='https://sachmem.net/trial/books/328/exercises/52559'">📚 6. Project.</button>
+</div>
+</details>
+
+</details>
+
+<script>
+// lưu trạng thái mở
+document.querySelectorAll("details[id]").forEach(item => {
+    const state = localStorage.getItem(item.id);
+    if(state === "true"){
+        item.open = true;
+    }
+
+    item.addEventListener("toggle", () => {
+        localStorage.setItem(item.id, item.open);
+    });
+});
+function toggleVideo(id){
+    const box = document.getElementById(id);
+    if(box.style.display === "block"){
+        box.style.display = "none";
+    }else{
+        box.style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
