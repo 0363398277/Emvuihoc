@@ -1,26 +1,237 @@
 
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tiếng Anh 4 Global Success</title>
 <style>
-*{box-sizing:border-box}body{font-family:Segoe UI,sans-serif;background:#eef5fb;max-width:900px;margin:auto;padding:20px}
-h1{text-align:center;background:#1976d2;color:#fff;padding:18px;border-radius:14px}
+
+*{box-sizing:border-box}body{font-family:Segoe UI,sans-serif;background:#eef5fb;max-width:80%;margin:auto;padding:20px}
+h1{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    color:#1565C0;
+
+    font-size:42px;
+
+    font-weight:800;
+
+}
+
+h1 span{
+
+    font-size:46px;
+
+    margin-right:8px;
+
+}
+
+h1 small{
+
+    display:block;
+
+    margin-top:6px;
+
+    font-size:22px;
+
+    color:#64B5F6;
+
+    font-weight:600;
+
+}
 .top{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0}
-.top button{padding:12px 18px;border:0;border-radius:10px;background:#ff9800;color:#fff;font-weight:bold;cursor:pointer}
+.top button{
+
+    padding:14px 24px;
+
+    border:none;
+
+    border-radius:40px;
+
+    background:linear-gradient(135deg,#ff9800,#f57c00);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:0 6px 18px rgba(255,152,0,.35);
+
+}
+.top button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 10px 25px rgba(255,152,0,.45);
+
+}
+.top button:active{
+
+    transform:scale(.95);
+
+}
 .card{background:#fff;padding:18px;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,.12)}
 label{display:block;margin:12px 0 6px;font-weight:bold}
-select{width:100%;padding:12px;font-size:16px;border-radius:10px}
+select{
+
+    width:100%;
+
+    padding:14px;
+
+    font-size:16px;
+
+    border:2px solid #BBDEFB;
+
+    border-radius:12px;
+
+    background:white;
+
+    transition:.25s;
+
+}
+select:focus{
+
+    border-color:#2196F3;
+
+    outline:none;
+
+    box-shadow:0 0 0 4px rgba(33,150,243,.15);
+
+}
 iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;margin-top:18px}
-.buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
-.buttons button{flex:1 0 220px;padding:14px;border:0;border-radius:10px;background:#4caf50;color:#fff;font-size:16px;cursor:pointer}
-.buttons button:hover{filter:brightness(.95)}
+.buttons{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:12px;
+    margin-top:20px;
+}
+
+.buttons button{
+
+    width:100%;
+
+    min-height:60px;
+
+    padding:15px 18px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#42A5F5,#1E88E5);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    transition:.25s;
+
+    display:flex;
+
+    align-items:center;
+
+}
+.buttons button:hover{
+
+    background:linear-gradient(135deg,#64B5F6,#2196F3);
+
+    box-shadow:0 10px 22px rgba(30,136,229,.30);
+
+}
+
+.buttons button:active{
+
+    transform:scale(.97);
+
+}
+
+#videoBtn{
+
+    display:block;
+
+    width:100%;
+
+    margin:20px 0;
+
+    padding:16px 24px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:linear-gradient(135deg,#FF3D3D,#D50000);
+
+    box-shadow:0 8px 22px rgba(213,0,0,.25);
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:0 8px 22px rgba(229,57,53,.35);
+
+}
+
+#videoBtn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 12px 28px rgba(229,57,53,.45);
+
+    background:linear-gradient(135deg,#FF5252,#E53935);
+
+}
+
+#videoBtn:active{
+
+    transform:scale(.97);
+
+}
+
+#videoBox{
+    display:none;
+    margin-top:15px;
+}
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
 </style>
 </head>
 <body>
-<h1>📘 Tiếng Anh 4 Global Success</h1>
+<h1>
+<span>📘</span>
+Tiếng Anh 4
+<small>Global Success</small>
+</h1>
 <div class="top">
 <button onclick="location.href='https://online.flipbuilder.com/sdtta/nhxm/'">📚 Mở sách học</button>
 <button onclick="location.href='English_quiz.html'">🎮 English Quiz</button>
@@ -30,14 +241,20 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;margin-top:18px}
 <select id="unitSelect"></select>
 <label>Chọn Lesson</label>
 <select id="lessonSelect"></select>
-<iframe id="videoFrame" allowfullscreen></iframe>
 <div id="lessonButtons" class="buttons"></div>
 </div>
+<button id="videoBtn">🎬 Xem video bài học</button>
+<div id="videoBox" style="display:none;">
+    <iframe id="videoFrame" allowfullscreen></iframe>
+</div>
+
 <script src="data.js"></script>
 <script>
 const unitSelect=document.getElementById('unitSelect');
 const lessonSelect=document.getElementById('lessonSelect');
 const videoFrame=document.getElementById('videoFrame');
+const videoBox=document.getElementById('videoBox');
+const videoBtn=document.getElementById('videoBtn');
 const lessonButtons=document.getElementById('lessonButtons');
 
 for(const key in data){
@@ -49,7 +266,9 @@ if(localStorage.getItem('unit')) unitSelect.value=localStorage.getItem('unit');
 
 function loadLessons(){
  const unit=data[unitSelect.value];
- videoFrame.src=unit.video;
+ videoFrame.src="";
+videoBox.style.display="none";
+videoBtn.textContent="🎬 Xem video bài học";
  lessonSelect.innerHTML='';
  Object.keys(unit.lessons).forEach(name=>{
    const op=document.createElement('option');
@@ -75,6 +294,39 @@ function loadButtons(){
 }
 unitSelect.onchange=loadLessons;
 lessonSelect.onchange=loadButtons;
+videoBtn.onclick=function(){
+
+    if(videoBox.style.display==="none"){
+
+        videoFrame.src=data[unitSelect.value].video;
+
+        videoBox.style.display="block";
+
+        videoBtn.textContent="❌ Đóng video";
+
+        setTimeout(()=>{
+
+            videoBox.scrollIntoView({
+
+                behavior:"smooth",
+
+                block:"start"
+
+            });
+
+        },200);
+
+    }else{
+
+        videoFrame.src="";
+
+        videoBox.style.display="none";
+
+        videoBtn.textContent="🎬 Xem video bài học";
+
+    }
+
+}
 loadLessons();
 </script>
 </body>

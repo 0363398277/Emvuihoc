@@ -1,7 +1,7 @@
 const data = {
     started: {
         title: "📘 STARTED",
-        video: "https://www.youtube.com/watch?v=Qiutyy5p2ts",
+        video: "https://www.youtube.com/embed/Qiutyy5p2ts",
 
         lessons: {
             "📖 A. HELLO AGAIN!": [
@@ -251,3 +251,6 @@ const data = {
         }
     }
 };
+//ghi chú: link youtube (video: "https://www.youtube.com/embed/.......",)
+//ta lấy sau dầu = của link youtube thật (https://www.youtube.com/watch?v=SstYK8l-A_g&t=87s) => SstYK8l-A_g
+// ghép chung ta có (video: "https://www.youtube.com/embed/SstYK8l-A_g",)
