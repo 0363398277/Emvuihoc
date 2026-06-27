@@ -269,7 +269,7 @@ Tiếng Anh 4
 </h1>
 <div class="top">
 <button onclick="location.href='https://online.flipbuilder.com/sdtta/nhxm/'">📚 Mở sách học</button>
-<button onclick="location.href='English_quiz.html'">🎮 English Quiz</button>
+<button onclick="location.href='English_quiz.html'">🎯 English Quiz</button>
 </div>
 <div class="card">
 <label>Chọn Unit</label>
@@ -303,7 +303,7 @@ function loadLessons(){
  const unit=data[unitSelect.value];
  videoFrame.src="";
 videoBox.style.display="none";
-videoBtn.textContent="🎬 Xem video bài học";
+updateVideoButton();
  lessonSelect.innerHTML='';
  Object.keys(unit.lessons).forEach(name=>{
    const op=document.createElement('option');
@@ -337,7 +337,7 @@ videoBtn.onclick=function(){
 
         videoBox.style.display="block";
 
-        videoBtn.textContent="❌ Đóng video";
+        videoBtn.textContent = "❌ Đóng video " + unitSelect.value;
 
         setTimeout(()=>{
 
@@ -357,10 +357,15 @@ videoBtn.onclick=function(){
 
         videoBox.style.display="none";
 
-        videoBtn.textContent="🎬 Xem video bài học";
+        updateVideoButton();
 
     }
 
+}
+
+function updateVideoButton(){
+    const unitName = unitSelect.value;
+    videoBtn.textContent = "🎬 Xem video " + unitName;
 }
 loadLessons();
 </script>
