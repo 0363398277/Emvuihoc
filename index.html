@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tiếng Anh 4 Global Success</title>
+<style>
+*{box-sizing:border-box}body{font-family:Segoe UI,sans-serif;background:#eef5fb;max-width:900px;margin:auto;padding:20px}
+h1{text-align:center;background:#1976d2;color:#fff;padding:18px;border-radius:14px}
+.top{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.top button{padding:12px 18px;border:0;border-radius:10px;background:#ff9800;color:#fff;font-weight:bold;cursor:pointer}
+.card{background:#fff;padding:18px;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,.12)}
+label{display:block;margin:12px 0 6px;font-weight:bold}
+select{width:100%;padding:12px;font-size:16px;border-radius:10px}
+iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;margin-top:18px}
+.buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.buttons button{flex:1 0 220px;padding:14px;border:0;border-radius:10px;background:#4caf50;color:#fff;font-size:16px;cursor:pointer}
+.buttons button:hover{filter:brightness(.95)}
+</style>
+</head>
+<body>
+<h1>📘 Tiếng Anh 4 Global Success</h1>
+<div class="top">
+<button onclick="location.href='https://online.flipbuilder.com/sdtta/nhxm/'">📚 Mở sách học</button>
+<button onclick="location.href='English_quiz.html'">🎮 English Quiz</button>
+</div>
+<div class="card">
+<label>Chọn Unit</label>
+<select id="unitSelect"></select>
+<label>Chọn Lesson</label>
+<select id="lessonSelect"></select>
+<iframe id="videoFrame" allowfullscreen></iframe>
+<div id="lessonButtons" class="buttons"></div>
+</div>
+<script src="data.js"></script>
+<script>
+const unitSelect=document.getElementById('unitSelect');
+const lessonSelect=document.getElementById('lessonSelect');
+const videoFrame=document.getElementById('videoFrame');
+const lessonButtons=document.getElementById('lessonButtons');
+
+for(const key in data){
+ const op=document.createElement('option');
+ op.value=key; op.textContent=data[key].title;
+ unitSelect.appendChild(op);
+}
+if(localStorage.getItem('unit')) unitSelect.value=localStorage.getItem('unit');
+
+function loadLessons(){
+ const unit=data[unitSelect.value];
+ videoFrame.src=unit.video;
+ lessonSelect.innerHTML='';
+ Object.keys(unit.lessons).forEach(name=>{
+   const op=document.createElement('option');
+   op.value=name; op.textContent=name;
+   lessonSelect.appendChild(op);
+ });
+ const saved=localStorage.getItem('lesson_'+unitSelect.value);
+ if(saved && unit.lessons[saved]) lessonSelect.value=saved;
+ loadButtons();
+ localStorage.setItem('unit',unitSelect.value);
+}
+function loadButtons(){
+ const unit=data[unitSelect.value];
+ const list=unit.lessons[lessonSelect.value];
+ lessonButtons.innerHTML='';
+ list.forEach(item=>{
+   const b=document.createElement('button');
+   b.textContent=item.title;
+   b.onclick=()=>location.href=item.url;
+   lessonButtons.appendChild(b);
+ });
+ localStorage.setItem('lesson_'+unitSelect.value,lessonSelect.value);
+}
+unitSelect.onchange=loadLessons;
+lessonSelect.onchange=loadButtons;
+loadLessons();
+</script>
+</body>
+</html>
