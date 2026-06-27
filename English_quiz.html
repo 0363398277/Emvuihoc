@@ -1259,88 +1259,110 @@ unitSel.onchange = ()=>{
 // ======================
 // LOAD QUIZ
 // ======================
-async function loadQuiz(){
+async function loadQuiz() {
 
   console.log("BANK =", bank);
 
-  const studentName = nameInput.value.trim();
+  const loading = document.getElementById("loginLoading");
+  const loadingText = loading.querySelector(".loading-text");
 
-  const password =
-    document.getElementById("password").value.trim();
+  loadingText.textContent = "📚 Đang chuẩn bị bài thi...";
+  loading.style.display = "flex";
 
-  if(!isValidStudent(studentName, password)){
+  const startTime = Date.now();
+
+  try {
+
+    const studentName = nameInput.value.trim();
+
+    const password =
+      document.getElementById("password").value.trim();
+
+    if (!isValidStudent(studentName, password)) {
       alert("Tên không hợp lệ");
       return;
+    }
+
+    document.getElementById("quiz").innerHTML = "";
+    submitWrap.style.display = "none";
+
+    const u = unitSel.value;
+    const l = lessonSel.value;
+
+    if (!u) {
+      alert("Chưa chọn Unit");
+      return;
+    }
+
+    if (!l) {
+      alert("Chưa chọn Lesson");
+      return;
+    }
+
+    loadingText.textContent = "📝 Đang khởi tạo bài thi...";
+
+    const res = await fetch(
+      API_URL +
+      "?action=lesson" +
+      "&unit=" + encodeURIComponent(u) +
+      "&lesson=" + encodeURIComponent(l)
+    );
+
+    console.log(
+      API_URL +
+      "?action=lesson" +
+      "&unit=" + encodeURIComponent(u) +
+      "&lesson=" + encodeURIComponent(l)
+    );
+
+    current = await res.json();
+
+    if (!Array.isArray(current)) {
+      console.error(current);
+      alert("Dữ liệu bài học lỗi");
+      return;
+    }
+
+    console.log(current);
+    console.log(Array.isArray(current));
+
+    loadingText.textContent = "🔀 Đang xáo trộn câu hỏi...";
+
+    shuffle(current);
+
+    current.forEach(q => {
+      if (q.type === "radio") {
+        shuffle(q.answers);
+      }
+    });
+
+    loadingText.textContent = "📝 Đang tạo giao diện bài thi...";
+
+    document.getElementById("submitBtn").style.display = "inline-block";
+
+    render();
+
+    submitWrap.style.display = "block";
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("❌ Không tải được bài học. Vui lòng thử lại.");
+
+  } finally {
+
+    // loading tối thiểu 500ms
+    const elapsed = Date.now() - startTime;
+
+    if (elapsed < 500) {
+      await new Promise(resolve =>
+        setTimeout(resolve, 500 - elapsed)
+      );
+    }
+
+    loading.style.display = "none";
   }
-
-  document.getElementById("quiz").innerHTML = "";
-  submitWrap.style.display = "none";
-
-  const u = unitSel.value;
-  const l = lessonSel.value;
-
-
-if(!u){
-    alert("Chưa chọn Unit");
-    return;
-}
-
-if(!l){
-    alert("Chưa chọn Lesson");
-    return;
-}
-const res =
-  await fetch(
-
-    API_URL +
-
-    "?action=lesson" +
-
-    "&unit=" +
-    encodeURIComponent(u) +
-
-    "&lesson=" +
-    encodeURIComponent(l)
-
-  );
-  
-  console.log(
-  API_URL +
-  "?action=lesson" +
-  "&unit=" + encodeURIComponent(u) +
-  "&lesson=" + encodeURIComponent(l)
-);
-
-current =
-  await res.json();
-
-if(!Array.isArray(current)){
-
-  console.error(current);
-
-  alert("Dữ liệu bài học lỗi");
-
-  return;
-}
-  console.log(current);
-console.log(Array.isArray(current));
-
-  console.log("Current =", current);
-
-  shuffle(current);
-
-current.forEach(q=>{
-  if(q.type==="radio"){
-    shuffle(q.answers);
-  }
-});
-
-// hiện lại nút nộp bài khi làm bài mới
-document.getElementById("submitBtn").style.display = "inline-block";
-
-  render();
-
-  submitWrap.style.display = "block";
 }
 // ======================
 // RENDER
