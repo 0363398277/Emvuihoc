@@ -1,7 +1,7 @@
 const data = {
     started: {
         title: "📘 STARTED",
-        video: "https://www.youtube.com/watch?v=Qiutyy5p2ts&t=17",
+        video: "https://www.youtube.com/watch?v=Qiutyy5p2ts",
 
         lessons: {
             "📖 A. HELLO AGAIN!": [
