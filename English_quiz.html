@@ -534,6 +534,23 @@ table td{
     }
 }
 
+.question-text{
+    white-space:pre-wrap;
+    line-height:1.6;
+    margin-bottom:12px;
+}
+.answer-input{
+    width:100%;
+    min-height:90px;
+    padding:10px 12px;
+    border:1px solid #dbe2ea;
+    border-radius:10px;
+    font-size:15px;
+    resize:vertical;
+    line-height:1.6;
+    white-space:pre-wrap;
+}
+
 </style>
 </head>
 
@@ -1378,10 +1395,9 @@ function render(){
     div.className = "question";
     div.id = "box" + i;
 
-    let html = `
-      <div class="q-title">Câu ${i + 1}</div>
-      <div>${q.title || ""}</div>
-    `;
+let html =
+`<div class="q-title">Câu ${i + 1}</div>
+<div class="question-text">${(q.title || "").replace(/\n/g,"<br>")}</div>`;
 
     // =========================
     // MEDIA (audio / image)
@@ -1438,9 +1454,13 @@ html += `
   });
 }
 else {
-  html += `
-    <input id="${q.id}" placeholder="Nhập đáp án">
-  `;
+html += `
+<textarea
+    id="${q.id}"
+    class="answer-input"
+    placeholder="Nhập đáp án..."
+></textarea>
+`;
 }
 
     div.innerHTML = html;
@@ -1459,28 +1479,27 @@ function getRadio(n){
 
 function getCorrectAnswerText(q){
 
-  if(!q.answers) return q.correct;
+  if(!q.answers){
+    return (q.correct || "").replace(/\n/g,"<br>");
+  }
 
   // checkbox
   if(Array.isArray(q.correct)){
 
     return q.answers
       .filter(a => q.correct.includes(a.value))
-      .map(a => a.text)
-      .join(", ");
+      .map(a => a.text.replace(/\n/g,"<br>"))
+      .join("<br>");
   }
 
   // radio
   const found =
-    q.answers.find(
-      a => a.value === q.correct
-    );
+    q.answers.find(a => a.value === q.correct);
 
   return found
-    ? found.text
-    : q.correct;
+      ? found.text.replace(/\n/g,"<br>")
+      : (q.correct || "").replace(/\n/g,"<br>");
 }
-
 // ======================
 // Kiểm tra
 // ======================
@@ -1639,6 +1658,19 @@ function validateAndSubmit(){
   submitQuiz();
 }
 // ======================
+// Chuẩn hóa
+// ======================
+function normalizeAnswer(text){
+
+    return (text || "")
+        .toLowerCase()
+        .replace(/\r/g,"")
+        .replace(/\n/g," ")      // xuống hàng thành khoảng trắng
+        .replace(/\s+/g," ")     // nhiều khoảng trắng thành 1
+        .trim();
+
+}
+// ======================
 // SUBMIT
 // ======================
 function submitQuiz(){
@@ -1681,10 +1713,15 @@ const selected = Array.from(
 } 
 else {
 
-  const user =
-    document.getElementById(q.id).value.trim().toLowerCase();
+const user =
+normalizeAnswer(
+    document.getElementById(q.id).value
+);
 
-  ok = (user === (q.correct || "").toLowerCase());
+const correct =
+normalizeAnswer(q.correct);
+
+ok = (user === correct);
 }
 
   const box = document.getElementById("box" + i);
@@ -1700,15 +1737,19 @@ if (ok) {
 
   res.className = "correct";
 
-  res.innerText =
-    "✔ Đáp án đúng: " + correctText;
+res.innerHTML = `
+✔ <strong>Đáp án đúng:</strong><br>
+${correctText}
+`;
 
 } else {
 
   res.className = "wrong";
 
-  res.innerText =
-    "✘ Đáp án đúng: " + correctText;
+res.innerHTML = `
+✘ <strong>Đáp án đúng:</strong><br>
+${correctText}
+`;
 }
 
   box.appendChild(res);
