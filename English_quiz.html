@@ -623,6 +623,7 @@ table td{
   <button onclick="showRanking()">
     🏆 Xem xếp hạng
   </button>
+
 </div>
 
   </div>
@@ -686,7 +687,7 @@ display:none;
 position:fixed;
 inset:0;
 background:rgba(0,0,0,.5);
-z-index:99999;
+z-index:9990;
 ">
 
   <div class="ranking-card">
@@ -736,12 +737,50 @@ z-index:99999;
     </div>
 </div>
 
+<div id="progressModal" style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+z-index:9999;
+">
+
+
+<div class="ranking-card">
+
+
+<div class="ranking-header">
+
+
+<h2>
+📊 Chi tiết tiến độ
+</h2>
+
+
+<button onclick="closeProgress()">
+✖
+</button>
+
+
+</div>
+
+
+
+<div id="progressContent"></div>
+
+
+
+</div>
+
+
+</div>
 
 
 <script>
 let viewData = [];
 let resultData = [];
 let sortState = {key: "",asc: true};
+let adminDataLoaded = false;
 const API_URL ="https://script.google.com/macros/s/AKfycbxQlZMaeUEsMCF5jHJjNzlhAD6yMD8V93QpiPQdoqI1Ex71_Jx3utKWEFZatNJLo5s/exec";
 
 
@@ -762,7 +801,7 @@ async function openAdmin(){
   document.getElementById("adminPanel")
     .style.display = "block";
 
-  await loadScores();
+  renderTable(viewData);
 
 }
 
@@ -796,6 +835,9 @@ function closeAdmin(){
 }
 
 async function loadScores(){
+if(adminDataLoaded){
+    return;
+}
 
   try{
 
@@ -805,10 +847,11 @@ async function loadScores(){
     const res = await fetch(url);
 
 resultData = await res.json();
-viewData = resultData;
-renderTable(viewData);
+viewData = [...resultData];
 
-    showToast("✔ Đã tải dữ liệu","success");
+adminDataLoaded = true;
+
+renderTable(viewData);
 
   }catch(err){
 
@@ -1173,16 +1216,20 @@ async function loginStudent() {
     const res = await fetch(url);
     const users = await res.json();
 
-    const found = users.find(u =>
-      (u.username || "").trim().toLowerCase() === name.toLowerCase() &&
-      (u.password || "").trim() === password
-    );
+const found = users.find(u =>
+  (u.username || "").trim() === name &&
+  (u.password || "").trim() === password
+);
 
 if (found) {
 
   quizPanel.style.display = "block";
 
+  // Tải danh sách bài học
   await loadUnitList();
+
+  // Tải ngầm bảng điểm
+  await loadScores();
 
   showToast(
     "✔ Đăng nhập thành công",
@@ -1208,6 +1255,7 @@ if (found) {
 // AUTO LOAD UNIT + LESSON
 // ======================
 let bank = {};
+let allLessons = [];
 const unitSel=document.getElementById("unit");
 const lessonSel=document.getElementById("lesson");
 async function loadUnitList(){
@@ -1219,15 +1267,28 @@ async function loadUnitList(){
         API_URL + "?action=list"
       );
 
-    bank =
-      await res.json();
+bank = await res.json();
 
-    loadUnits();
+// Tạo danh sách tất cả bài học
+allLessons = [];
 
-    const firstUnit =
-      Object.keys(bank)[0];
+Object.keys(bank).forEach(unit => {
 
-    loadLessons(firstUnit);
+  bank[unit].forEach(lesson => {
+
+    allLessons.push(`${unit} - ${lesson}`);
+
+  });
+
+});
+
+console.log(allLessons);
+
+loadUnits();
+
+const firstUnit = Object.keys(bank)[0];
+
+loadLessons(firstUnit);
 
   }catch(err){
 
@@ -1795,6 +1856,53 @@ function showToast(text,type){
 
 }
 
+function getStudentProgress(studentName){
+
+  const total = allLessons.length;
+
+  const doneLessons = new Set();
+
+  resultData.forEach(r=>{
+
+    if((r["Họ tên"] || "").trim() !== studentName){
+      return;
+    }
+
+    // Chỉ tính bài đạt 10 điểm
+    if(Number(r["Điểm"]) !== 10){
+      return;
+    }
+
+    const lesson =
+      (r["Bài làm"] || "").trim();
+
+    if(lesson){
+      doneLessons.add(lesson);
+    }
+
+  });
+
+  const done = doneLessons.size;
+
+  const percent =
+    total
+      ? Math.round(done / total * 100)
+      : 0;
+
+  return{
+
+    done,
+
+    total,
+
+    percent,
+
+    doneLessons
+
+  };
+
+}
+
 async function showRanking(){
 
   try{
@@ -1823,21 +1931,46 @@ async function showRanking(){
 
     });
 
-    const arr = Object.entries(ranking)
-      .map(([name,count])=>({
-        name,
-        count
-      }))
-      .sort((a,b)=>b.count-a.count);
+const arr = Object.entries(ranking)
+  .map(([name,count])=>{
 
-    let html = `
-    <table class="ranking-table">
-      <tr>
-        <th>Hạng</th>
-        <th>Học sinh</th>
-        <th>Số điểm 10</th>
-      </tr>
-    `;
+    const progress =
+      getStudentProgress(name);
+
+    return{
+
+      name,
+
+      count,
+
+      percent: progress.percent
+
+    };
+
+  })
+  .sort((a,b)=>{
+
+    // Ưu tiên % hoàn thành
+    if(b.percent !== a.percent){
+
+      return b.percent - a.percent;
+
+    }
+
+    // Nếu bằng nhau thì ưu tiên số điểm 10
+    return b.count - a.count;
+
+  });
+
+let html = `
+<table class="ranking-table">
+  <tr>
+    <th>Hạng</th>
+    <th>Học sinh</th>
+    <th>Hoàn thành</th>
+    <th>Số điểm 10</th>
+  </tr>
+`;
 
     arr.forEach((r,i)=>{
 
@@ -1853,13 +1986,40 @@ async function showRanking(){
         i===2 ? "3 🥉" :
         (i+1);
 
-      html += `
-      <tr class="${cls}">
-        <td>${medal}</td>
-        <td>${i===0 ? "👑 " : ""}${r.name}</td>
-        <td>${r.count}</td>
-      </tr>
-      `;
+html += `
+<tr class="${cls}">
+  <td>${medal}</td>
+
+  <td>
+    ${i===0 ? "👑 " : ""}
+    ${r.name}
+  </td>
+
+<td>
+
+<button
+onclick="showProgressDetail('${r.name}')"
+style="
+cursor:pointer;
+padding:5px 10px;
+border-radius:8px;
+border:none;
+background:#2563eb;
+color:white;
+">
+
+${r.percent}%
+
+</button>
+
+</td>
+
+  <td>
+    ${r.count}
+  </td>
+
+</tr>
+`;
     });
 
     html += `</table>`;
@@ -1890,6 +2050,84 @@ function closeRanking(){
   document.getElementById(
     "rankingModal"
   ).style.display = "none";
+
+}
+
+function showProgressDetail(name){
+
+  const progress =
+    getStudentProgress(name);
+
+
+  let html = `
+
+  <h2>
+  📊 ${name}
+  </h2>
+
+  <h3>
+  Hoàn thành:
+  ${progress.percent}%
+  (${progress.done}/${progress.total})
+  </h3>
+
+  <hr>
+
+  `;
+
+
+  allLessons.forEach(lesson=>{
+
+
+    if(progress.doneLessons.has(lesson)){
+
+
+      html += `
+
+      <div style="
+      color:#16a34a;
+      margin:6px 0;
+      ">
+
+      ✅ ${lesson}
+
+      </div>
+
+      `;
+
+
+    }else{
+
+
+      html += `
+
+      <div style="
+      color:#dc2626;
+      margin:6px 0;
+      ">
+
+      ❌ ${lesson}
+
+      </div>
+
+      `;
+
+
+    }
+
+
+  });
+
+
+  document.getElementById(
+    "progressContent"
+  ).innerHTML = html;
+
+
+  document.getElementById(
+    "progressModal"
+  ).style.display="flex";
+
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2039,6 +2277,15 @@ async function register() {
     loadingText.textContent = "Đang đăng nhập...";
 
   }
+}
+
+
+function closeProgress(){
+
+  document.getElementById(
+    "progressModal"
+  ).style.display="none";
+
 }
 
 </script>
