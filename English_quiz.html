@@ -551,6 +551,27 @@ table td{
     white-space:pre-wrap;
 }
 
+<style>
+.ranking-table th,
+.ranking-table td {
+  padding:10px;
+}
+
+/* Hạng + Học sinh: trái */
+.ranking-table th:nth-child(1),
+.ranking-table td:nth-child(1),
+.ranking-table th:nth-child(2),
+.ranking-table td:nth-child(2){
+  text-align:left;
+}
+
+/* Số điểm 10: phải */
+.ranking-table th:nth-child(4),
+.ranking-table td:nth-child(4){
+  text-align:right;
+}
+</style>
+
 </style>
 </head>
 
@@ -701,8 +722,11 @@ z-index:9990;
     </div>
 
     <div id="rankingContent"></div>
-
+<p style="text-align: center; color: red; font-weight: bold;">
+    Lưu ý: Thời gian cập nhật dữ liệu khoảng 10 phút/lần
+</p>
   </div>
+
 
 </div>
 
@@ -712,13 +736,17 @@ z-index:9990;
 
   <div class="register-box">
 
-    <h3>Đăng ký</h3>
-		      <!-- spinner -->
-    <input id="username" placeholder="Tên đăng nhập">
-    <input id="regPassword" placeholder="Mật khẩu">
-    <input id="phone" placeholder="Điện thoại">
-    <input id="email" placeholder="Email">
-    <input id="address" placeholder="Địa chỉ">
+<h3>Đăng ký</h3>
+
+<input id="school" placeholder="Trường học">
+<input id="className" placeholder="Lớp học">
+<input id="course" placeholder="Khóa học">
+
+<input id="username" placeholder="Tên đăng nhập">
+<input id="regPassword" placeholder="Mật khẩu">
+<input id="phone" placeholder="Điện thoại">
+<input id="email" placeholder="Email">
+<input id="address" placeholder="Địa chỉ">
 
     <!-- BUTTON GROUP -->
     <div class="btn-group">
@@ -753,7 +781,7 @@ z-index:9999;
 
 
 <h2>
-📊 Chi tiết tiến độ
+📊 Thông tin chi tiết
 </h2>
 
 
@@ -777,6 +805,7 @@ z-index:9999;
 
 
 <script>
+let currentStudent = null;
 let viewData = [];
 let resultData = [];
 let sortState = {key: "",asc: true};
@@ -834,35 +863,34 @@ function closeAdmin(){
 
 }
 
-async function loadScores(){
-if(adminDataLoaded){
-    return;
+async function loadScores(force = false){
+
+    if(adminDataLoaded && !force){
+        return;
+    }
+
+    try{
+
+        const url =
+          "https://opensheet.elk.sh/1CuQMGYyWdZKb8XItQgLTbylPuRY73RPGBCPa1E6i8TY/1";
+
+        const res = await fetch(url);
+
+        resultData = await res.json();
+        viewData = [...resultData];
+
+        adminDataLoaded = true;
+
+        renderTable(viewData);
+
+    }catch(err){
+
+        console.error(err);
+
+        showToast("✘ Load lỗi","error");
+
+    }
 }
-
-  try{
-
-    const url =
-      "https://opensheet.elk.sh/1CuQMGYyWdZKb8XItQgLTbylPuRY73RPGBCPa1E6i8TY/1";
-
-    const res = await fetch(url);
-
-resultData = await res.json();
-viewData = [...resultData];
-
-adminDataLoaded = true;
-
-renderTable(viewData);
-
-  }catch(err){
-
-    console.error(err);
-
-    showToast("✘ Load lỗi","error");
-
-  }
-
-}
-
 function renderTable(data){
 
 let html=`
@@ -1210,18 +1238,21 @@ async function loginStudent() {
 
   try {
 
-    const url =
-      "https://opensheet.elk.sh/1CuQMGYyWdZKb8XItQgLTbylPuRY73RPGBCPa1E6i8TY/2";
+const res = await fetch("https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec", {
+  method: "POST",
+  body: JSON.stringify({
+    type: "login",
+    username: name,
+    password: password
+  })
+});
 
-    const res = await fetch(url);
-    const users = await res.json();
+const result = await res.json();
 
-const found = users.find(u =>
-  (u.username || "").trim() === name &&
-  (u.password || "").trim() === password
-);
+if (result.success) {
+currentStudent = result.user;
 
-if (found) {
+console.log(currentStudent);
 
   quizPanel.style.display = "block";
 
@@ -1229,7 +1260,7 @@ if (found) {
   await loadUnitList();
 
   // Tải ngầm bảng điểm
-  await loadScores();
+  // await loadScores();
 
   showToast(
     "✔ Đăng nhập thành công",
@@ -1826,12 +1857,18 @@ document.getElementById("submitBtn").style.display = "none";
 
 fetch("https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec",{
     method:"POST",
-    body:JSON.stringify({
-      name:studentName,
-      answer:diem,
-	  result: `${unit} - ${lesson}`
-    })
-  });
+body:JSON.stringify({
+
+      school: currentStudent["Trường học"] || "",
+      className: currentStudent["Lớp học"] || "",
+      course: currentStudent["Khóa Học"] || "",
+
+      name: studentName,
+      answer: diem,
+      result: `${unit} - ${lesson}`
+
+})
+});
 }
 
 current = [];
@@ -1904,14 +1941,16 @@ function getStudentProgress(studentName){
 }
 
 async function showRanking(){
+const loading = document.getElementById("loginLoading");
+const loadingText = loading.querySelector(".loading-text");
 
-  try{
+loadingText.textContent = "📊 Đang tải bảng xếp hạng...";
+loading.style.display = "flex";
 
-    const url =
-      "https://opensheet.elk.sh/1CuQMGYyWdZKb8XItQgLTbylPuRY73RPGBCPa1E6i8TY/1";
+  try {
 
-    const res = await fetch(url);
-    const data = await res.json();
+await loadScores(true);
+const data = resultData;
 
     const diem10 = data.filter(
       r => Number(r["Điểm"]) === 10
@@ -1936,7 +1975,12 @@ const arr = Object.entries(ranking)
 
     const progress =
       getStudentProgress(name);
-
+	  
+	  const student = resultData.find(
+    r => (r["Họ tên"] || "").trim() === name
+);
+console.log(name);
+console.log(student);
     return{
 
       name,
@@ -1963,7 +2007,7 @@ const arr = Object.entries(ranking)
   });
 
 let html = `
-<table class="ranking-table">
+<table class="ranking-table" style="width:100%; border-collapse:collapse;">
   <tr>
     <th>Hạng</th>
     <th>Học sinh</th>
@@ -1991,7 +2035,7 @@ html += `
   <td>${medal}</td>
 
   <td>
-    ${i===0 ? "👑 " : ""}
+    ${i===0 ? " " : ""}
     ${r.name}
   </td>
 
@@ -2031,8 +2075,13 @@ ${r.percent}%
     document.getElementById(
       "rankingModal"
     ).style.display = "block";
+	
+loading.style.display = "none";
+loadingText.textContent = "Đang đăng nhập...";
 
   }catch(err){
+  loading.style.display = "none";
+  loadingText.textContent = "Đang đăng nhập...";
 
     console.error(err);
 
@@ -2055,80 +2104,65 @@ function closeRanking(){
 
 function showProgressDetail(name){
 
-  const progress =
-    getStudentProgress(name);
+  const student = resultData.find(
+    r => (r["Họ tên"] || "").trim() === name
+  );
 
+  const progress = getStudentProgress(name);
 
   let html = `
+<h2>📊 ${name}</h2>
 
-  <h2>
-  📊 ${name}
-  </h2>
+<div style="
+background:linear-gradient(135deg,#e0f2fe,#f0fdf4);
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+line-height:1.9;
+border:1px solid #cbd5e1;
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
+">
 
-  <h3>
-  Hoàn thành:
-  ${progress.percent}%
-  (${progress.done}/${progress.total})
-  </h3>
+<div style="color:#0369a1;font-weight:600;">
+🏫 Trường:
+<span style="color:#0f172a;font-weight:500;">
+${student?.["Trường học"] || ""}
+</span>
+</div>
 
-  <hr>
+<div style="color:#7c3aed;font-weight:600;">
+👨‍🏫 Lớp:
+<span style="color:#0f172a;font-weight:500;">
+${student?.["Lớp học"] || ""}
+</span>
+</div>
 
-  `;
+<div style="color:#16a34a;font-weight:600;">
+🎓 Khóa:
+<span style="color:#0f172a;font-weight:500;">
+${student?.["Khóa Học"] || ""}
+</span>
+</div>
 
+</div>
+
+<h3>
+Hoàn thành: ${progress.percent}% (${progress.done}/${progress.total})
+</h3>
+
+<hr>
+`;
 
   allLessons.forEach(lesson=>{
-
-
     if(progress.doneLessons.has(lesson)){
-
-
-      html += `
-
-      <div style="
-      color:#16a34a;
-      margin:6px 0;
-      ">
-
-      ✅ ${lesson}
-
-      </div>
-
-      `;
-
-
-    }else{
-
-
-      html += `
-
-      <div style="
-      color:#dc2626;
-      margin:6px 0;
-      ">
-
-      ❌ ${lesson}
-
-      </div>
-
-      `;
-
-
+      html += `<div style="color:#16a34a;margin:6px 0;">✅ ${lesson}</div>`;
+    } else {
+      html += `<div style="color:#dc2626;margin:6px 0;">❌ ${lesson}</div>`;
     }
-
-
   });
 
-
-  document.getElementById(
-    "progressContent"
-  ).innerHTML = html;
-
-
-  document.getElementById(
-    "progressModal"
-  ).style.display="flex";
-
-
+  document.getElementById("progressContent").innerHTML = html;
+  document.getElementById("progressModal").style.display="flex";
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2159,17 +2193,22 @@ async function register() {
   const phoneEl = document.getElementById("phone");
   const emailEl = document.getElementById("email");
   const addressEl = document.getElementById("address");
+  const schoolEl = document.getElementById("school");
+  const classNameEl = document.getElementById("className");
+  const courseEl = document.getElementById("course");
 
   const username = usernameEl.value.trim();
   const password = passwordEl.value.trim();
   const phone = phoneEl.value.trim();
   const email = emailEl.value.trim();
   const address = addressEl.value.trim();
+  const school = schoolEl.value.trim();
+  const className = classNameEl.value.trim();
+  const course = courseEl.value.trim();
 
   // reset lỗi
-  [usernameEl, passwordEl, phoneEl, emailEl, addressEl]
-    .forEach(clearError);
-
+[schoolEl, classNameEl, courseEl, usernameEl, passwordEl, phoneEl, emailEl, addressEl].forEach(clearError);
+ 
   let hasError = false;
 
   // ======================
@@ -2180,6 +2219,9 @@ async function register() {
   if (!phone) { markError(phoneEl); hasError = true; }
   if (!email) { markError(emailEl); hasError = true; }
   if (!address) { markError(addressEl); hasError = true; }
+  if (!school) {markError(schoolEl); hasError = true;}
+  if (!className) {markError(classNameEl); hasError = true;}
+  if (!course) {markError(courseEl); hasError = true;}
 
   if (hasError) {
     alert("❌ Không được để trống thông tin");
@@ -2214,14 +2256,19 @@ async function register() {
 
   try {
 
-    const data = {
-      type: "register",
-      username,
-      password,
-      phone,
-      email,
-      address
-    };
+const data = {
+  type: "register",
+
+  school,
+  className,
+  course,
+
+  username,
+  password,
+  phone,
+  email,
+  address
+};
 
     const res = await fetch(
       "https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec",
@@ -2260,11 +2307,15 @@ async function register() {
     closeRegister();
 
     // clear form
-    usernameEl.value = "";
-    passwordEl.value = "";
-    phoneEl.value = "";
-    emailEl.value = "";
-    addressEl.value = "";
+schoolEl.value = "";
+classNameEl.value = "";
+courseEl.value = "";
+
+usernameEl.value = "";
+passwordEl.value = "";
+phoneEl.value = "";
+emailEl.value = "";
+addressEl.value = "";
 
   } catch (err) {
 
@@ -2287,6 +2338,7 @@ function closeProgress(){
   ).style.display="none";
 
 }
+
 
 </script>
 
