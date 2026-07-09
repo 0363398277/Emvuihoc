@@ -1892,7 +1892,6 @@ function validateAndSubmit(){
 function normalizeAnswer(text){
 
     return (text || "")
-        .toLowerCase()
         .replace(/\r/g,"")
         .replace(/\n/g," ")      // xuống hàng thành khoảng trắng
         .replace(/\s+/g," ")     // nhiều khoảng trắng thành 1
