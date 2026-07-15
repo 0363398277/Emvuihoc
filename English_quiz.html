@@ -1824,6 +1824,13 @@ let html =
     // =========================
     // MEDIA (audio / image)
     // =========================
+    if (q.image) {
+      html += `
+        <div style="margin:10px 0;">
+          <img src="${q.image}" style="max-width:100%;border-radius:10px;">
+        </div>
+      `;
+    }
 if (q.audio) {
   html += `
     <div class="audio-box">
@@ -1844,13 +1851,6 @@ if (q.note === 1) {
     </div>
   `;
 }
-    if (q.image) {
-      html += `
-        <div style="margin:10px 0;">
-          <img src="${q.image}" style="max-width:100%;border-radius:10px;">
-        </div>
-      `;
-    }
 
     // =========================
     // QUESTION TYPE (ONLY 2)
