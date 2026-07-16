@@ -816,7 +816,6 @@ z-index:9990;
 
 
 <!-- POPUP ĐĂNG NHẬP -->
-<!-- POPUP ĐĂNG NHẬP -->
 <div id="loginModal">
 
     <div class="register-box">
@@ -891,7 +890,9 @@ z-index:9990;
 <div id="loginLoading" class="loading-overlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Đang đăng nhập...</div>
+        <div id="loadingText" class="loading-text">
+    Đang đăng nhập...
+</div>
     </div>
 </div>
 
@@ -1073,6 +1074,8 @@ background:#000;
     </div>
 
 </div>
+
+
 <script>
 let currentStudent = null;
 let viewData = [];
@@ -2122,6 +2125,7 @@ function submitQuiz(){
   const studentName=nameInput.value.trim();
   const unit = unitSel.value;
   const lesson = lessonSel.value;
+  const isExam = /^kiểm tra/i.test(lesson.trim());
 
   const password =
   document.getElementById("password").value.trim();
@@ -2177,23 +2181,40 @@ const correctText =
 
 if (ok) {
 
-  d++;
+    d++;
 
-  res.className = "correct";
+    res.className = "correct";
 
-res.innerHTML = `
+    if (isExam) {
+
+        res.innerHTML = `✔ Chính xác`;
+
+    } else {
+
+        res.innerHTML = `
 ✔ <strong>Đáp án đúng:</strong><br>
 ${correctText}
 `;
 
+    }
+
 } else {
 
-  res.className = "wrong";
+    res.className = "wrong";
 
-res.innerHTML = `
+    if (isExam) {
+
+        res.innerHTML = `✘ Chưa chính xác`;
+
+    } else {
+
+        res.innerHTML = `
 ✘ <strong>Đáp án đúng:</strong><br>
 ${correctText}
 `;
+
+    }
+
 }
 
   box.appendChild(res);
@@ -2202,6 +2223,21 @@ ${correctText}
 const diem=Math.round((d/current.length)*10*10)/10;
 
 alert("Điểm: "+diem);
+
+if (isExam) {
+
+    const btn = document.createElement("button");
+
+    btn.id = "showAnswerBtn";
+    btn.innerHTML = "🔑 Đáp án";
+
+    btn.style.marginTop = "20px";
+
+    btn.onclick = showAnswers;
+
+    document.getElementById("quiz").appendChild(btn);
+
+}
 
 
 // Ẩn nút nộp bài sau khi xem điểm
@@ -3019,6 +3055,69 @@ function showAds(){
 
 }
 
+async function showAnswers(){
+
+    const pass = prompt("Nhập mật khẩu:");
+	const loading = document.getElementById("loginLoading");
+
+document.getElementById("loadingText").innerText =
+"Đang kiểm tra mật khẩu...";
+
+loading.style.display = "flex";
+
+    if(pass === null) return;
+
+    try{
+
+const res = await fetch("https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec",{
+    method:"POST",
+    body:JSON.stringify({
+        type:"checkAnswerPassword",
+        password:pass
+    })
+});
+
+const data = await res.json();
+
+console.log(data);
+loading.style.display = "none";
+
+        if(!data.success){
+
+            alert("Sai mật khẩu!");
+            return;
+
+        }
+
+        document.querySelectorAll(".correct,.wrong").forEach(el=>{
+
+            if(el.innerHTML.includes("Đáp án đúng")) return;
+
+            const index = Number(
+                el.parentNode.id.replace("box","")
+            );
+
+            const q = current[index];
+
+            const answer = getCorrectAnswerText(q);
+
+            el.innerHTML += `
+<hr style="margin:10px 0;">
+<strong>Đáp án đúng:</strong><br>
+${answer}
+`;
+
+        });
+
+}catch(err){
+
+    console.error("SHOW ANSWER ERROR:", err);
+
+    alert(err.message);
+
+}
+
+}
 
 function contactZalo(){
 
