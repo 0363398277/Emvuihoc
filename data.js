@@ -249,6 +249,105 @@ const data = {
                 }
             ]
         }
+    },
+	    unit3: {
+        title: "📘 Unit 3: My week",
+        video: "https://www.youtube.com/embed/sbS3_QXcYic",
+
+        lessons: {
+
+            "📖 Kiến thức": [
+                {
+                    title: "📚 1. Từ vựng.",
+                    url: "Unit 3 - TV.html"
+                },
+                {
+                    title: "📚 2. Ngữ pháp.",
+                    url: "Unit 3 - NP.html"
+                }
+            ],
+
+            "📖 Lesson 1": [
+                {
+                    title: "📚 1. Look, listen and repeat.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52560"
+                },
+                {
+                    title: "📚 2. Listen, point and say.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52561"
+                },
+                {
+                    title: "📚 3. Let's talk.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52562"
+                },
+                {
+                    title: "📚 4. Listen and tick.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52563"
+                },
+                {
+                    title: "📚 5. Look, complete and read.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52564"
+                },
+                {
+                    title: "📚 6. Let's play.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52565"
+                }
+            ],
+
+            "📖 Lesson 2": [
+                {
+                    title: "📚 1. Look, listen and repeat.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52566"
+                },
+                {
+                    title: "📚 2. Listen, point and say.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52567"
+                },
+                {
+                    title: "📚 3. Let's talk.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52568"
+                },
+                {
+                    title: "📚 4. Listen and number.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52569"
+                },
+                {
+                    title: "📚 5. Look, complete and read.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52570"
+                },
+                {
+                    title: "📚 6. Let's sing.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52571"
+                }
+            ],
+
+            "📖 Lesson 3": [
+                {
+                    title: "📚 1. Listen and repeat.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52572"
+                },
+                {
+                    title: "📚 2. Listen and circle.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52573"
+                },
+                {
+                    title: "📚 3. Let's chant.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52574"
+                },
+                {
+                    title: "📚 4. Read and complete.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52575"
+                },
+                {
+                    title: "📚 5. Let's write.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52576"
+                },
+                {
+                    title: "📚 6. Project.",
+                    url: "https://sachmem.net/trial/books/328/exercises/52577"
+                }
+            ]
+        }
     }
 };
 //ghi chú: link youtube (video: "https://www.youtube.com/embed/.......",)
