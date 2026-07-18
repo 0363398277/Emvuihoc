@@ -1055,31 +1055,8 @@ function togglePassword(){
 
 }
 
-function togglePassword2(){
 
-    const pass = document.getElementById("login2Password");
 
-    const eye = document.querySelector("#login2Modal .toggle-password");
-
-    if(pass.type === "password"){
-
-        pass.type = "text";
-        eye.textContent = "🚫";
-
-    }else{
-
-        pass.type = "password";
-        eye.textContent = "👁️";
-
-    }
-
-}
-
-async function openAdmin() {
-    document.getElementById("adminPanel").style.display = "block";
-
-    renderTable(viewData);
-}
 
 function togglePassword() {
     const pass = document.getElementById("password");
@@ -1107,6 +1084,223 @@ function togglePassword2() {
         pass.type = "password";
         eye.textContent = "👁️";
     }
+}
+
+async function openAdmin() {
+    document.getElementById("adminPanel").style.display = "block";
+
+    renderTable(viewData);
+}
+
+
+function closeAdmin(){
+
+  document.getElementById("adminPanel")
+    .style.display = "none";
+
+}
+
+async function loadScores(force = false){
+
+    if(adminDataLoaded && !force){
+        return;
+    }
+
+    try{
+
+        const url =
+          "https://opensheet.elk.sh/1CuQMGYyWdZKb8XItQgLTbylPuRY73RPGBCPa1E6i8TY/1";
+
+        const res = await fetch(url);
+
+        resultData = await res.json();
+        viewData = [...resultData];
+
+        adminDataLoaded = true;
+
+        renderTable(viewData);
+
+    }catch(err){
+
+        console.error(err);
+
+        showToast("✘ Load lỗi","error");
+
+    }
+}
+function renderTable(data){
+
+let html=`
+<table border="1"
+style="
+width:100%;
+border-collapse:collapse;
+">
+
+<thead>
+
+<tr>
+<th onclick="sortTable('Thời gian')">
+Thời gian ${getArrow('Thời gian')}
+</th>
+
+<th onclick="sortTable('Họ tên')">
+Họ tên ${getArrow('Họ tên')}
+</th>
+
+<th onclick="sortTable('Điểm')">
+Điểm ${getArrow('Điểm')}
+</th>
+
+<th onclick="sortTable('Bài làm')">
+Bài làm ${getArrow('Bài làm')}
+</th>
+</tr>
+
+<tr>
+
+<th>
+
+<div style="display:flex;gap:6px;align-items:center;">
+
+<input
+type="date"
+id="fDateFrom"
+value="${document.getElementById('fDateFrom')?.value || ''}"
+onchange="filterTable()"
+title="Từ ngày">
+
+<input
+type="date"
+id="fDateTo"
+value="${document.getElementById('fDateTo')?.value || ''}"
+onchange="filterTable()"
+title="Đến ngày">
+
+</div>
+
+</th>
+
+<th>
+<input
+id="fName"
+value="${document.getElementById('fName')?.value || ''}"
+placeholder="Lọc">
+</th>
+
+<th>
+<input
+id="fScore"
+value="${document.getElementById('fScore')?.value || ''}"
+placeholder="Lọc">
+</th>
+
+<th>
+<input
+id="fLesson"
+value="${document.getElementById('fLesson')?.value || ''}"
+placeholder="Lọc">
+</th>
+
+</tr>
+
+<th colspan="4">
+
+
+</thead>
+
+<tbody>
+`;
+
+data.forEach(r=>{
+
+html+=`
+<tr>
+<td>${r["Thời gian"]||""}</td>
+<td>${r["Họ tên"]||""}</td>
+<td>${r["Điểm"]||""}</td>
+<td>${r["Bài làm"]||""}</td>
+</tr>
+`;
+
+});
+
+html+=`
+</tbody>
+</table>
+`;
+
+document.getElementById("tableInfo").innerHTML =
+`📊 Đang hiển thị ${data.length} / ${resultData.length} dòng`;
+document.getElementById("resultTable").innerHTML =
+html;
+
+}
+
+function resetFilter(){
+
+  document.getElementById("fDateFrom").value="";
+document.getElementById("fDateTo").value="";
+  document.getElementById("fName").value="";
+  document.getElementById("fScore").value="";
+  document.getElementById("fLesson").value="";
+
+  viewData = [...resultData];
+
+  renderTable(viewData);
+}
+
+function getArrow(key){
+
+  if(sortState.key !== key) return "⬍";
+
+  return sortState.asc ? "⬆" : "⬇";
+}
+function sortTable(key){
+
+  if(sortState.key === key){
+    sortState.asc = !sortState.asc;
+  }else{
+    sortState.key = key;
+    sortState.asc = true;
+  }
+
+  viewData.sort((a,b)=>{
+
+    let x = a[key] || "";
+    let y = b[key] || "";
+
+    const isNumber = !isNaN(x) && !isNaN(y);
+
+    if(isNumber){
+      x = Number(x);
+      y = Number(y);
+    }else{
+      x = x.toString().toLowerCase();
+      y = y.toString().toLowerCase();
+    }
+
+    if(x < y) return sortState.asc ? -1 : 1;
+    if(x > y) return sortState.asc ? 1 : -1;
+    return 0;
+  });
+
+  renderTable(viewData);
+}
+
+function parseVNDate(str){
+
+  if(!str) return null;
+
+  const [datePart,timePart] = str.split(" ");
+
+  const [d,m,y] = datePart.split("/");
+
+  return new Date(
+    Number(y),
+    Number(m)-1,
+    Number(d)
+  );
 }
 function filterTable() {
     const dateFrom = document.getElementById("fDateFrom")?.value || "";
