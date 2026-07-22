@@ -1055,23 +1055,6 @@ function togglePassword(){
 
 }
 
-
-
-
-function togglePassword() {
-    const pass = document.getElementById("password");
-
-    const eye = document.querySelector(".toggle-password");
-
-    if (pass.type === "password") {
-        pass.type = "text";
-        eye.textContent = "🚫️";
-    } else {
-        pass.type = "password";
-        eye.textContent = "👁️	";
-    }
-}
-
 function togglePassword2() {
     const pass = document.getElementById("login2Password");
 
@@ -1084,12 +1067,6 @@ function togglePassword2() {
         pass.type = "password";
         eye.textContent = "👁️";
     }
-}
-
-async function openAdmin() {
-    document.getElementById("adminPanel").style.display = "block";
-
-    renderTable(viewData);
 }
 
 
@@ -1713,15 +1690,41 @@ if (q.audio) {
         end = Number(parts[2]) || 0;
     }
 
-    html += `
-    <div class="audio-box">
-        <audio controls
-               data-start="${start}"
-               data-end="${end}">
-            <source src="${audioUrl}" type="audio/mpeg">
-        </audio>
+html += `
+<div class="audio-box">
+
+    <audio
+        class="real-audio"
+        style="display:none"
+        data-start="${start}"
+        data-end="${end}">
+        <source src="${audioUrl}" type="audio/mpeg">
+    </audio>
+
+    <div class="fake-player">
+
+        <button class="play-btn">
+            ▶
+        </button>
+
+<input
+    type="range"
+    class="fake-progress"
+    value="0"
+    min="0"
+    step="0.01"
+    max="${Math.max(1,end-start)}">
+
+
+        <span class="fake-time">
+            0:00 / ${end-start}s
+        </span>
+
     </div>
-    `;
+
+</div>
+`;
+
 }
 
         if (q.note === 1) {
@@ -1792,30 +1795,112 @@ quiz.appendChild(div);
 // ===========================
 // Khởi tạo audio
 // ===========================
-document.querySelectorAll(".audio-box audio").forEach(audio => {
+document.querySelectorAll(".audio-box").forEach(box=>{
 
-    const start = Number(audio.dataset.start || 0);
-    const end = Number(audio.dataset.end || 0);
+    const audio = box.querySelector(".real-audio");
+    const btn = box.querySelector(".play-btn");
+    const bar = box.querySelector(".fake-progress");
+    const text = box.querySelector(".fake-time");
 
-    audio.addEventListener("loadedmetadata", () => {
-        if (start > 0) {
-            audio.currentTime = start;
-        }
-    });
+let start = Number(audio.dataset.start || 0);
 
-    audio.addEventListener("play", () => {
-        if (audio.currentTime < start) {
-            audio.currentTime = start;
-        }
-    });
+let end = Number(audio.dataset.end || 0);
 
-    audio.addEventListener("timeupdate", () => {
-        if (end > 0 && audio.currentTime >= end) {
-            audio.pause();
-        }
-    });
+let duration = 0;
+
+
+audio.addEventListener("loadedmetadata",()=>{
+
+    if(end <= 0){
+
+        end = audio.duration;
+
+    }
+
+    duration = end - start;
+
+    if(duration < 0){
+
+        duration = audio.duration;
+
+    }
+
+
+    bar.max = duration;
+
+    text.innerHTML =
+        formatTime(0) + " / " + formatTime(duration);
 
 });
+
+
+    bar.max = duration;
+
+    btn.onclick=()=>{
+
+        if(audio.paused){
+
+            if(audio.currentTime<start || audio.currentTime>=end){
+                audio.currentTime=start;
+            }
+
+            audio.play();
+
+            btn.innerHTML="⏸";
+
+        }else{
+
+            audio.pause();
+
+            btn.innerHTML="▶";
+
+        }
+
+    };
+
+function updateProgress(){
+
+    let t = audio.currentTime - start;
+
+    if(t < 0) t = 0;
+
+    if(duration > 0){
+        bar.value = Number(t.toFixed(2));
+
+    }
+
+    text.innerHTML =
+        formatTime(t) + " / " + formatTime(duration);
+
+    if(end > 0 && audio.currentTime >= end){
+
+        audio.pause();
+        audio.currentTime = start;
+        bar.value = 0;
+        btn.innerHTML = "▶";
+
+        return;
+    }
+
+    if(!audio.paused){
+        requestAnimationFrame(updateProgress);
+    }
+
+}
+
+audio.addEventListener("play",()=>{
+    requestAnimationFrame(updateProgress);
+});
+
+
+    bar.oninput=()=>{
+
+        audio.currentTime=start+Number(bar.value);
+
+    };
+
+});
+
 
 }
 
@@ -2894,6 +2979,19 @@ function testPopup() {
 
     document.body.appendChild(div);
 }
+
+function formatTime(sec){
+
+    sec=Math.floor(sec);
+
+    const m=Math.floor(sec/60);
+
+    const s=sec%60;
+
+    return m+":"+(s<10?"0":"")+s;
+
+}
+
 
 </script>
 
