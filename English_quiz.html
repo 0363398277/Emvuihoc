@@ -1695,15 +1695,35 @@ function render() {
         </div>
       `;
         }
-        if (q.audio) {
-            html += `
+if (q.audio) {
+
+    let audioUrl = q.audio;
+    let start = 0;
+    let end = 0;
+
+    const parts = q.audio.split("#");
+
+    audioUrl = parts[0];
+
+    if (parts.length >= 2) {
+        start = Number(parts[1]) || 0;
+    }
+
+    if (parts.length >= 3) {
+        end = Number(parts[2]) || 0;
+    }
+
+    html += `
     <div class="audio-box">
-      <audio controls>
-        <source src="${q.audio}" type="audio/mpeg">
-      </audio>
+        <audio controls
+               data-start="${start}"
+               data-end="${end}">
+            <source src="${audioUrl}" type="audio/mpeg">
+        </audio>
     </div>
-  `;
-        }
+    `;
+}
+
         if (q.note === 1) {
             html += `
     <div style="margin:10px 0;">
@@ -1765,10 +1785,40 @@ function render() {
 `;
         }
 
-        div.innerHTML = html;
-        quiz.appendChild(div);
+div.innerHTML = html;
+quiz.appendChild(div);
+});
+
+// ===========================
+// Khởi tạo audio
+// ===========================
+document.querySelectorAll(".audio-box audio").forEach(audio => {
+
+    const start = Number(audio.dataset.start || 0);
+    const end = Number(audio.dataset.end || 0);
+
+    audio.addEventListener("loadedmetadata", () => {
+        if (start > 0) {
+            audio.currentTime = start;
+        }
     });
+
+    audio.addEventListener("play", () => {
+        if (audio.currentTime < start) {
+            audio.currentTime = start;
+        }
+    });
+
+    audio.addEventListener("timeupdate", () => {
+        if (end > 0 && audio.currentTime >= end) {
+            audio.pause();
+        }
+    });
+
+});
+
 }
+
 
 // ======================
 // GET RADIO
