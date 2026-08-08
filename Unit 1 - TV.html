@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px; /* 🔥 tăng padding */
+}
+
+/* tiêu đề to hơn */
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;   /* 🔥 tăng 2x */
+}
+
+/* card to hơn */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px; /* 🔥 tăng khoảng cách */
+    background:white;
+    padding:36px; /* 🔥 tăng 2x */
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+/* 🔥 FONT TO 2X */
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.phonetic{
+    color:#666;
+    font-size:24px;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* 🔥 ẢNH TO HƠN */
+.right img{
+    width:360px;   /* từ 180 -> 360 */
+    border-radius:18px;
+}
+
+/* loa to hơn */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* mobile */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:420px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+<!-- 1 -->
+<div class="card">
+<div class="left">
+<div class="word">1. America /əˈmerɪkə/ <span class="speaker" onclick="playAudio(0)">🔊</span></div>
+<div class="meaning">(n) nước Mỹ</div>
+<div class="example">She is from America.</div>
+<div class="example">(Cô ấy đến từ nước Mỹ.)</div>
+<audio id="audio0" src="https://img.loigiaihay.com/picture/2021/1111/america1636626267.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/1-my.PNG"></div>
+</div>
+
+<!-- 2 -->
+<div class="card">
+<div class="left">
+<div class="word">2. Australia <span class="speaker" onclick="playAudio(1)">🔊</span></div>
+<div class="meaning">(n) nước Úc</div>
+<div class="example">She is from Australia.</div>
+<div class="example">(Cô ấy đến từ nước Úc.)</div>
+<audio id="audio1" src="https://img.loigiaihay.com/picture/2021/1112/australia1636686236.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/2-uc.PNG"></div>
+</div>
+
+<!-- 3 -->
+<div class="card">
+<div class="left">
+<div class="word">3. Britain <span class="speaker" onclick="playAudio(2)">🔊</span></div>
+<div class="meaning">(n): đảo Anh (gồm vương quốc Anh, Scotland và Wales)</div>
+<div class="example">She is from Britain.</div>
+<div class="example">(Cô ấy đến từ Anh.)</div>
+<audio id="audio2" src="https://img.loigiaihay.com/picture/2023/0608/britain1686214604.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/3-anh.PNG"></div>
+</div>
+
+<!-- 4 -->
+<div class="card">
+<div class="left">
+<div class="word">4. Japan <span class="speaker" onclick="playAudio(3)">🔊</span></div>
+<div class="meaning">(n) nước Nhật</div>
+<div class="example">She is from Japan.</div>
+<div class="example">(Cô ấy đến từ nước Nhật.)</div>
+<audio id="audio3" src="https://img.loigiaihay.com/picture/audio/japan-gb.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/4-nhat.PNG"></div>
+</div>
+
+<!-- 5 -->
+<div class="card">
+<div class="left">
+<div class="word">5. Malaysia <span class="speaker" onclick="playAudio(4)">🔊</span></div>
+<div class="meaning">(n) nước Ma-lai-xi-a</div>
+<div class="example">She is from Malaysia.</div>
+<div class="example">(Cô ấy đến từ nước Ma-lai-xi-a.)</div>
+<audio id="audio4" src="https://img.loigiaihay.com/picture/2022/0527/malaysia1653661550.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/5-malai.PNG"></div>
+</div>
+
+<!-- 6 -->
+<div class="card">
+<div class="left">
+<div class="word">6. Singapore <span class="speaker" onclick="playAudio(5)">🔊</span></div>
+<div class="meaning">(n) nước Sing-ga-po</div>
+<div class="example">She is from Singapore.</div>
+<div class="example">(Cô ấy đến từ nước Sing-ga-po.)</div>
+<audio id="audio5" src="https://img.loigiaihay.com/picture/2023/0608/1-singapore1686215554.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/6-singapore.PNG"></div>
+</div>
+
+<!-- 7 -->
+<div class="card">
+<div class="left">
+<div class="word">7. Thailand <span class="speaker" onclick="playAudio(6)">🔊</span></div>
+<div class="meaning">(n) Thái Lan</div>
+<div class="example">She is from Thailand.</div>
+<div class="example">(Cô ấy đến từ nước Thái Lan.)</div>
+<audio id="audio6" src="https://img.loigiaihay.com/picture/2021/1112/thailand1636685527.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/7-thai-lan.PNG"></div>
+</div>
+
+<!-- 8 -->
+<div class="card">
+<div class="left">
+<div class="word">8. Viet Nam <span class="speaker" onclick="playAudio(7)">🔊</span></div>
+<div class="meaning">(n) Việt Nam</div>
+<div class="example">She is from Viet Nam.</div>
+<div class="example">(Cô ấy đến từ nước Việt Nam.)</div>
+<audio id="audio7" src="https://img.loigiaihay.com/picture/2021/1112/vietnam1636686543.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/8-vn.PNG"></div>
+</div>
+
+<!-- 9 -->
+<div class="card">
+<div class="left">
+<div class="word">9. friendly <span class="speaker" onclick="playAudio(8)">🔊</span></div>
+<div class="meaning">(adj) thân thiện</div>
+<div class="example">Our new friend is very friendly.</div>
+<div class="example">(Người bạn mới của chúng ta rất thân thiện.)</div>
+<audio id="audio8" src="https://img.loigiaihay.com/picture/audio/friendly-gb_1.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/9-friendly.PNG"></div>
+</div>
+
+<script>
+function playAudio(i){
+    const audio = document.getElementById("audio"+i);
+    audio.currentTime = 0;
+    audio.play();
+}
+</script>
+
+</body>
+</html>

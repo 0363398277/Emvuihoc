@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+/* CARD */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    background:white;
+    padding:36px;
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* ẢNH NHỎ LẠI ~70% */
+.right img{
+    width:260px;
+    border-radius:18px;
+}
+
+/* LOA */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:320px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+
+<!-- 1 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+1. Monday
+<span class="speaker" onclick="playAudio(0)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thứ Hai
+</div>
+
+<div class="example">
+I often play football after school on Monday.
+</div>
+
+<div class="example">
+(Tôi thường chơi bóng đá sau giờ học vào thứ Hai.)
+</div>
+
+<audio id="audio0" src="https://img.loigiaihay.com/picture/audio/monday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/1-monday.PNG">
+</div>
+
+</div>
+
+
+<!-- 2 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+2. Tuesday
+<span class="speaker" onclick="playAudio(1)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thứ Ba
+</div>
+
+<div class="example">
+We'll meet at eight on Tuesday.
+</div>
+
+<div class="example">
+(Chúng tôi sẽ gặp nhau vào 8 giờ thứ Ba.)
+</div>
+
+<audio id="audio1" src="https://img.loigiaihay.com/picture/audio/tuesday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/2-tuesday.PNG">
+</div>
+
+</div>
+
+
+<!-- 3 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+3. Wednesday
+<span class="speaker" onclick="playAudio(2)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thứ Tư
+</div>
+
+<div class="example">
+Did you say the meeting is on Wednesday?
+</div>
+
+<div class="example">
+(Cậu nói là cuộc họp diễn ra vào thứ Tư phải không?)
+</div>
+
+<audio id="audio2" src="https://img.loigiaihay.com/picture/audio/wednesday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/3-wed.PNG">
+</div>
+
+</div>
+
+
+<!-- 4 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+4. Thursday
+<span class="speaker" onclick="playAudio(3)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thứ Năm
+</div>
+
+<div class="example">
+The shops stay open late on Thursdays.
+</div>
+
+<div class="example">
+(Các cửa hàng mở cửa muộn và mọi thứ Năm.)
+</div>
+
+<audio id="audio3" src="https://img.loigiaihay.com/picture/audio/thursday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/4-thurs.PNG">
+</div>
+
+</div>
+
+
+<!-- 5 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+5. Friday
+<span class="speaker" onclick="playAudio(4)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thứ Sáu
+</div>
+
+<div class="example">
+Shall we go to the theatre on Friday?
+</div>
+
+<div class="example">
+(Chúng mình có nên đi đến nhà hát vào thứ Sáu không nhỉ?)
+</div>
+
+<audio id="audio4" src="https://img.loigiaihay.com/picture/audio/friday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/5-fri.PNG">
+</div>
+
+</div>
+
+
+<!-- 6 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+6. Saturday
+<span class="speaker" onclick="playAudio(5)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thứ Bảy
+</div>
+
+<div class="example">
+He's leaving on Saturday.
+</div>
+
+<div class="example">
+(Anh ấy sẽ rời đi vào thứ Bảy.)
+</div>
+
+<audio id="audio5" src="https://img.loigiaihay.com/picture/audio/saturday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/6-sat.PNG">
+</div>
+
+</div>
+
+
+<!-- 7 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+7. Sunday
+<span class="speaker" onclick="playAudio(6)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): Chủ Nhật
+</div>
+
+<div class="example">
+I haven't done any exercise since last Sunday.
+</div>
+
+<div class="example">
+(Mình đã không tập thể dục chút nào kể từ Chủ Nhật tuần trước.)
+</div>
+
+<audio id="audio6" src="https://img.loigiaihay.com/picture/audio/sunday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/7-sun.PNG">
+</div>
+
+</div>
+
+
+<!-- 8 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+8. Do house work
+<span class="speaker" onclick="playAudio(7)">🔊</span>
+</div>
+
+<div class="meaning">
+(v phr.): làm việc nhà
+</div>
+
+<div class="example">
+I do house work after school.
+</div>
+
+<div class="example">
+(Tôi làm việc nhà sau giờ học.)
+</div>
+
+<audio id="audio7" src="https://img.loigiaihay.com/picture/2023/0608/2-do-house-work1686217683.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/8-do-house-work_1.PNG">
+</div>
+
+</div>
+
+
+<!-- 9 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+9. Listen to music
+<span class="speaker" onclick="playAudio(8)">🔊</span>
+</div>
+
+<div class="meaning">
+(v phr.): nghe nhạc
+</div>
+
+<div class="example">
+Do you like listening to music?
+</div>
+
+<div class="example">
+(Cậu có thích nghe nhạc không?)
+</div>
+
+<audio id="audio8" src="https://img.loigiaihay.com/picture/2021/0628/listen-to-music1624870828.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/9-listen-to-music.PNG">
+</div>
+
+</div>
+
+
+<!-- 10 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+10. Study at school
+<span class="speaker" onclick="playAudio(9)">🔊</span>
+</div>
+
+<div class="meaning">
+(v): học ở trường
+</div>
+
+<div class="example">
+I study at school on weekdays.
+</div>
+
+<div class="example">
+(Mình học ở trường các ngày trong tuần.)
+</div>
+
+<audio id="audio9" src="https://img.loigiaihay.com/picture/2023/0608/3-study-at-school1686218071.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/10-study-at-school.PNG">
+</div>
+
+</div>
+
+
+<!-- 11 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+11. weekend
+<span class="speaker" onclick="playAudio(10)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): cuối tuần
+</div>
+
+<div class="example">
+He spent the weekend fishing with his brother.
+</div>
+
+<div class="example">
+(Anh ấy dành cuối tuần để đi câu cá cùng em trai.)
+</div>
+
+<audio id="audio10" src="https://img.loigiaihay.com/picture/audio/weekend-gb_3.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0608/11-weekend.PNG">
+</div>
+
+</div>
+
+
+
+<script>
+
+function playAudio(i){
+
+const audio =
+document.getElementById(
+"audio"+i
+);
+
+audio.currentTime = 0;
+audio.play();
+
+}
+
+</script>
+
+</body>
+</html>

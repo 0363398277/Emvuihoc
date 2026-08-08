@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+/* CARD */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    background:white;
+    padding:36px;
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* ẢNH NHỎ LẠI ~70% */
+.right img{
+    width:260px;
+    border-radius:18px;
+}
+
+/* LOA */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:320px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+
+<!-- 1 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+1. beach
+<span class="speaker" onclick="playAudio(0)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): bãi biển
+</div>
+
+<div class="example">
+We spent all day on the beach.
+</div>
+
+<div class="example">
+(Chúng tôi đã dành cả ngày ở bãi biển.)
+</div>
+
+<audio id="audio0" src="https://img.loigiaihay.com/picture/audio/beach-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/1_5.PNG">
+</div>
+
+</div>
+
+
+<!-- 2 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+2. campsite
+<span class="speaker" onclick="playAudio(1)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): khu cắm trại
+</div>
+
+<div class="example">
+The campsite is in a beautiful location next to the beach.
+</div>
+
+<div class="example">
+(Khu cắm trại nằm ở một vị ví đắc địa cạnh bờ biển.)
+</div>
+
+<audio id="audio1" src="https://img.loigiaihay.com/picture/audio/campsite-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/2_5.PNG">
+</div>
+
+</div>
+
+
+<!-- 3 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+3. countryside
+<span class="speaker" onclick="playAudio(2)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): vùng nông thôn
+</div>
+
+<div class="example">
+The countryside around there is beautiful.
+</div>
+
+<div class="example">
+(Vùng nông thôn xung quanh đây rất đẹp.)
+</div>
+
+<audio id="audio2" src="https://img.loigiaihay.com/picture/audio/countryside-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/3_5.PNG">
+</div>
+
+</div>
+
+
+<!-- 4 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+4. Bangkok
+<span class="speaker" onclick="playAudio(3)">🔊</span>
+</div>
+
+<div class="meaning">
+thành phố Băng-cốc
+</div>
+
+<div class="example">
+I want to travel to Bangkok this summer.
+</div>
+
+<div class="example">
+(Tôi muốn đi du lịch đến Băng Cốc vào mùa hè này.)
+</div>
+
+<audio id="audio3" src="https://img.loigiaihay.com/picture/2023/0612/1-bangkok1686559917.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/4_5.PNG">
+</div>
+
+</div>
+
+
+<!-- 5 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+5. London
+<span class="speaker" onclick="playAudio(4)">🔊</span>
+</div>
+
+<div class="meaning">
+thành phố Luân-đôn
+</div>
+
+<div class="example">
+London is the capital of England.
+</div>
+
+<div class="example">
+(Luân Đôn là thủ đô của nước Anh.)
+</div>
+
+<audio id="audio4" src="https://img.loigiaihay.com/picture/2022/0726/london-1658830351.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/5_6.PNG">
+</div>
+
+</div>
+
+
+<!-- 6 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+6. Sydney
+<span class="speaker" onclick="playAudio(5)">🔊</span>
+</div>
+
+<div class="meaning">
+Thành phố Xít-ni
+</div>
+
+<div class="example">
+Have you ever been to Sydney?
+</div>
+
+<div class="example">
+(Bạn đã bao giờ đến thành phố Xít-ni chưa?)
+</div>
+
+<audio id="audio5" src="https://img.loigiaihay.com/picture/2023/0612/1-sydney1686559956.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/6_3.PNG">
+</div>
+
+</div>
+
+
+<!-- 7 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+7. Tokyo
+<span class="speaker" onclick="playAudio(6)">🔊</span>
+</div>
+
+<div class="meaning">
+thành phố Tô-ky-ô
+</div>
+
+<div class="example">
+I want to go to Tokyo to see cherry blossom festival.
+</div>
+
+<div class="example">
+(Tôi muốn đến thành phố To-ky-ô để xem lễ hội hoa anh đào.)
+</div>
+
+<audio id="audio6" src="https://img.loigiaihay.com/picture/2023/0612/1-tokyo1686559971.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/7_3.PNG">
+</div>
+
+</div>
+
+
+<!-- 8 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+8. last
+<span class="speaker" onclick="playAudio(7)">🔊</span>
+</div>
+
+<div class="meaning">
+(adj) cuối, trước
+</div>
+
+<div class="example">
+Were you at home last Sunday?
+</div>
+
+<div class="example">
+(Chủ Nhật tuần trước bạn có ở nhà không?)
+</div>
+
+<audio id="audio7" src="https://www.oxfordlearnersdictionaries.com/media/english/uk_pron/l/las/last_/last__gb_6.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="/themes/images/speaker_active.gif">
+</div>
+
+</div>
+
+
+<!-- 9 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+9. yesterday
+<span class="speaker" onclick="playAudio(8)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): hôm qua
+</div>
+
+<div class="example">
+I met her yesterday.
+</div>
+
+<div class="example">
+(Hôm qua tôi đã gặp cô ấy.)
+</div>
+
+<audio id="audio8" src="https://img.loigiaihay.com/picture/audio/yesterday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="/themes/images/speaker_active.gif">
+</div>
+
+</div>
+
+
+<!-- 10 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+10. at
+<span class="speaker" onclick="playAudio(9)">🔊</span>
+</div>
+
+<div class="meaning">
+(prep.) ở (dùng cho những vị trí cụ thể)
+</div>
+
+<div class="example">
+We'll meet you at the entrance.
+</div>
+
+<div class="example">
+(Chúng tớ sẽ gặp cậu ở cổng vào nhé.)
+</div>
+
+<audio id="audio9" src="https://img.loigiaihay.com/picture/audio/at-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="/themes/images/speaker_active.gif">
+</div>
+
+</div>
+
+
+<!-- 11 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+11. on
+<span class="speaker" onclick="playAudio(10)">🔊</span>
+</div>
+
+<div class="meaning">
+(prep.) ở trên (chỉ sự tiếp xúc bề mặt)
+</div>
+
+<div class="example">
+Can I borrow the book on the desk?
+</div>
+
+<div class="example">
+(Tớ có thể mượn cuốn sách ở trên bàn không?)
+</div>
+
+<audio id="audio10" src="https://img.loigiaihay.com/picture/audio/on-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="/themes/images/speaker_active.gif">
+</div>
+
+</div>
+
+
+<!-- 12 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+12. in
+<span class="speaker" onclick="playAudio(11)">🔊</span>
+</div>
+
+<div class="meaning">
+(prep.) ở trong
+</div>
+
+<div class="example">
+There is some ice cream in the fridge.
+</div>
+
+<div class="example">
+(Có một chút kem trong tủ lạnh.)
+</div>
+
+<audio id="audio11" src="https://img.loigiaihay.com/picture/audio/in-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="/themes/images/speaker_active.gif">
+</div>
+
+</div>
+
+
+
+<script>
+
+function playAudio(i){
+
+const audio =
+document.getElementById(
+"audio"+i
+);
+
+audio.currentTime = 0;
+audio.play();
+
+}
+
+</script>
+
+</body>
+</html>

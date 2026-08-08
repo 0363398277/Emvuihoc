@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+/* CARD */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    background:white;
+    padding:36px;
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* ẢNH NHỎ LẠI ~70% */
+.right img{
+    width:260px;
+    border-radius:18px;
+}
+
+/* LOA */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:320px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+
+<!-- 1 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+1. cook
+<span class="speaker" onclick="playAudio(0)">🔊</span>
+</div>
+
+<div class="meaning">
+(v): nấu ăn
+</div>
+
+<div class="example">
+My father cooks dinner.
+</div>
+
+<div class="example">
+(Bố tôi nấu bữa tối.)
+</div>
+
+<audio id="audio0" src="https://img.loigiaihay.com/picture/audio/cook-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/1.PNG">
+</div>
+
+</div>
+
+
+<!-- 2 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+2. draw
+<span class="speaker" onclick="playAudio(1)">🔊</span>
+</div>
+
+<div class="meaning">
+(v): vẽ tranh
+</div>
+
+<div class="example">
+Jonh can draw very well.
+</div>
+
+<div class="example">
+( John có thể vẽ rất đẹp.)
+</div>
+
+<audio id="audio1" src="https://img.loigiaihay.com/picture/audio/draw-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/2.PNG">
+</div>
+
+</div>
+
+
+<!-- 3 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+3. play the guitar
+<span class="speaker" onclick="playAudio(2)">🔊</span>
+</div>
+
+<div class="meaning">
+(v phr.): chơi đàn ghi-ta
+</div>
+
+<div class="example">
+Can your sister play the guitar?
+</div>
+
+<div class="example">
+(Chị gái cậu có thể chơi đàn ghi-ta không?)
+</div>
+
+<audio id="audio2" src="https://img.loigiaihay.com/picture/2021/0622/play-the-guitar1624377064.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/3.PNG">
+</div>
+
+</div>
+
+
+<!-- 4 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+4. play the piano
+<span class="speaker" onclick="playAudio(3)">🔊</span>
+</div>
+
+<div class="meaning">
+(v phr.): chơi đàn dương cầm
+</div>
+
+<div class="example">
+I can’t play the piano.
+</div>
+
+<div class="example">
+(Tôi không thể chơi đàn dương cầm.)
+</div>
+
+<audio id="audio3" src="https://img.loigiaihay.com/picture/2021/0622/play-the-piano1624377031.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/4.PNG">
+</div>
+
+</div>
+
+
+<!-- 5 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+5. ride a bike
+<span class="speaker" onclick="playAudio(4)">🔊</span>
+</div>
+
+<div class="meaning">
+(v phr.): đi xe đạp
+</div>
+
+<div class="example">
+She likes riding a bike after school.
+</div>
+
+<div class="example">
+(Cô ấy thích đạp xe sau giờ học.)
+</div>
+
+<audio id="audio4" src="https://img.loigiaihay.com/picture/2021/0622/ride-a-bike1624377557.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/5.PNG">
+</div>
+
+</div>
+
+
+<!-- 6 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+6. ride a horse
+<span class="speaker" onclick="playAudio(5)">🔊</span>
+</div>
+
+<div class="meaning">
+(v phr.): cưỡi ngựa
+</div>
+
+<div class="example">
+Riding a horse is so hard.
+</div>
+
+<div class="example">
+(Cưỡi ngựa rất khó.)
+</div>
+
+<audio id="audio5" src="https://img.loigiaihay.com/picture/2021/0622/ride-a-horse1624377120.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/6.PNG">
+</div>
+
+</div>
+
+
+<!-- 7 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+7. roller skate
+<span class="speaker" onclick="playAudio(6)">🔊</span>
+</div>
+
+<div class="meaning">
+(v):trượt pa-tin bằng giày trượt
+</div>
+
+<div class="example">
+We often roller skate in the park.
+</div>
+
+<div class="example">
+(Chúng mình thường trượt pa tin ở công viên.)
+</div>
+
+<audio id="audio6" src="https://img.loigiaihay.com/picture/2023/0609/3-roller-coaster1686297446.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/7.PNG">
+</div>
+
+</div>
+
+
+<!-- 8 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+8. swim
+<span class="speaker" onclick="playAudio(7)">🔊</span>
+</div>
+
+<div class="meaning">
+(v): bơi lội
+</div>
+
+<div class="example">
+I used to swim twice a week.
+</div>
+
+<div class="example">
+(Tôi đã từng đi bơi 2 lần một tần.)
+</div>
+
+<audio id="audio7" src="https://img.loigiaihay.com/picture/audio/swim-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/8.PNG">
+</div>
+
+</div>
+
+
+<!-- 9 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+9. play badminton
+<span class="speaker" onclick="playAudio(8)">🔊</span>
+</div>
+
+<div class="meaning">
+(v phr.): chơi cầu lông
+</div>
+
+<div class="example">
+I play badminton with my mother every afternoon.
+</div>
+
+<div class="example">
+(Tôi chơi cầu lông cùng mẹ mỗi buổi chiều.)
+</div>
+
+<audio id="audio8" src="https://img.loigiaihay.com/picture/2021/0623/play-badminton1624431144.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/9.PNG">
+</div>
+
+</div>
+
+
+<!-- 10 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+10. dance
+<span class="speaker" onclick="playAudio(9)">🔊</span>
+</div>
+
+<div class="meaning">
+(v): nhảy
+</div>
+
+<div class="example">
+What kind of music do you like dancing to?
+</div>
+
+<div class="example">
+( Bạn thích nhảy trên nền nhạc nào?)
+</div>
+
+<audio id="audio9" src="https://img.loigiaihay.com/picture/audio/dance-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="/themes/images/facebook-share.png">
+</div>
+
+</div>
+
+
+
+<script>
+
+function playAudio(i){
+
+const audio =
+document.getElementById(
+"audio"+i
+);
+
+audio.currentTime = 0;
+audio.play();
+
+}
+
+</script>
+
+</body>
+</html>

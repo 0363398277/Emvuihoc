@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+/* CARD */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    background:white;
+    padding:36px;
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* ẢNH NHỎ LẠI ~70% */
+.right img{
+    width:260px;
+    border-radius:18px;
+}
+
+/* LOA */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:320px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+<!-- 1 -->
+<div class="card">
+<div class="left">
+<div class="word">1. get up <span class="speaker" onclick="playAudio(0)">🔊</span></div>
+<div class="meaning">(v phr): thức dậy</div>
+<div class="example">I get up at six.</div>
+<div class="example">(Tôi thức dậy lúc 6 giờ.)</div>
+<audio id="audio0" src="https://img.loigiaihay.com/picture/2020/0810/get-up1597046764.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/1-get-up.PNG"></div>
+</div>
+
+<!-- 2 -->
+<div class="card">
+<div class="left">
+<div class="word">2. go to bed <span class="speaker" onclick="playAudio(1)">🔊</span></div>
+<div class="meaning">(v phr): đi ngủ</div>
+<div class="example">I go to bed at 10 o’clock.</div>
+<div class="example">(Tôi đi ngủ lúc 10 giờ.)</div>
+<audio id="audio1" src="https://img.loigiaihay.com/picture/2021/0622/go-to-bed1624358874.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/2-go-to-bed.PNG"></div>
+</div>
+
+<!-- 3 -->
+<div class="card">
+<div class="left">
+<div class="word">3. go to school <span class="speaker" onclick="playAudio(2)">🔊</span></div>
+<div class="meaning">(v phr): đi học</div>
+<div class="example">We go to school at 7.</div>
+<div class="example">(Chúng tôi đến trường vào lúc 7 giờ.)</div>
+<audio id="audio2" src="https://img.loigiaihay.com/picture/2022/0616/go-to-school1655361680.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/3-go-to-school.PNG"></div>
+</div>
+
+<!-- 4 -->
+<div class="card">
+<div class="left">
+<div class="word">4. have breakfast <span class="speaker" onclick="playAudio(3)">🔊</span></div>
+<div class="meaning">(v phr): ăn sáng</div>
+<div class="example">When do you have breakfast?</div>
+<div class="example">(Bạn ăn sáng vào lúc nào?)</div>
+<audio id="audio3" src="https://img.loigiaihay.com/picture/2021/0628/have-breakfast1624867226.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/4-have-breakfast.PNG"></div>
+</div>
+
+<!-- 5 -->
+<div class="card">
+<div class="left">
+<div class="word">5. have lunch <span class="speaker" onclick="playAudio(4)">🔊</span></div>
+<div class="meaning">(v phr): ăn trưa</div>
+<div class="example">I often have lunch with my friends.</div>
+<div class="example">(Tôi thường ăn trưa cùng bạn bè.)</div>
+<audio id="audio4" src="https://img.loigiaihay.com/picture/2021/0614/have-lunch1623658929.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/5-have-lunch.png"></div>
+</div>
+
+<!-- 6 -->
+<div class="card">
+<div class="left">
+<div class="word">6. have dinner <span class="speaker" onclick="playAudio(5)">🔊</span></div>
+<div class="meaning">(v phr): ăn tối</div>
+<div class="example">I always have dinner at home.</div>
+<div class="example">(Tôi luôn ăn tối ở nhà.)</div>
+<audio id="audio5" src="https://img.loigiaihay.com/picture/2021/0628/have-dinner1624867395.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/6-have-dinner.PNG"></div>
+</div>
+
+<!-- 7 -->
+<div class="card">
+<div class="left">
+<div class="word">7. at <span class="speaker" onclick="playAudio(6)">🔊</span></div>
+<div class="meaning">(prep): ở, vào lúc</div>
+<div class="example">I get up at six.</div>
+<div class="example">(Tôi thức dậy lúc 6 giờ.)</div>
+<audio id="audio6" src="https://img.loigiaihay.com/picture/audio/at-gb.mp3"></audio>
+</div>
+<div class="right"><img src="https://yourhomework.net/yhw/f/yhw-voca/2024/10/2/202410271257071103992.jpg"></div>
+</div>
+
+<!-- 8 -->
+<div class="card">
+<div class="left">
+<div class="word">8. pupil <span class="speaker" onclick="playAudio(7)">🔊</span></div>
+<div class="meaning">(n): học sinh</div>
+<div class="example">My little sister is a pupil.</div>
+<div class="example">(Em gái tôi là học sinh.)</div>
+<audio id="audio7" src="https://img.loigiaihay.com/picture/audio/pupil-gb.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/8-pupil.PNG"></div>
+</div>
+
+<!-- 9 -->
+<div class="card">
+<div class="left">
+<div class="word">9. go out <span class="speaker" onclick="playAudio(8)">🔊</span></div>
+<div class="meaning">(v phr): đi ra ngoài</div>
+<div class="example">Please close the door as you go out.</div>
+<div class="example">(Làm ơn đóng cửa khi bạn đi ra ngoài.)</div>
+<audio id="audio8" src="https://img.loigiaihay.com/picture/2021/0614/go-out1623659018.mp3"></audio>
+</div>
+<div class="right"><img src="https://img.loigiaihay.com/picture/2023/0608/9-go-out.PNG"></div>
+</div>
+
+<script>
+function playAudio(i){
+    const audio = document.getElementById("audio"+i);
+    audio.currentTime = 0;
+    audio.play();
+}
+</script>
+
+</body>
+</html>

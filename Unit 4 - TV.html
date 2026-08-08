@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+/* CARD */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    background:white;
+    padding:36px;
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* ẢNH NHỎ LẠI ~70% */
+.right img{
+    width:260px;
+    border-radius:18px;
+}
+
+/* LOA */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:320px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+
+<!-- 1 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+1. January
+<span class="speaker" onclick="playAudio(0)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): tháng 1
+</div>
+
+<div class="example">
+We're going skiing next January.
+</div>
+
+<div class="example">
+(Chúng mình sẽ đi trượt tuyết vào tháng 1 tới.)
+</div>
+
+<audio id="audio0" src="https://img.loigiaihay.com/picture/2021/0629/january-1624951854.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/1-jan.PNG">
+</div>
+
+</div>
+
+
+<!-- 2 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+2. February
+<span class="speaker" onclick="playAudio(1)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): tháng 2
+</div>
+
+<div class="example">
+I was born on 5 February.
+</div>
+
+<div class="example">
+(Tôi được sinh ra vào ngày 5 tháng 2.)
+</div>
+
+<audio id="audio1" src="https://img.loigiaihay.com/picture/2021/0629/february-1624951900.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/2-feb.PNG">
+</div>
+
+</div>
+
+
+<!-- 3 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+3. March
+<span class="speaker" onclick="playAudio(2)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): tháng 3
+</div>
+
+<div class="example">
+The next meeting will be in March.
+</div>
+
+<div class="example">
+(Cuộc họp tiếp theo sẽ diễn ra vào tháng 3.)
+</div>
+
+<audio id="audio2" src="https://img.loigiaihay.com/picture/2021/0629/march-1624951949.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/3-mar.PNG">
+</div>
+
+</div>
+
+
+<!-- 4 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+4. April
+<span class="speaker" onclick="playAudio(3)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): tháng 4
+</div>
+
+<div class="example">
+I haven't seen her since last April.
+</div>
+
+<div class="example">
+(Tôi đã không gặp cô ấy kể từ tháng 4.)
+</div>
+
+<audio id="audio3" src="https://img.loigiaihay.com/picture/2021/0629/april-1624952694.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/4-april.PNG">
+</div>
+
+</div>
+
+
+<!-- 5 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+5. birthday
+<span class="speaker" onclick="playAudio(4)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): sinh nhật
+</div>
+
+<div class="example">
+It's her 21st birthday.
+</div>
+
+<div class="example">
+(Đó là sinh nhật lần thứ 21 của cô ấy.)
+</div>
+
+<audio id="audio4" src="https://img.loigiaihay.com/picture/audio/birthday-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/5-birthday.PNG">
+</div>
+
+</div>
+
+
+<!-- 6 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+6. chips
+<span class="speaker" onclick="playAudio(5)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): khaoi tây chiên
+</div>
+
+<div class="example">
+Would you like some chips?
+</div>
+
+<div class="example">
+(Bạn muốn chút khoai tây chiên không?)
+</div>
+
+<audio id="audio5" src="https://img.loigiaihay.com/picture/audio/chip-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/6-chips.PNG">
+</div>
+
+</div>
+
+
+<!-- 7 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+7. grapes
+<span class="speaker" onclick="playAudio(6)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): nho (số nhiều)
+</div>
+
+<div class="example">
+He likes eating grapes.
+</div>
+
+<div class="example">
+( Anh ấy thích ăn nho.)
+</div>
+
+<audio id="audio6" src="https://img.loigiaihay.com/picture/audio/grape-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/7-grapes.PNG">
+</div>
+
+</div>
+
+
+<!-- 8 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+8. jam
+<span class="speaker" onclick="playAudio(7)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): mứt
+</div>
+
+<div class="example">
+I like having bread with strawberry jam.
+</div>
+
+<div class="example">
+(Mình thích ăn bánh mì cùng mứt dâu tây.)
+</div>
+
+<audio id="audio7" src="https://img.loigiaihay.com/picture/audio/jam-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/8-jam.PNG">
+</div>
+
+</div>
+
+
+<!-- 9 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+9. juice
+<span class="speaker" onclick="playAudio(8)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): nước ép
+</div>
+
+<div class="example">
+I gave her a glass of orange juice.
+</div>
+
+<div class="example">
+(Tôi đưa cho cô ấy một cốc nước cam.)
+</div>
+
+<audio id="audio8" src="https://img.loigiaihay.com/picture/audio/juice-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/9-juice.PNG">
+</div>
+
+</div>
+
+
+<!-- 10 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+10. lemonade
+<span class="speaker" onclick="playAudio(9)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): nước chanh
+</div>
+
+<div class="example">
+Two glasses of lemonade, please.
+</div>
+
+<div class="example">
+( Làm ơn cho 2 cốc nước chanh.)
+</div>
+
+<audio id="audio9" src="https://img.loigiaihay.com/picture/audio/lemonade-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/10-lemonade.PNG">
+</div>
+
+</div>
+
+
+<!-- 11 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+11. party
+<span class="speaker" onclick="playAudio(10)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): bữa tiệc
+</div>
+
+<div class="example">
+I really enjoyed the party last night.
+</div>
+
+<div class="example">
+(Mình thật sự rất thích bữa tiệc tối qua.)
+</div>
+
+<audio id="audio10" src="https://img.loigiaihay.com/picture/audio/party-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/11-party.PNG">
+</div>
+
+</div>
+
+
+<!-- 12 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+12. water
+<span class="speaker" onclick="playAudio(11)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): nước
+</div>
+
+<div class="example">
+You should drink more water every day.
+</div>
+
+<div class="example">
+(Mỗi ngày bạn nên uống nhiều ước hơn.)
+</div>
+
+<audio id="audio11" src="https://img.loigiaihay.com/picture/audio/water-gb_1.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0609/12-water.PNG">
+</div>
+
+</div>
+
+
+
+<script>
+
+function playAudio(i){
+
+const audio =
+document.getElementById(
+"audio"+i
+);
+
+audio.currentTime = 0;
+audio.play();
+
+}
+
+</script>
+
+</body>
+</html>

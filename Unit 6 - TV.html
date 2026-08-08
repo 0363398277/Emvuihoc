@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+/* CARD */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    background:white;
+    padding:36px;
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* ẢNH NHỎ LẠI ~70% */
+.right img{
+    width:260px;
+    border-radius:18px;
+}
+
+/* LOA */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:320px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+
+<!-- 1 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+1. city
+<span class="speaker" onclick="playAudio(0)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thành phố
+</div>
+
+<div class="example">
+Famous universities are often in big cities.
+</div>
+
+<div class="example">
+(Những trường đại học danh tiếng thường nằm ở những thành phố lớn.)
+</div>
+
+<audio id="audio0" src="https://img.loigiaihay.com/picture/audio/city-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/1.PNG">
+</div>
+
+</div>
+
+
+<!-- 2 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+2. mountains
+<span class="speaker" onclick="playAudio(1)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): núi, dãy núi
+</div>
+
+<div class="example">
+His school is in the mountains.
+</div>
+
+<div class="example">
+( Ngôi trường của anh ấy nằm ở trên núi.)
+</div>
+
+<audio id="audio1" src="https://img.loigiaihay.com/picture/audio/mountain-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/2.PNG">
+</div>
+
+</div>
+
+
+<!-- 3 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+3. town
+<span class="speaker" onclick="playAudio(2)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): thị trấn
+</div>
+
+<div class="example">
+He was born in a small town.
+</div>
+
+<div class="example">
+(Anh ấy được sinh ra ở một thị trấn nhỏ.)
+</div>
+
+<audio id="audio2" src="https://img.loigiaihay.com/picture/audio/town-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2024/1125/1.jpg">
+</div>
+
+</div>
+
+
+<!-- 4 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+4. village
+<span class="speaker" onclick="playAudio(3)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): ngôi làng
+</div>
+
+<div class="example">
+My grandparents live in a village, which is far from here.
+</div>
+
+<div class="example">
+(Ông bà tôi sống ở một ngôi làng cách xa nơi này.)
+</div>
+
+<audio id="audio3" src="https://img.loigiaihay.com/picture/audio/village-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/4.PNG">
+</div>
+
+</div>
+
+
+<!-- 5 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+5. building
+<span class="speaker" onclick="playAudio(4)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): tòa nhà
+</div>
+
+<div class="example">
+There are many tall buildings in my city.
+</div>
+
+<div class="example">
+(Có rất nhiều ngôi nhà cao tầng trong thành phố của tôi.)
+</div>
+
+<audio id="audio4" src="https://img.loigiaihay.com/picture/audio/building-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/5.PNG">
+</div>
+
+</div>
+
+
+<!-- 6 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+6. computer
+<span class="speaker" onclick="playAudio(5)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): máy vi tính
+</div>
+
+<div class="example">
+I use my computer to find some information for my project.
+</div>
+
+<div class="example">
+(Tôi dùng máy vi tính của mình để tìm một vài thông tin cho dự án của tôi.)
+</div>
+
+<audio id="audio5" src="https://img.loigiaihay.com/picture/audio/computer-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/6.PNG">
+</div>
+
+</div>
+
+
+<!-- 7 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+7. room
+<span class="speaker" onclick="playAudio(6)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): căn phòng
+</div>
+
+<div class="example">
+My sister is in her room.
+</div>
+
+<div class="example">
+(Em gái tôi đang ở trong phòng của em ấy.)
+</div>
+
+<audio id="audio6" src="https://img.loigiaihay.com/picture/audio/room-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/7.PNG">
+</div>
+
+</div>
+
+
+<!-- 8 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+8. garden
+<span class="speaker" onclick="playAudio(7)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): khu vườn
+</div>
+
+<div class="example">
+The children are playing in the garden.
+</div>
+
+<div class="example">
+(Bọn trẻ đang chơi trong trong vườn.)
+</div>
+
+<audio id="audio7" src="https://img.loigiaihay.com/picture/audio/garden-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/8.PNG">
+</div>
+
+</div>
+
+
+<!-- 9 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+9. playground
+<span class="speaker" onclick="playAudio(8)">🔊</span>
+</div>
+
+<div class="meaning">
+(n) : sân chơi
+</div>
+
+<div class="example">
+I like playing with my friends in the playground at the break time.
+</div>
+
+<div class="example">
+(Tôi thích chơi đùa cùng bạn bè ở sân chơi vào giờ giải lao.)
+</div>
+
+<audio id="audio8" src="https://img.loigiaihay.com/picture/audio/playground-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/9.PNG">
+</div>
+
+</div>
+
+
+
+<script>
+
+function playAudio(i){
+
+const audio =
+document.getElementById(
+"audio"+i
+);
+
+audio.currentTime = 0;
+audio.play();
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:36px;
+}
+
+/* CARD */
+.card{
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    background:white;
+    padding:36px;
+    margin-bottom:32px;
+    border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.left{
+    flex:1;
+}
+
+.word{
+    font-size:40px;
+    font-weight:bold;
+}
+
+.meaning{
+    margin:12px 0;
+    font-size:26px;
+}
+
+.example{
+    font-style:italic;
+    color:#555;
+    font-size:24px;
+}
+
+/* ẢNH NHỎ LẠI ~70% */
+.right img{
+    width:260px;
+    border-radius:18px;
+}
+
+/* LOA */
+.speaker{
+    cursor:pointer;
+    margin-left:12px;
+    font-size:28px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        padding:28px;
+    }
+
+    .right img{
+        width:100%;
+        max-width:320px;
+    }
+
+    .word{
+        font-size:32px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📘 Từ Vựng</h1>
+
+
+<!-- 1 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+1. art
+<span class="speaker" onclick="playAudio(0)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): môn mĩ thuật
+</div>
+
+<div class="example">
+I have Art on Thursday.
+</div>
+
+<div class="example">
+(Mình có môn Mĩ thuật vào thứ Năm.)
+</div>
+
+<audio id="audio0" src="https://img.loigiaihay.com/picture/audio/art-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/1_1.PNG">
+</div>
+
+</div>
+
+
+<!-- 2 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+2. English
+<span class="speaker" onclick="playAudio(1)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): môn Tiếng Anh
+</div>
+
+<div class="example">
+I enjoy learning English.
+</div>
+
+<div class="example">
+(Mình rất thích học tiếng Anh.)
+</div>
+
+<audio id="audio1" src="https://img.loigiaihay.com/picture/2020/0720/english1595229457.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/2_1.PNG">
+</div>
+
+</div>
+
+
+<!-- 3 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+3. History and geography
+<span class="speaker" onclick="playAudio(2)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): môn Lịch sử và Địa lý
+</div>
+
+<div class="example">
+She has history and geography on Friday.
+</div>
+
+<div class="example">
+(Cô ấy có môn lịch sử và địa lý vào thứ Sáu.)
+</div>
+
+<audio id="audio2" src="https://img.loigiaihay.com/picture/2023/0612/4-history-and-geography1686555453.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="/themes/images/speaker_active.gif">
+</div>
+
+</div>
+
+
+<!-- 4 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+4. Maths
+<span class="speaker" onclick="playAudio(3)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): môn toán
+</div>
+
+<div class="example">
+I find Maths very difficult.
+</div>
+
+<div class="example">
+( Tôi thấy môn Toán rất khó.)
+</div>
+
+<audio id="audio3" src="https://img.loigiaihay.com/picture/audio/maths-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/3_1.PNG">
+</div>
+
+</div>
+
+
+<!-- 5 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+5. Music
+<span class="speaker" onclick="playAudio(4)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): âm nhạc, môn Âm nhạc
+</div>
+
+<div class="example">
+What kind of music do you often listen to?
+</div>
+
+<div class="example">
+(Bạn thường nghe thể loại nhạc nào?)
+</div>
+
+<audio id="audio4" src="https://img.loigiaihay.com/picture/audio/music-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/4_1.PNG">
+</div>
+
+</div>
+
+
+<!-- 6 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+6. Science
+<span class="speaker" onclick="playAudio(5)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): môn Khoa học
+</div>
+
+<div class="example">
+Today we don’t have Science.
+</div>
+
+<div class="example">
+(Hôm nay chúng mình không có môn Khoa học.)
+</div>
+
+<audio id="audio5" src="https://img.loigiaihay.com/picture/audio/science-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/5_1.PNG">
+</div>
+
+</div>
+
+
+<!-- 7 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+7. Vietnamese
+<span class="speaker" onclick="playAudio(6)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): môn Tiếng Việt
+</div>
+
+<div class="example">
+Do you like learning Vietnamese?
+</div>
+
+<div class="example">
+(Bạn có thích học môn Tiếng Việt không?)
+</div>
+
+<audio id="audio6" src="https://img.loigiaihay.com/picture/2021/1112/vietnamese1636686590.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/6_1.PNG">
+</div>
+
+</div>
+
+
+<!-- 8 -->
+
+<div class="card">
+
+<div class="left">
+
+<div class="word">
+8. subject
+<span class="speaker" onclick="playAudio(7)">🔊</span>
+</div>
+
+<div class="meaning">
+(n): môn học
+</div>
+
+<div class="example">
+How many subjects do you have on Monday?
+</div>
+
+<div class="example">
+( Bạn có mấy môn học vào thứ Hai?)
+</div>
+
+<audio id="audio7" src="https://img.loigiaihay.com/picture/audio/subject-gb.mp3"></audio>
+
+</div>
+
+<div class="right">
+<img src="https://img.loigiaihay.com/picture/2023/0612/7_1.PNG">
+</div>
+
+</div>
+
+
+
+<script>
+
+function playAudio(i){
+
+const audio =
+document.getElementById(
+"audio"+i
+);
+
+audio.currentTime = 0;
+audio.play();
+
+}
+
+</script>
+
+</body>
+</html>
