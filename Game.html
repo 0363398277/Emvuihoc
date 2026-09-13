@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Center</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+
+            background:
+                radial-gradient(circle at 20% 20%, #244b8f 0%, transparent 30%),
+                radial-gradient(circle at 80% 80%, #542477 0%, transparent 30%),
+                linear-gradient(135deg, #080b1a, #11162d 50%, #090b18);
+        }
+
+        /* Hiệu ứng nền */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+
+            background-size: 40px 40px;
+        }
+
+        .container {
+            width: min(1100px, 92%);
+            margin: auto;
+            padding: 55px 0;
+            position: relative;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .logo {
+            font-size: 58px;
+            margin-bottom: 10px;
+
+            text-shadow:
+                0 0 15px #00d9ff,
+                0 0 35px #006eff;
+        }
+
+        h1 {
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 900;
+            letter-spacing: 3px;
+
+            background: linear-gradient(
+                90deg,
+                #00eaff,
+                #ffffff,
+                #a855f7
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #aeb8d0;
+            margin-top: 10px;
+            font-size: 17px;
+        }
+
+        /* GAME GRID */
+        .games {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        /* CARD */
+        .game-card {
+            position: relative;
+            min-height: 420px;
+            border-radius: 28px;
+            overflow: hidden;
+            cursor: pointer;
+
+            border: 1px solid rgba(255,255,255,0.12);
+
+            background: rgba(255,255,255,0.07);
+
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.35);
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.015);
+
+            border-color: rgba(0,220,255,0.7);
+
+            box-shadow:
+                0 25px 70px rgba(0,0,0,0.5),
+                0 0 35px rgba(0,200,255,0.18);
+        }
+
+        /* vùng hình */
+        .game-image {
+            height: 245px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mouse-bg {
+            background:
+                radial-gradient(circle at 50% 40%, #8b5cf6, transparent 35%),
+                linear-gradient(135deg, #241047, #101a3c);
+        }
+
+        .ship-bg {
+            background:
+                radial-gradient(circle at 50% 45%, #0879a5, transparent 40%),
+                linear-gradient(135deg, #06233d, #071321);
+        }
+
+        /* hình chuột */
+        .mouse {
+            font-size: 125px;
+            filter:
+                drop-shadow(0 15px 10px rgba(0,0,0,0.45))
+                drop-shadow(0 0 20px rgba(255,255,255,0.15));
+
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        /* hình tàu */
+        .ship {
+            font-size: 125px;
+            filter:
+                drop-shadow(0 15px 10px rgba(0,0,0,0.5))
+                drop-shadow(0 0 25px rgba(0,200,255,0.35));
+
+            animation: floating 3.5s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% {
+                transform: translateY(0) rotate(-2deg);
+            }
+
+            50% {
+                transform: translateY(-12px) rotate(2deg);
+            }
+        }
+
+        /* tia sáng */
+        .light {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.08);
+            filter: blur(35px);
+        }
+
+        /* CARD CONTENT */
+        .game-info {
+            padding: 25px 28px 28px;
+        }
+
+        .game-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .game-description {
+            color: #aeb8d0;
+            line-height: 1.5;
+            min-height: 48px;
+        }
+
+        .play-button {
+            margin-top: 20px;
+            width: 100%;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 20px;
+
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            background: linear-gradient(
+                90deg,
+                #00b7ff,
+                #0066ff
+            );
+
+            box-shadow:
+                0 8px 20px rgba(0,120,255,0.3);
+
+            transition: 0.25s;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 30px rgba(0,160,255,0.5);
+        }
+
+        .purple-button {
+            background: linear-gradient(
+                90deg,
+                #8b5cf6,
+                #6366f1
+            );
+
+            box-shadow:
+                0 8px 20px rgba(139,92,246,0.3);
+        }
+
+        .purple-button:hover {
+            box-shadow:
+                0 10px 30px rgba(139,92,246,0.5);
+        }
+
+        /* BADGE */
+        .badge {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+
+            padding: 7px 12px;
+            border-radius: 20px;
+
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.15);
+
+            font-size: 13px;
+            font-weight: bold;
+
+            backdrop-filter: blur(8px);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #69738d;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 750px) {
+
+            .container {
+                padding: 35px 0;
+            }
+
+            .games {
+                grid-template-columns: 1fr;
+            }
+
+            .game-card {
+                min-height: 400px;
+            }
+
+            .logo {
+                font-size: 45px;
+            }
+        }
+
+        @media (max-width: 450px) {
+
+            .game-image {
+                height: 210px;
+            }
+
+            .mouse,
+            .ship {
+                font-size: 100px;
+            }
+
+            .game-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">🎮</div>
+
+            <h1>GAME CENTER</h1>
+
+            <p class="subtitle">
+                Chọn một trò chơi và bắt đầu ngay!
+            </p>
+        </header>
+
+
+        <!-- GAME LIST -->
+        <main class="games">
+
+            <!-- GAME 1 -->
+            <div class="game-card"
+                 onclick="openGame('Đập Chuột.html')">
+
+                <div class="game-image mouse-bg">
+
+                    <span class="badge">
+                        🐭 ARCADE
+                    </span>
+
+                    <div class="light"></div>
+
+                    <div class="mouse">
+                        🐭
+                    </div>
+
+                </div>
+
+                <div class="game-info">
+
+                    <h2 class="game-title">
+                        Đập Chuột
+                    </h2>
+
+                    <p class="game-description">
+                        Nhanh tay đập những chú chuột xuất hiện
+                        và đạt điểm số cao nhất!
+                    </p>
+
+                    <button class="play-button purple-button">
+                        ▶ CHƠI NGAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 2 -->
+            <div class="game-card"
+                 onclick="openGame('Thuyền chiến.html')">
+
+                <div class="game-image ship-bg">
+
+                    <span class="badge">
+                        🚢 ACTION
+                    </span>
+
+                    <div class="light"></div>
+
+                    <div class="ship">
+                        🚢
+                    </div>
+
+                </div>
+
+                <div class="game-info">
+
+                    <h2 class="game-title">
+                        Thuyền chiến
+                    </h2>
+
+                    <p class="game-description">
+                        Điều khiển chiến hạm, chiến đấu trên biển
+                        và tiêu diệt đối thủ!
+                    </p>
+
+                    <button class="play-button">
+                        ▶ CHƠI NGAY
+                    </button>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- FOOTER -->
+        <footer>
+            🎮 Game Center • Chúc bạn chơi vui vẻ!
+        </footer>
+
+    </div>
+
+
+    <script>
+
+        function openGame(game) {
+            window.location.href = game;
+        }
+
+    </script>
+
+</body>
+</html>

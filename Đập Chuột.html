@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Đập Chuột VIP PRO 3D</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background:
+              radial-gradient(circle at 50% -10%, rgba(255,235,59,.16), transparent 34%),
+              radial-gradient(circle at 10% 90%, rgba(0,229,255,.10), transparent 28%),
+              radial-gradient(circle at 90% 80%, rgba(255,64,129,.10), transparent 28%),
+              linear-gradient(135deg,#071b13 0%,#0b3b27 48%,#062219 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            background-image:
+              linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+              linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+            background-size: 34px 34px;
+            mask-image: linear-gradient(to bottom,transparent,#000 18%,#000 82%,transparent);
+        }
+
+        body.playing {
+            cursor: none;
+        }
+
+        h1 {
+            color: #fff;
+            margin: 0 0 10px 0;
+            position: relative;
+            font-size: clamp(1.65rem, 4vw, 2.55rem);
+            letter-spacing: 3px;
+            text-shadow: 0 3px 0 #6d4c00, 0 0 18px rgba(255,235,59,.65), 0 8px 28px #000;
+            text-transform: uppercase;
+        }
+
+        h1::after {
+            content: "3D EDITION";
+            display: block;
+            font-size: .48em; letter-spacing: 7px; color: #b9f6ca;
+            text-shadow: 0 0 12px rgba(105,240,174,.7);
+            margin-top: 2px;
+            text-align: center;
+        }
+
+        /* DASHBOARD GLASSMORPHISM */
+        .dashboard {
+            background: linear-gradient(145deg, rgba(255,255,255,.18), rgba(0,0,0,.22));
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,.24);
+            box-shadow: 0 18px 55px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.25);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 15px;
+            z-index: 10;
+        }
+
+        .dashboard div span {
+            color: #ffeb3b;
+            font-size: 1.3rem;
+            text-shadow: 0 0 8px rgba(255, 235, 59, 0.6);
+        }
+
+        .control-group, .tool-picker {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            cursor: pointer;
+            outline: none;
+        }
+
+        select {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,.65);
+            background: linear-gradient(#fff, #e8f5e9);
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-start {
+            padding: 8px 22px;
+            font-size: 1rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 87, 34, 0.6);
+        }
+
+        .btn-audio {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 18px;
+            backdrop-filter: blur(5px);
+        }
+
+        .time-frenzy {
+            color: #ff1744 !important;
+            font-size: 1.5rem !important;
+            animation: pulse 0.4s infinite alternate;
+            text-shadow: 0 0 12px #ff1744 !important;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.3); }
+        }
+
+        /* LƯỚI BẢNG CHƠI */
+        .grid {
+            position: relative;
+            display: grid;
+            gap: 12px;
+            background: linear-gradient(145deg,#795548,#3b201a 55%,#25120e);
+            padding: 16px;
+            border-radius: 24px;
+            border: 6px solid #a98270;
+            box-shadow: 0 28px 70px rgba(0,0,0,.72), inset 0 0 25px rgba(0,0,0,.7), 0 0 0 1px rgba(255,213,79,.18);
+            max-width: 98vw;
+            max-height: 70vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid::before {
+            content: "";
+            position: absolute; inset: 7px; border-radius: 18px;
+            pointer-events: none;
+            box-shadow: inset 0 2px 0 rgba(255,255,255,.12), inset 0 -5px 12px rgba(0,0,0,.35);
+        }
+
+        .hole {
+            background: radial-gradient(ellipse at 50% 35%,#030201 0 46%,#160b08 48%,#5d3427 70%,#2a1711 100%);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #69463a;
+            box-shadow: inset 0 14px 22px rgba(0,0,0,.95), inset 0 -4px 5px rgba(255,255,255,.08), 0 5px 8px rgba(0,0,0,.4);
+            width: 80px;
+            height: 80px;
+        }
+
+        .hole::after {
+            content: "";
+            position: absolute; inset: 4px; border-radius: 50%;
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,.07);
+        }
+
+        .target {
+            width: 85%; height: 90%; position: absolute; left: 7.5%; bottom: -100%;
+            transition: bottom .15s cubic-bezier(.175,.885,.32,1.275), transform .1s ease;
+            transform-origin: bottom center;
+            filter: drop-shadow(0 7px 3px rgba(0,0,0,.55));
+        }
+
+        .hole.up .target {
+            bottom: 2%;
+            animation: target3d .22s cubic-bezier(.17,.84,.34,1.2);
+        }
+
+        .target.hit {
+            animation: targetSmash .22s ease-out forwards !important;
+        }
+
+        @keyframes target3d {
+            0% { transform: translateY(20px) scale(.72) rotate(-3deg); }
+            70% { transform: translateY(-2px) scale(1.04) rotate(1deg); }
+            100% { transform: translateY(0) scale(1) rotate(0); }
+        }
+
+        @keyframes targetSmash {
+            0% { transform: scaleY(1) scaleX(1); }
+            35% { transform: scaleY(.28) scaleX(1.32) rotate(4deg); }
+            100% { transform: scaleY(.22) scaleX(1.38) rotate(0); }
+        }
+
+        /* CÔNG CỤ ĐẬP 3D */
+        #custom-tool {
+            position: fixed; width: 116px; height: 116px; pointer-events: none; z-index: 9999;
+            transform-origin: 26px 88px;
+            transform: translate(-28px,-78px) rotate(-24deg);
+            transition: transform .045s ease;
+            display: none;
+            filter: drop-shadow(7px 12px 7px rgba(0,0,0,.55));
+        }
+
+        #custom-tool.smash {
+            transform: translate(-28px,-78px) rotate(-78deg);
+        }
+
+        .tool-glow {
+            animation: toolGlow 1.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes toolGlow {
+            to { filter: drop-shadow(0 0 9px rgba(255,213,79,.65)); }
+        }
+
+        .combo {
+            min-width: 100px; text-align: center; color: #fff;
+            font-weight: 900; letter-spacing: .5px;
+        }
+        .combo b { color: #ffd54f; font-size: 1.2rem; }
+
+        .score-pop {
+            position: fixed; pointer-events: none; z-index: 10000;
+            font-weight: 1000; font-size: 24px; color: #fff176;
+            text-shadow: 0 3px 0 #5d4037, 0 0 12px #ff9800;
+            animation: scorePop .65s ease-out forwards;
+        }
+
+        @keyframes scorePop {
+            from { opacity: 1; transform: translate(-50%,-10px) scale(.7); }
+            to { opacity: 0; transform: translate(-50%,-70px) scale(1.25); }
+        }
+
+        .spark {
+            position: fixed; pointer-events: none; width: 8px; height: 8px;
+            border-radius: 50%; background: #ffeb3b;
+            box-shadow: 0 0 12px #ff9800, 0 0 4px #fff; z-index: 9998;
+            animation: explode 0.4s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+        }
+
+        .hint {
+            margin-top: 12px; color: #e0e0e0; font-size: 0.95rem;
+            background: rgba(0,0,0,0.3); padding: 6px 18px; border-radius: 20px;
+            backdrop-filter: blur(4px); box-shadow: 0 6px 18px rgba(0,0,0,.25);
+        }
+
+        @media (max-width: 900px) {
+            .hole { width: 62px; height: 62px; }
+        }
+        @media (max-width: 650px) {
+            .dashboard { gap: 8px; padding: 10px 12px; }
+            select { padding: 5px 8px; }
+            .hole { width: 50px; height: 50px; }
+            #custom-tool { width: 92px; height: 92px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🔨 MOLE SMASHER VIP 🔨</h1>
+
+    <div class="dashboard">
+        <div class="control-group">
+            <label for="hole-count">🕳️ Lỗ:</label>
+            <select id="hole-count" onchange="renderGrid()">
+                <option value="6">6 (3×2)</option>
+                <option value="9" selected>9 (3×3)</option>
+                <option value="12">12 (4×3)</option>
+                <option value="15">15 (5×3)</option>
+                <option value="18">18 (6×3)</option>
+                <option value="21">21 (7×3)</option>
+                <option value="24">24 (8×3)</option>
+                <option value="27">27 (9×3)</option>
+                <option value="30">30 (10×3)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="difficulty">⚡ Cấp:</label>
+            <select id="difficulty">
+                <option value="easy">Dễ</option>
+                <option value="medium" selected>Vừa</option>
+                <option value="hard">Khó</option>
+            </select>
+        </div>
+
+        <div class="tool-picker">
+            <label for="target-select">🎯 Mục tiêu:</label>
+            <select id="target-select" onchange="changeTarget()">
+                <option value="mole">🐭 Chuột</option>
+                <option value="hedgehog">🦔 Nhím</option>
+                <option value="frog">🐸 Ếch cốm</option>
+                <option value="robot">🤖 Robot</option>
+                <option value="alien">👽 Người ngoài hành tinh</option>
+                <option value="carrot">🥕 Cà rốt</option>
+                <option value="radish">🌱 Củ cải</option>
+                <option value="cat">🐱 Con mèo</option>
+                <option value="pumpkin">🎃 Bí ngô</option>
+                <option value="tomato">🍅 Cà chua</option>
+            </select>
+        </div>
+
+        <div class="tool-picker">
+            <label for="tool-select">🔨 Công cụ:</label>
+            <select id="tool-select" onchange="changeTool()">
+                <option value="hammer">🔨 Búa 1</option>
+                <option value="mallet">🔨 Búa 2</option>
+                <option value="gavel">🔨 Búa 3</option>
+                <option value="toy">🔨 Búa 4</option>
+                <option value="lightsaber">🗡️ Kiếm sáng</option>
+                <option value="broom">🧹 Chổi rơm</option>
+                <option value="lightning">⚡ Sét Thor</option>
+                <option value="axe">🪓 Rìu chiến</option>
+            </select>
+        </div>
+
+        <div>🏆 Điểm: <span id="score">0</span></div>
+        <div class="combo">🔥 Combo: <b id="combo">0</b></div>
+        <div>⏱️ <span id="time-left">30</span>s</div>
+
+        <button class="btn-start" id="start-btn" onclick="startGame()">BẮT ĐẦU</button>
+        <button class="btn-audio" id="audio-btn" onclick="toggleMute()">🔊 Âm thanh: BẬT</button>
+    </div>
+
+    <!-- Khung ma trận lỗ -->
+    <div class="grid" id="game-grid"></div>
+
+    <!-- Công cụ 3D -->
+    <div id="custom-tool" class="tool-glow">
+        <svg id="tool-svg" width="100%" height="100%" viewBox="0 0 120 120">
+            <defs>
+                <linearGradient id="wood3d" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#3e2723"/><stop offset=".4" stop-color="#8d6e63"/><stop offset="1" stop-color="#271510"/>
+                </linearGradient>
+                <linearGradient id="steel3d" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#ffffff"/><stop offset=".3" stop-color="#cfd8dc"/><stop offset=".7" stop-color="#607d8b"/><stop offset="1" stop-color="#263238"/>
+                </linearGradient>
+                <linearGradient id="gold3d" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#fffde7"/><stop offset=".4" stop-color="#ffd54f"/><stop offset=".8" stop-color="#ff8f00"/><stop offset="1" stop-color="#6d4c00"/>
+                </linearGradient>
+                <linearGradient id="pan3d" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#546e7a"/><stop offset=".5" stop-color="#263238"/><stop offset="1" stop-color="#0f171b"/>
+                </linearGradient>
+                <linearGradient id="saber3d" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#ffffff"/><stop offset="0.3" stop-color="#00e5ff"/><stop offset="1" stop-color="#00838f"/>
+                </linearGradient>
+            </defs>
+            <g id="tool-art"></g>
+        </svg>
+    </div>
+
+    <div class="hint">⚡ <b>Click chuột trái</b> hoặc <b>phím Space</b> để đập • Chọn công cụ + mục tiêu ở bảng điều khiển</div>
+
+    <script>
+        const gameGrid = document.getElementById('game-grid');
+        const holeCountSelect = document.getElementById('hole-count');
+        const difficultySelect = document.getElementById('difficulty');
+        const toolSelect = document.getElementById('tool-select');
+        const targetSelect = document.getElementById('target-select');
+        const scoreDisplay = document.getElementById('score');
+        const comboDisplay = document.getElementById('combo');
+        const timeLeftDisplay = document.getElementById('time-left');
+        const startBtn = document.getElementById('start-btn');
+        const audioBtn = document.getElementById('audio-btn');
+        const tool = document.getElementById('custom-tool');
+        const toolArt = document.getElementById('tool-art');
+
+        let holes = [], moles = [], targets = [], lastHole = null;
+        let timeUp = true, score = 0, combo = 0, timeLeft = 30;
+        let countdownTimer, frenzyInterval = null, isMuted = false, bgmInterval = null;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const targetsData = {
+            mole: { points: 1 },
+            hedgehog: { points: 2 },
+            frog: { points: 2 },
+            robot: { points: 3 },
+            alien: { points: 4 },
+            carrot: { points: 2 },
+            radish: { points: 2 },
+            cat: { points: 3 },
+            pumpkin: { points: 3 },
+            tomato: { points: 2 }
+        };
+
+        const tools = {
+            hammer: { points: 1, sound: 160 },
+            mallet: { points: 2, sound: 125 },
+            pan:    { points: 2, sound: 95 },
+            gavel:  { points: 3, sound: 190 },
+            toy:    { points: 1, sound: 260 },
+            lightsaber: { points: 4, sound: 440 },
+            broom:  { points: 1, sound: 110 },
+            lightning: { points: 5, sound: 520 },
+            axe:    { points: 3, sound: 140 }
+        };
+
+        function toggleMute(){
+            isMuted = !isMuted;
+            audioBtn.textContent = isMuted ? "🔇 Âm thanh: TẮT" : "🔊 Âm thanh: BẬT";
+            if(isMuted) stopBGM(); else if(!timeUp) startBGM();
+        }
+
+        function playSound(freq,type,duration,gainVal){
+            if(isMuted) return;
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+            osc.type=type; osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+            gain.gain.setValueAtTime(gainVal,audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(.01,audioCtx.currentTime+duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime+duration);
+        }
+        function playToolSound(){
+            const t=tools[toolSelect.value] || tools.hammer;
+            playSound(t.sound,'triangle',.08,.65);
+            playSound(t.sound*.55,'square',.045,.18);
+        }
+        function playHitSound(){
+            playSound(880 + combo*15,'sine',.12,.55);
+        }
+        function playGameOverSound(){ playSound(440,'sine',.8,.8); }
+
+        const bgmNotes=[261.63,329.63,392,523.25,392,329.63]; let noteIdx=0;
+        function playBGMNote(){
+            if(isMuted || timeUp) return;
+            playSound(bgmNotes[noteIdx],'sine',.2,.055);
+            noteIdx=(noteIdx+1)%bgmNotes.length;
+        }
+        function startBGM(speed=220){ stopBGM(); bgmInterval=setInterval(playBGMNote,speed); }
+        function stopBGM(){ if(bgmInterval){clearInterval(bgmInterval);bgmInterval=null;} }
+
+        const gridConfigs={
+            '6':{cols:3,rows:2},'9':{cols:3,rows:3},'12':{cols:4,rows:3},
+            '15':{cols:5,rows:3},'18':{cols:6,rows:3},'21':{cols:7,rows:3},
+            '24':{cols:8,rows:3},'27':{cols:9,rows:3},'30':{cols:10,rows:3}
+        };
+        const levels={
+            easy:{min:1200,max:1800},medium:{min:700,max:1100},hard:{min:350,max:600}
+        };
+
+        /* ================= MỤC TIÊU 3D ĐỢT MỚI VỚI NÂNG CẤP ĐỒ HỌA ================= */
+        function targetSVG(type){
+            const common = `class="target target-face" viewBox="0 0 100 100"`;
+            const svgs = {
+                mole: `<svg ${common}>
+                    <!-- Tai chuột -->
+                    <circle cx="20" cy="22" r="14" fill="#6d4c41" stroke="#3e2723" stroke-width="3"/>
+                    <circle cx="20" cy="22" r="8" fill="#ff8a80"/>
+                    <circle cx="80" cy="22" r="14" fill="#6d4c41" stroke="#3e2723" stroke-width="3"/>
+                    <circle cx="80" cy="22" r="8" fill="#ff8a80"/>
+                    <!-- Đầu chuột -->
+                    <ellipse cx="50" cy="58" rx="38" ry="34" fill="#8d6e63" stroke="#3e2723" stroke-width="3"/>
+                    <!-- Mõm -->
+                    <ellipse cx="50" cy="66" rx="24" ry="18" fill="#d7ccc8"/>
+                    <!-- Mắt xịn long lanh -->
+                    <circle cx="34" cy="48" r="7" fill="#212121"/>
+                    <circle cx="32" cy="46" r="2.5" fill="#fff"/>
+                    <circle cx="66" cy="48" r="7" fill="#212121"/>
+                    <circle cx="64" cy="46" r="2.5" fill="#fff"/>
+                    <!-- Má hồng -->
+                    <ellipse cx="24" cy="58" rx="6" ry="4" fill="#ff5252" opacity=".6"/>
+                    <ellipse cx="76" cy="58" rx="6" ry="4" fill="#ff5252" opacity=".6"/>
+                    <!-- Mũi hồng 3D -->
+                    <path d="M 44 58 Q 50 52 56 58 Q 50 65 44 58 Z" fill="#ff4081" stroke="#c2185b" stroke-width="1.5"/>
+                    <rect x="47" y="63" width="6" height="6" fill="#fff" rx="1.5"/>
+                    <!-- Râu -->
+                    <path d="M 12 55 L 30 57 M 10 63 L 29 62 M 88 55 L 70 57 M 90 63 L 71 62" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`,
+
+                hedgehog: `<svg ${common}>
+                    <!-- Gai nhím dày 3D -->
+                    <path d="M 10 65 L 18 30 L 30 55 L 40 18 L 52 50 L 65 18 L 72 55 L 85 30 L 92 65 Z" fill="#3e2723" stroke="#1b0000" stroke-width="3"/>
+                    <path d="M 14 62 L 24 38 L 34 58 L 48 28 L 58 52 L 70 28 L 78 58 L 86 38 Z" fill="#5d4037"/>
+                    <!-- Mặt nhím -->
+                    <ellipse cx="50" cy="65" rx="36" ry="28" fill="#d7ccc8" stroke="#3e2723" stroke-width="3"/>
+                    <circle cx="35" cy="56" r="5" fill="#212121"/><circle cx="34" cy="54" r="2" fill="#fff"/>
+                    <circle cx="65" cy="56" r="5" fill="#212121"/><circle cx="64" cy="54" r="2" fill="#fff"/>
+                    <!-- Mũi nhím nhọn dễ thương -->
+                    <ellipse cx="50" cy="66" rx="7" ry="5" fill="#212121"/>
+                    <ellipse cx="48" cy="64" rx="2" ry="1.5" fill="#fff"/>
+                    <path d="M 44 74 Q 50 79 56 74" fill="none" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`,
+
+                frog: `<svg ${common}>
+                    <!-- Mắt ếch to nhô lên -->
+                    <circle cx="28" cy="24" r="16" fill="#4caf50" stroke="#1b5e20" stroke-width="3"/>
+                    <circle cx="72" cy="24" r="16" fill="#4caf50" stroke="#1b5e20" stroke-width="3"/>
+                    <circle cx="28" cy="22" r="8" fill="#fff"/>
+                    <circle cx="72" cy="22" r="8" fill="#fff"/>
+                    <circle cx="29" cy="22" r="4" fill="#000"/>
+                    <circle cx="73" cy="22" r="4" fill="#000"/>
+                    <!-- Đầu & Thân ếch -->
+                    <ellipse cx="50" cy="60" rx="40" ry="32" fill="#66bb6a" stroke="#1b5e20" stroke-width="3.5"/>
+                    <ellipse cx="50" cy="68" rx="28" ry="18" fill="#dedede"/>
+                    <!-- Má hồng ếch -->
+                    <circle cx="24" cy="58" r="6" fill="#ff5252" opacity=".5"/>
+                    <circle cx="76" cy="58" r="6" fill="#ff5252" opacity=".5"/>
+                    <!-- Miệng cười rộng -->
+                    <path d="M 32 60 Q 50 78 68 60" fill="none" stroke="#1b5e20" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>`,
+
+                robot: `<svg ${common}>
+                    <!-- Đèn ăng ten -->
+                    <line x1="50" y1="20" x2="50" y2="6" stroke="#546e7a" stroke-width="4"/>
+                    <circle cx="50" cy="6" r="6" fill="#ff1744" stroke="#b71c1c" stroke-width="1.5"/>
+                    <!-- Đầu Robot bọc kim loại -->
+                    <rect x="18" y="20" width="64" height="68" rx="14" fill="url(#steel3d)" stroke="#263238" stroke-width="3.5"/>
+                    <!-- Mắt điện tử LED -->
+                    <rect x="28" y="34" width="18" height="14" rx="4" fill="#00e676" stroke="#1b5e20" stroke-width="2"/>
+                    <rect x="54" y="34" width="18" height="14" rx="4" fill="#00e676" stroke="#1b5e20" stroke-width="2"/>
+                    <circle cx="37" cy="41" r="3" fill="#fff"/>
+                    <circle cx="63" cy="41" r="3" fill="#fff"/>
+                    <!-- Miệng đĩa loa -->
+                    <rect x="30" y="64" width="40" height="12" rx="4" fill="#37474f"/>
+                    <line x1="38" y1="64" x2="38" y2="76" stroke="#78909c" stroke-width="2"/>
+                    <line x1="50" y1="64" x2="50" y2="76" stroke="#78909c" stroke-width="2"/>
+                    <line x1="62" y1="64" x2="62" y2="76" stroke="#78909c" stroke-width="2"/>
+                </svg>`,
+
+                alien: `<svg ${common}>
+                    <!-- Đầu quái vật ngoài hành tinh -->
+                    <ellipse cx="50" cy="48" rx="44" ry="40" fill="#76ff03" stroke="#33691e" stroke-width="4"/>
+                    <!-- 3 Con mắt ngoài hành tinh -->
+                    <circle cx="30" cy="40" r="10" fill="#fff" stroke="#1b5e20" stroke-width="2"/>
+                    <circle cx="50" cy="32" r="12" fill="#fff" stroke="#1b5e20" stroke-width="2"/>
+                    <circle cx="70" cy="40" r="10" fill="#fff" stroke="#1b5e20" stroke-width="2"/>
+                    <circle cx="30" cy="40" r="4" fill="#d500f9"/>
+                    <circle cx="50" cy="32" r="5" fill="#d500f9"/>
+                    <circle cx="70" cy="40" r="4" fill="#d500f9"/>
+                    <!-- Miệng quái vật -->
+                    <ellipse cx="50" cy="68" rx="14" ry="7" fill="#1b5e20"/>
+                    <path d="M 44 63 L 47 67 M 53 67 L 56 63" stroke="#fff" stroke-width="2"/>
+                </svg>`,
+
+                carrot:`<svg ${common}>
+                    <!-- Lá cà rốt xum xuê -->
+                    <path d="M 42 28 C 30 5 15 15 35 30" fill="none" stroke="#2e7d32" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 50 25 C 50 2 58 2 54 26" fill="none" stroke="#4caf50" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 58 28 C 70 5 85 15 65 30" fill="none" stroke="#2e7d32" stroke-width="5" stroke-linecap="round"/>
+                    <!-- Thân củ cà rốt 3D -->
+                    <path d="M 24 30 C 50 18 76 30 68 68 C 62 88 54 96 50 96 C 46 96 38 88 32 68 Z" fill="#ff6d00" stroke="#bf360c" stroke-width="3.5"/>
+                    <!-- Mắt mũi dễ thương -->
+                    <circle cx="41" cy="48" r="4.5" fill="#3e2723"/><circle cx="59" cy="48" r="4.5" fill="#3e2723"/>
+                    <ellipse cx="36" cy="53" rx="4" ry="2.5" fill="#ffab91"/>
+                    <ellipse cx="64" cy="53" rx="4" ry="2.5" fill="#ffab91"/>
+                    <path d="M 45 56 Q 50 62 55 56" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round"/>
+                    <!-- Vân cà rốt -->
+                    <path d="M 30 40 Q 42 37 50 42 M 52 64 Q 60 62 65 67" stroke="#ffd180" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>
+                </svg>`,
+
+                radish:`<svg ${common}>
+                    <!-- Lá củ cải tươi -->
+                    <path d="M 35 32 Q 15 10 32 8 Q 45 20 44 30" fill="#81c784" stroke="#2e7d32" stroke-width="2"/>
+                    <path d="M 65 32 Q 85 10 68 8 Q 55 20 56 30" fill="#81c784" stroke="#2e7d32" stroke-width="2"/>
+                    <!-- Củ cải tròn trịa 3D -->
+                    <circle cx="50" cy="58" r="33" fill="#ec407a" stroke="#880e4f" stroke-width="3.5"/>
+                    <path d="M 24 55 Q 50 85 76 55 Q 70 90 50 90 Q 30 90 24 55 Z" fill="#f8bbd0" opacity=".4"/>
+                    <!-- Mắt cười híp -->
+                    <path d="M 36 50 Q 42 43 46 50" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 54 50 Q 58 43 64 50" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 44 62 Q 50 68 56 62" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                    <!-- Rễ củ cải -->
+                    <path d="M 50 90 L 50 98" stroke="#f8bbd0" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>`,
+
+                cat:`<svg ${common}>
+                    <!-- Tai mèo -->
+                    <path d="M 18 36 L 26 12 L 44 28 Z" fill="#78909c" stroke="#263238" stroke-width="3"/>
+                    <path d="M 24 32 L 28 18 L 38 28 Z" fill="#ff8a80"/>
+                    <path d="M 82 36 L 74 12 L 56 28 Z" fill="#78909c" stroke="#263238" stroke-width="3"/>
+                    <path d="M 76 32 L 72 18 L 62 28 Z" fill="#ff8a80"/>
+                    <!-- Đầu mèo -->
+                    <ellipse cx="50" cy="58" rx="38" ry="30" fill="#b0bec5" stroke="#263238" stroke-width="3"/>
+                    <!-- Mắt mèo xếch sành điệu -->
+                    <ellipse cx="36" cy="50" rx="6" ry="8" fill="#ffeb3b" stroke="#263238" stroke-width="1.5"/>
+                    <ellipse cx="64" cy="50" rx="6" ry="8" fill="#ffeb3b" stroke="#263238" stroke-width="1.5"/>
+                    <ellipse cx="36" cy="50" rx="2" ry="6" fill="#000"/>
+                    <ellipse cx="64" cy="50" rx="2" ry="6" fill="#000"/>
+                    <!-- Mũi & Râu -->
+                    <polygon points="50,58 46,55 54,55" fill="#ff4081"/>
+                    <path d="M 44 62 Q 50 66 56 62" fill="none" stroke="#263238" stroke-width="2"/>
+                    <path d="M 15 52 L 30 55 M 12 60 L 29 60 M 85 52 L 70 55 M 88 60 L 71 60" stroke="#37474f" stroke-width="2"/>
+                </svg>`,
+
+                pumpkin:`<svg ${common}>
+                    <!-- Cuống bí ngô -->
+                    <path d="M 46 24 C 44 12 55 8 62 6 Q 56 18 54 24 Z" fill="#3e2723" stroke="#1b5e20" stroke-width="2"/>
+                    <!-- Quả bí ngô nổi múi 3D -->
+                    <path d="M 50 26 C 20 18 12 50 20 72 C 26 94 44 92 50 84 C 56 92 74 94 80 72 C 88 50 80 18 50 26 Z" fill="#ff6f00" stroke="#e65100" stroke-width="3.5"/>
+                    <path d="M 38 28 C 24 45 24 65 35 81 M 62 28 C 76 45 76 65 65 81" fill="none" stroke="#ffa000" stroke-width="3.5"/>
+                    <!-- Mắt tam giác quỷ Halloween -->
+                    <polygon points="32,46 42,52 34,58" fill="#212121"/>
+                    <polygon points="68,46 58,52 66,58" fill="#212121"/>
+                    <!-- Miệng răng cưa -->
+                    <path d="M 32 68 L 38 64 L 44 68 L 50 64 L 56 68 L 62 64 L 68 68 L 64 74 L 36 74 Z" fill="#212121"/>
+                </svg>`,
+
+                tomato:`<svg ${common}>
+                    <!-- Cuống & Lá cà chua -->
+                    <path d="M 50 28 L 50 14 M 40 22 L 60 22" stroke="#2e7d32" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M 50 26 L 36 18 L 42 30 L 25 28 L 38 38 L 50 28 Z" fill="#4caf50" stroke="#1b5e20" stroke-width="2"/>
+                    <path d="M 50 26 L 64 18 L 58 30 L 75 28 L 62 38 L 50 28 Z" fill="#4caf50" stroke="#1b5e20" stroke-width="2"/>
+                    <!-- Quả cà chua căng mọng -->
+                    <circle cx="50" cy="60" r="34" fill="#f44336" stroke="#b71c1c" stroke-width="3.5"/>
+                    <ellipse cx="36" cy="46" rx="8" ry="14" fill="#fff" opacity=".35" transform="rotate(-20 36 46)"/>
+                    <!-- Mắt long lanh dễ thương -->
+                    <circle cx="40" cy="58" r="4.5" fill="#212121"/><circle cx="38" cy="56" r="1.8" fill="#fff"/>
+                    <circle cx="60" cy="58" r="4.5" fill="#212121"/><circle cx="58" cy="56" r="1.8" fill="#fff"/>
+                    <path d="M 44 67 Q 50 73 56 67" fill="none" stroke="#b71c1c" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`
+            };
+            return svgs[type] || svgs.mole;
+        }
+
+        function changeTarget(){
+            const type = targetSelect.value;
+            holes.forEach(h => {
+                const old = h.querySelector('.target');
+                if(old) old.remove();
+                h.insertAdjacentHTML('afterbegin', targetSVG(type));
+            });
+            targets = document.querySelectorAll('.target');
+            moles = targets;
+        }
+
+        function renderGrid(){
+            const count = holeCountSelect.value, config = gridConfigs[count];
+            gameGrid.style.gridTemplateColumns = `repeat(${config.cols},1fr)`;
+            gameGrid.style.gridTemplateRows = `repeat(${config.rows},1fr)`;
+            gameGrid.innerHTML = '';
+            for(let i=0; i<parseInt(count); i++){
+                const hole = document.createElement('div');
+                hole.className = 'hole';
+                hole.innerHTML = targetSVG(targetSelect.value);
+                gameGrid.appendChild(hole);
+            }
+            holes = document.querySelectorAll('.hole');
+            targets = document.querySelectorAll('.target');
+            moles = targets;
+        }
+
+        /* ================= CÔNG CỤ ĐẬP 3D ĐỢT MỚI VỚI NÂNG CẤP ĐỒ HỌA ================= */
+        function changeTool(){
+            const shapes = {
+                // 1. Búa thép sắc nét có vân bảo vệ
+                hammer: `
+                    <rect x="54" y="42" width="12" height="72" rx="4" fill="url(#wood3d)" stroke="#1a0c00" stroke-width="2.5"/>
+                    <rect x="10" y="10" width="100" height="42" rx="8" fill="url(#steel3d)" stroke="#102027" stroke-width="3.5"/>
+                    <rect x="8" y="15" width="10" height="32" rx="2" fill="url(#gold3d)"/>
+                    <rect x="102" y="15" width="10" height="32" rx="2" fill="url(#gold3d)"/>
+                    <line x1="18" y1="12" x2="18" y2="50" stroke="#fff" stroke-width="2" opacity=".6"/>
+                `,
+                
+                // 2. Búa gỗ sẫm màu đốt vân sang trọng
+                mallet: `
+                    <rect x="53" y="40" width="14" height="74" rx="5" fill="url(#wood3d)" stroke="#1a0c00" stroke-width="3"/>
+                    <rect x="10" y="10" width="100" height="46" rx="22" fill="url(#wood3d)" stroke="#1a0c00" stroke-width="4"/>
+                    <circle cx="60" cy="33" r="8" fill="url(#gold3d)"/>
+                    <line x1="22" y1="16" x2="98" y2="16" stroke="#d7ccc8" opacity=".4" stroke-width="3" stroke-linecap="round"/>
+                `,
+
+                // 3. Chảo rán có thêm Trứng Ốp La bên trong cực nhộn
+                pan: `
+                    <rect x="54" y="52" width="12" height="60" rx="5" fill="url(#wood3d)" stroke="#102027" stroke-width="2.5"/>
+                    <circle cx="46" cy="36" r="34" fill="url(#pan3d)" stroke="#000" stroke-width="4"/>
+                    <circle cx="46" cy="36" r="26" fill="#1c252a"/>
+                    <!-- Trứng ốp la -->
+                    <path d="M 40 28 Q 54 26 52 36 Q 58 46 44 44 Q 34 42 40 28 Z" fill="#fff"/>
+                    <circle cx="45" cy="35" r="5" fill="#ff9800"/>
+                `,
+
+                // 4. Búa Thẩm Phán Hoàng Gia viền vàng kim
+                gavel: `
+                    <rect x="54" y="42" width="12" height="72" rx="4" fill="url(#wood3d)" stroke="#1a0c00" stroke-width="3"/>
+                    <rect x="14" y="16" width="92" height="32" rx="6" fill="url(#wood3d)" stroke="url(#gold3d)" stroke-width="4"/>
+                    <rect x="8" y="12" width="14" height="40" rx="4" fill="url(#gold3d)"/>
+                    <rect x="98" y="12" width="14" height="40" rx="4" fill="url(#gold3d)"/>
+                `,
+
+                // 5. Búa Đồ Chơi bơm hơi màu sắc sặc sỡ
+                toy: `
+                    <rect x="53" y="44" width="14" height="68" rx="6" fill="#ff4081" stroke="#880e4f" stroke-width="3"/>
+                    <rect x="8" y="10" width="104" height="46" rx="23" fill="#00e5ff" stroke="#006064" stroke-width="4"/>
+                    <circle cx="30" cy="33" r="10" fill="#ffeb3b"/>
+                    <circle cx="90" cy="33" r="10" fill="#ffeb3b"/>
+                    <line x1="20" y1="20" x2="100" y2="20" stroke="#fff" stroke-width="4" opacity=".6" stroke-linecap="round"/>
+                `,
+
+                // 6. Kiếm Gia Quang LightSaber StarWars
+                lightsaber: `
+                    <!-- Tay cầm -->
+                    <rect x="52" y="72" width="16" height="44" rx="4" fill="#455a64" stroke="#111" stroke-width="2.5"/>
+                    <rect x="50" y="80" width="20" height="5" fill="#ff1744"/>
+                    <rect x="50" y="92" width="20" height="5" fill="#29b6f6"/>
+                    <!-- Lưỡi kiếm sáng rực -->
+                    <rect x="55" y="6" width="10" height="68" rx="5" fill="url(#saber3d)" filter="drop-shadow(0 0 12px #00e5ff)"/>
+                    <rect x="57" y="8" width="6" height="64" rx="3" fill="#fff"/>
+                `,
+
+                // 7. Chổi Rơm phù thủy tỉ mỉ
+                broom: `
+                    <rect x="56" y="8" width="8" height="72" rx="3" fill="url(#wood3d)" stroke="#1a0c00" stroke-width="2"/>
+                    <!-- Nhành rơm -->
+                    <path d="M 30 80 L 90 80 L 102 116 L 18 116 Z" fill="#fbc02d" stroke="#f57f17" stroke-width="2.5"/>
+                    <line x1="38" y1="80" x2="30" y2="116" stroke="#f57f17" stroke-width="2"/>
+                    <line x1="60" y1="80" x2="60" y2="116" stroke="#f57f17" stroke-width="2"/>
+                    <line x1="82" y1="80" x2="90" y2="116" stroke="#f57f17" stroke-width="2"/>
+                    <!-- Dây buộc -->
+                    <rect x="35" y="80" width="50" height="8" rx="2" fill="#d84315"/>
+                `,
+
+                // 8. Sét Thor Mjolnir rực rỡ điện áp cao
+                lightning: `
+                    <polygon points="65,4 25,62 58,62 36,116 100,44 64,44" fill="#ffeb3b" stroke="#ff6f00" stroke-width="3" filter="drop-shadow(0 0 10px #ffeb3b)"/>
+                    <polygon points="63,12 35,60 56,60 42,102 88,48 64,48" fill="#fff"/>
+                `,
+
+                // 9. Rìu Chiến Viking lưỡi bén ngọt
+                axe: `
+                    <rect x="54" y="24" width="12" height="90" rx="4" fill="url(#wood3d)" stroke="#1a0c00" stroke-width="2.5"/>
+                    <!-- Lưỡi rìu Viking 2 bên -->
+                    <path d="M 54 30 C 25 10 10 35 20 65 C 35 55 48 50 54 48 Z" fill="url(#steel3d)" stroke="#102027" stroke-width="3"/>
+                    <path d="M 66 30 C 95 10 110 35 100 65 C 85 55 72 50 66 48 Z" fill="url(#steel3d)" stroke="#102027" stroke-width="3"/>
+                    <!-- Đinh nạm -->
+                    <circle cx="60" cy="38" r="4" fill="url(#gold3d)"/>
+                `
+            };
+            toolArt.innerHTML = shapes[toolSelect.value] || shapes.hammer;
+        }
+
+        window.addEventListener('mousemove', e => {
+            tool.style.left = e.clientX + 'px';
+            tool.style.top = e.clientY + 'px';
+        });
+
+        function randomTime(min,max){ return Math.round(Math.random()*(max-min)+min); }
+        function randomHole(list){
+            if(list.length < 2) return list[0];
+            let hole;
+            do { hole = list[Math.floor(Math.random()*list.length)] } while(hole === lastHole);
+            lastHole = hole; return hole;
+        }
+
+        function popMole(){
+            if(timeUp) return;
+            const level = difficultySelect.value, time = randomTime(levels[level].min, levels[level].max);
+            const hole = randomHole(holes);
+            if(!hole) return;
+            hole.classList.add('up');
+            setTimeout(() => {
+                hole.classList.remove('up');
+                if(!timeUp && timeLeft > 5) popMole();
+            }, time);
+        }
+
+        function startFinalFeast(){
+            timeLeftDisplay.classList.add('time-frenzy'); startBGM(110);
+            frenzyInterval = setInterval(() => {
+                if(timeUp) return;
+                const countToPop = Math.min(Math.floor(holes.length/2), 5);
+                for(let i=0; i<countToPop; i++){
+                    const hole = randomHole(holes);
+                    if(hole && !hole.classList.contains('up')){
+                        hole.classList.add('up');
+                        setTimeout(() => hole.classList.remove('up'), 650);
+                    }
+                }
+            }, 300);
+        }
+
+        function startGame(){
+            score = 0; combo = 0; timeLeft = 30; timeUp = false;
+            scoreDisplay.textContent = '0'; comboDisplay.textContent = '0';
+            timeLeftDisplay.textContent = '30'; timeLeftDisplay.classList.remove('time-frenzy');
+            startBtn.disabled = true; holeCountSelect.disabled = true; difficultySelect.disabled = true; toolSelect.disabled = true; targetSelect.disabled = true;
+            tool.style.display = 'block'; document.body.classList.add('playing');
+            startBGM(220); popMole();
+
+            countdownTimer = setInterval(() => {
+                timeLeft--; timeLeftDisplay.textContent = timeLeft;
+                if(timeLeft === 5) startFinalFeast();
+                if(timeLeft <= 0){
+                    clearInterval(countdownTimer);
+                    if(frenzyInterval) clearInterval(frenzyInterval);
+                    timeUp = true; stopBGM(); playGameOverSound();
+                    timeLeftDisplay.classList.remove('time-frenzy');
+                    holes.forEach(h => h.classList.remove('up'));
+                    startBtn.disabled = false; holeCountSelect.disabled = false; difficultySelect.disabled = false; toolSelect.disabled = false; targetSelect.disabled = false;
+                    tool.style.display = 'none'; document.body.classList.remove('playing');
+                    setTimeout(() => alert(`🎉 HẾT GIỜ! Thành tích VIP PRO 3D: ${score} điểm!`), 50);
+                }
+            }, 1000);
+        }
+
+        function createSparks(x,y){
+            for(let i=0; i<10; i++){
+                const spark = document.createElement('div'); spark.className = 'spark';
+                spark.style.left = x + 'px'; spark.style.top = y + 'px';
+                const angle = Math.random()*Math.PI*2, speed = 30 + Math.random()*55;
+                spark.style.setProperty('--dx', `${Math.cos(angle)*speed}px`);
+                spark.style.setProperty('--dy', `${Math.sin(angle)*speed}px`);
+                document.body.appendChild(spark); setTimeout(() => spark.remove(), 400);
+            }
+        }
+
+        function showScore(x,y,amount){
+            const pop = document.createElement('div'); pop.className = 'score-pop';
+            pop.textContent = `+${amount}`;
+            pop.style.left = x + 'px'; pop.style.top = y + 'px';
+            document.body.appendChild(pop); setTimeout(() => pop.remove(), 650);
+        }
+
+        function isColliding(a,b){
+            return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+        }
+
+        function smashTool(){
+            if(timeUp) return;
+            tool.classList.add('smash'); playToolSound();
+            setTimeout(() => tool.classList.remove('smash'), 100);
+
+            const toolRect = tool.getBoundingClientRect();
+            let hitSomething = false;
+            moles.forEach(mole => {
+                const hole = mole.parentElement;
+                if(hole.classList.contains('up') && !mole.classList.contains('hit')){
+                    const moleRect = mole.getBoundingClientRect();
+                    if(isColliding(toolRect, moleRect)){
+                        hitSomething = true;
+                        const t = tools[toolSelect.value] || tools.hammer;
+                        const targetBonus = (targetsData[targetSelect.value] || {points:1}).points; 
+                        const points = targetBonus + t.points - 1 + Math.min(combo, 5);
+                        score += points; combo++;
+                        scoreDisplay.textContent = score; comboDisplay.textContent = combo;
+                        playHitSound();
+                        mole.classList.add('hit');
+                        
+                        createSparks(moleRect.left + moleRect.width/2, moleRect.top + moleRect.height/2);
+                        showScore(moleRect.left + moleRect.width/2, moleRect.top, points);
+                        setTimeout(() => {
+                            hole.classList.remove('up'); mole.classList.remove('hit');
+                        }, 220);
+                    }
+                }
+            });
+            if(!hitSomething){
+                combo = 0; comboDisplay.textContent = '0';
+            }
+        }
+
+        window.addEventListener('mousedown', smashTool);
+        window.addEventListener('keydown', e => {
+            if(e.code === 'Space'){ e.preventDefault(); smashTool(); }
+        });
+
+        renderGrid();
+        changeTool();
+    </script>
+</body>
+</html>
