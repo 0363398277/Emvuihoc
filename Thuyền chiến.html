@@ -85,6 +85,54 @@
     .sound-btn { background: none; border: none; font-size: 13px; cursor: pointer; color: white; display: flex; align-items: center; gap: 4px; font-weight: bold; outline: none; }
     .sound-btn:hover { transform: scale(1.05); }
     
+
+    html, body { width:100%; height:100%; touch-action:none; -webkit-user-select:none; }
+    button { -webkit-tap-highlight-color: transparent; touch-action:manipulation; }
+    canvas { touch-action:none; }
+    .touch-controls { display:none; pointer-events:none; position:absolute; left:0; right:0; bottom:8px; z-index:25; justify-content:space-between; padding:0 10px; }
+    .touch-side { display:grid; grid-template-columns:repeat(3, 52px); grid-template-rows:repeat(2, 52px); gap:6px; pointer-events:auto; }
+    .touch-btn { border:1px solid rgba(255,255,255,.4); border-radius:14px; background:rgba(8,20,38,.78); color:#fff; font-size:20px; font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,.45); }
+    .touch-btn:active, .touch-btn.active { transform:scale(.94); background:rgba(0,180,255,.55); }
+    .touch-fire { grid-column:span 3; background:rgba(255,150,0,.82); font-size:16px; }
+    .touch-side.red .touch-btn:active, .touch-side.red .touch-btn.active { background:rgba(255,40,40,.6); }
+    .boat-picker { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; max-width:900px; margin:12px 15px 4px; }
+    .boat-card { width:125px; min-height:92px; padding:9px; border:2px solid rgba(255,255,255,.2); border-radius:12px; background:rgba(10,25,47,.9); color:white; cursor:pointer; text-align:center; }
+    .boat-card.selected-a { border-color:#00f0ff; box-shadow:0 0 16px rgba(0,240,255,.45); }
+    .boat-card.selected-b { border-color:#ff3333; box-shadow:0 0 16px rgba(255,51,51,.45); }
+    .boat-icon { font-size:31px; display:block; margin-bottom:3px; }
+    .boat-name { font-size:12px; font-weight:bold; }
+    .boat-stat { font-size:10px; color:#aaa; margin-top:3px; }
+    .picker-label { margin-top:8px; font-size:14px; font-weight:bold; }
+    .selection-status { min-height:20px; font-size:12px; color:#ffe900; text-align:center; }
+    @media (max-width: 700px) {
+        #ui { padding:8px; }
+        .player-card { width:145px; padding:8px; border-radius:9px; }
+        .player-title { font-size:11px; margin-bottom:4px; }
+        .bar-bg { height:11px; margin-bottom:4px; }
+        .buff-status { font-size:9px; min-height:13px; }
+        .hud-bottom { display:none; }
+        .modal { padding:10px; overflow:auto; justify-content:flex-start; padding-top:7vh; }
+        .modal-title { font-size:30px; margin-bottom:8px; }
+        .modal p { font-size:14px !important; }
+        .boat-picker { gap:7px; max-width:390px; margin-top:7px; }
+        .boat-card { width:105px; min-height:78px; padding:6px; }
+        .boat-icon { font-size:25px; }
+        .boat-name { font-size:10px; }
+        .boat-stat { font-size:8px; }
+        .picker-label { font-size:12px; }
+        .btn-group { flex-direction:column; gap:8px; width:min(94vw,360px); margin-top:8px; }
+        .btn { width:100%; padding:12px 14px; font-size:15px; }
+        .touch-controls { display:flex; }
+        .touch-side { grid-template-columns:repeat(3, 48px); grid-template-rows:repeat(2, 48px); }
+        .touch-btn { font-size:18px; }
+    }
+    @media (max-height: 500px) and (max-width: 900px) {
+        .modal { padding-top:2vh; }
+        .boat-card { min-height:65px; }
+        .boat-picker { margin:4px 5px; }
+        .touch-side { grid-template-columns:repeat(3, 42px); grid-template-rows:repeat(2, 42px); }
+    }
+
     /* Menu Modal */
     .modal { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: auto; }
     .modal-title { font-size: 46px; font-weight: bold; color: #ffe900; text-shadow: 0 0 15px #ff9d00; margin-bottom: 15px; text-transform: uppercase; }
@@ -154,13 +202,36 @@
         </div>
     </div>
 
-    <!-- Start Modal -->
+    <!-- Start / Boat Selection Modal -->
     <div id="start-modal" class="modal">
         <h1 class="modal-title">⚓ HẢI CHIẾN ⚓</h1>
-        <p style="color:#fff; font-size: 18px;">Chọn chế độ chơi!</p>
+        <div class="picker-label">🔵 CHỌN THUYỀN A - NGƯỜI CHƠI</div>
+        <div id="blueBoatPicker" class="boat-picker"></div>
+        <div class="picker-label">🔴 CHỌN THUYỀN B - ĐỐI THỦ</div>
+        <div id="redBoatPicker" class="boat-picker"></div>
+        <div id="selectionStatus" class="selection-status"></div>
+        <p style="color:#fff; font-size: 15px;">Chọn chế độ chơi</p>
         <div class="btn-group">
             <button class="btn btn-primary" onclick="startGame(false)">🎮 1 Người vs Máy (AI)</button>
             <button class="btn btn-danger" onclick="startGame(true)">⚔️ 2 Người (PvP)</button>
+        </div>
+    </div>
+
+    <!-- Mobile Touch Controls -->
+    <div id="touch-controls" class="touch-controls">
+        <div class="touch-side blue">
+            <button class="touch-btn" data-key="KeyA">◀</button>
+            <button class="touch-btn" data-key="KeyW">▲</button>
+            <button class="touch-btn" data-key="KeyD">▶</button>
+            <button class="touch-btn" data-key="KeyS">▼</button>
+            <button class="touch-btn touch-fire" data-key="Space">🔥 GIỮ ĐỂ NẠP • THẢ ĐỂ BẮN</button>
+        </div>
+        <div id="red-touch" class="touch-side red" style="display:none;">
+            <button class="touch-btn" data-key="ArrowLeft">◀</button>
+            <button class="touch-btn" data-key="ArrowUp">▲</button>
+            <button class="touch-btn" data-key="ArrowRight">▶</button>
+            <button class="touch-btn" data-key="ArrowDown">▼</button>
+            <button class="touch-btn touch-fire" data-key="Digit0">🔥 GIỮ ĐỂ NẠP • THẢ ĐỂ BẮN</button>
         </div>
     </div>
 
@@ -333,9 +404,10 @@ function getWaveY(x) {
 
 // --- LỚP THUYỀN ---
 class Boat {
-    constructor(x, isRed) {
+    constructor(x, isRed, styleId = 0) {
         this.x = x;
         this.isRed = isRed;
+        this.styleId = styleId;
         this.hp = 100;
         this.gunAngleDegree = 30; 
         this.power = 0;
@@ -406,34 +478,56 @@ class Boat {
         ctx.fillRect(45, -9, 12, 18);
         ctx.restore();
 
-        let hullGrad = ctx.createLinearGradient(0, 0, 0, 50);
-        if (this.isRed) {
-            hullGrad.addColorStop(0, "#ff3333");
-            hullGrad.addColorStop(1, "#990000");
-        } else {
-            hullGrad.addColorStop(0, "#00e5ff");
-            hullGrad.addColorStop(1, "#005580");
-        }
+        const palettes = [
+            {main: this.isRed ? "#ff3333" : "#00e5ff", dark: this.isRed ? "#990000" : "#005580", deck: this.isRed ? "#ff8888" : "#80f0ff", glass:"#00aaff", flag:this.isRed ? "#ffff00" : "#ff0055"},
+            {main: this.isRed ? "#ff7a18" : "#32ff7e", dark: this.isRed ? "#a52f00" : "#087a3a", deck:"#f5f5f5", glass:"#162b44", flag:"#ffe900"},
+            {main: this.isRed ? "#c41e3a" : "#4169e1", dark:"#151b55", deck:"#777", glass:"#b9ecff", flag:"#fff"},
+            {main: this.isRed ? "#ff4d8d" : "#9b5cff", dark:"#4b176f", deck:"#d8c8ff", glass:"#182238", flag:"#ffe900"},
+            {main: this.isRed ? "#9b2c2c" : "#8b5a2b", dark:"#3a1f0b", deck:"#d7b98e", glass:"#1d3344", flag:"#fff"},
+            {main: this.isRed ? "#bdbdbd" : "#607d8b", dark:"#263238", deck:"#90a4ae", glass:"#80deea", flag:"#ffea00"}
+        ];
+        const pal = palettes[this.styleId % palettes.length];
+        let hullGrad = ctx.createLinearGradient(0, 0, 0, 55);
+        hullGrad.addColorStop(0, pal.main);
+        hullGrad.addColorStop(1, pal.dark);
         ctx.fillStyle = hullGrad;
 
         ctx.beginPath();
-        ctx.arc(75, 40, 70, 0, Math.PI, false);
+        if (this.styleId === 1) {
+            ctx.moveTo(5, 38); ctx.lineTo(35, 20); ctx.lineTo(118, 20); ctx.lineTo(145, 38);
+            ctx.lineTo(112, 58); ctx.lineTo(32, 58); ctx.closePath();
+        } else if (this.styleId === 2) {
+            ctx.roundRect(5, 24, 140, 38, 10);
+        } else if (this.styleId === 3) {
+            ctx.moveTo(0, 38); ctx.lineTo(18, 22); ctx.lineTo(132, 22); ctx.lineTo(150, 38);
+            ctx.lineTo(128, 58); ctx.lineTo(20, 58); ctx.closePath();
+        } else if (this.styleId === 4) {
+            ctx.moveTo(5, 40); ctx.quadraticCurveTo(75, 72, 145, 40); ctx.lineTo(125, 58); ctx.lineTo(25, 58); ctx.closePath();
+        } else if (this.styleId === 5) {
+            ctx.ellipse(75, 42, 72, 25, 0, 0, Math.PI * 2);
+        } else {
+            ctx.arc(75, 40, 70, 0, Math.PI, false);
+        }
         ctx.fill();
         ctx.strokeStyle = "#ffffff";
         ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        ctx.fillStyle = this.isRed ? "#ff8888" : "#80f0ff";
-        ctx.fillRect(18, 20, 115, 22);
+        ctx.fillStyle = pal.deck;
+        if (this.styleId === 5) {
+            ctx.fillRect(18, 29, 114, 20);
+        } else {
+            ctx.fillRect(18, 20, 115, 22);
+        }
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
-        ctx.strokeRect(18, 20, 115, 22);
+        ctx.strokeRect(18, this.styleId === 5 ? 29 : 20, 115, 20);
 
-        ctx.fillStyle = "#ffffff";
+        // Cabin / bridge
+        ctx.fillStyle = pal.deck;
         ctx.fillRect(52, -12, 46, 32);
         ctx.strokeRect(52, -12, 46, 32);
-
-        ctx.fillStyle = "#00aaff";
+        ctx.fillStyle = pal.glass;
         ctx.fillRect(58, -4, 12, 12);
         ctx.fillRect(78, -4, 12, 12);
         ctx.strokeStyle = "#000";
@@ -441,14 +535,26 @@ class Boat {
         ctx.strokeRect(58, -4, 12, 12);
         ctx.strokeRect(78, -4, 12, 12);
 
-        ctx.fillStyle = this.isRed ? "#ffff00" : "#ff0055";
+        // Style-specific details
+        ctx.fillStyle = pal.main;
+        if (this.styleId === 2) {
+            ctx.fillRect(28, 5, 20, 14);
+            ctx.fillRect(102, 5, 20, 14);
+        } else if (this.styleId === 3) {
+            ctx.fillRect(20, 8, 28, 10);
+            ctx.fillRect(102, 8, 28, 10);
+        } else if (this.styleId === 4) {
+            ctx.beginPath(); ctx.arc(40, 18, 7, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(110, 18, 7, 0, Math.PI*2); ctx.fill();
+        } else if (this.styleId === 5) {
+            ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(75, -20); ctx.lineTo(75, -5); ctx.stroke();
+        }
+
+        ctx.fillStyle = pal.flag;
         ctx.beginPath();
-        ctx.moveTo(75, -65);
-        ctx.lineTo(75 + 38, -65 + 8);
-        ctx.lineTo(75, -65 + 16);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
+        ctx.moveTo(75, -65); ctx.lineTo(113, -57); ctx.lineTo(75, -49); ctx.closePath();
+        ctx.fill(); ctx.stroke();
 
         ctx.restore();
     }
@@ -558,10 +664,40 @@ let particles = [];
 let keys = {};
 let isPvP = false;
 let gameRunning = false;
+let blueStyle = 0;
+let redStyle = 1;
+const boatStyles = [
+    {name:"⚡ Tia Chớp", icon:"🚤", stat:"Nhanh • Cân bằng"},
+    {name:"🛥️ Cá Kiếm", icon:"🛥️", stat:"Cơ động • Nhẹ"},
+    {name:"🛳️ Thiết Giáp", icon:"🚢", stat:"Nặng • Uy lực"},
+    {name:"🚢 Tàu Sân Bay", icon:"🛳️", stat:"Bền • Ổn định"},
+    {name:"☠️ Hải Tặc", icon:"🏴‍☠️", stat:"Ngầu • Đặc biệt"},
+    {name:"🔱 Hải Thần", icon:"⚓", stat:"Công nghệ • Lạ"}
+];
+
+function renderBoatPickers() {
+    const make = (id, selected, side) => {
+        const box = document.getElementById(id);
+        box.innerHTML = boatStyles.map((b,i) =>
+            `<button class="boat-card ${selected===i ? 'selected-'+side : ''}" onclick="selectBoat('${side}',${i})">
+                <span class="boat-icon">${b.icon}</span><span class="boat-name">${b.name}</span>
+                <div class="boat-stat">${b.stat}</div>
+            </button>`).join('');
+    };
+    make("blueBoatPicker", blueStyle, "a");
+    make("redBoatPicker", redStyle, "b");
+    document.getElementById("selectionStatus").innerText =
+        `A: ${boatStyles[blueStyle].name}  •  B: ${boatStyles[redStyle].name}`;
+}
+function selectBoat(side, id) {
+    if (side === "a") blueStyle = id; else redStyle = id;
+    renderBoatPickers();
+}
+renderBoatPickers();
 
 function init() {
-    blue = new Boat(120, false);
-    red = new Boat(width - 270, true);
+    blue = new Boat(Math.max(80, width * 0.12), false, blueStyle);
+    red = new Boat(Math.min(width - 270, width * 0.68), true, redStyle);
     bullets = [];
     powerUps = [];
     particles = [];
@@ -574,6 +710,7 @@ function startGame(pvpMode) {
     init();
     gameRunning = true;
     audio.startBGM();
+    document.getElementById("red-touch").style.display = isPvP ? "grid" : "none";
 }
 
 function resetGame() {
@@ -581,6 +718,7 @@ function resetGame() {
     document.getElementById("game-over").style.display = "none";
     gameRunning = false;
     audio.stopBGM();
+    document.getElementById("red-touch").style.display = "none";
 }
 
 function isRedFireKey(code) {
@@ -597,8 +735,8 @@ window.addEventListener('keydown', e => {
 });
 
 window.addEventListener('keyup', e => {
-    if (e.code === "Space" && blue.charging) blue.shoot();
-    if (isRedFireKey(e.code) && isPvP && red.charging) red.shoot();
+    if (e.code === "Space" && blue && blue.charging) blue.shoot();
+    if (isRedFireKey(e.code) && isPvP && red && red.charging) red.shoot();
     keys[e.code] = false;
 });
 
@@ -606,14 +744,14 @@ function handleInput() {
     if (!gameRunning) return;
 
     if (keys["KeyA"]) blue.x = Math.max(0, blue.x - 5);
-    if (keys["KeyD"]) blue.x = Math.min(width/2 - 160, blue.x + 5);
+    if (keys["KeyD"]) blue.x = Math.min(Math.max(20, width/2 - 170), blue.x + 5);
     if (keys["KeyW"]) blue.gunAngleDegree = Math.min(75, blue.gunAngleDegree + 1);
     if (keys["KeyS"]) blue.gunAngleDegree = Math.max(5, blue.gunAngleDegree - 1);
     if (keys["Space"] && !blue.charging) blue.charging = true;
 
     if (isPvP) {
-        if (keys["ArrowLeft"]) red.x = Math.max(width/2, red.x - 5);
-        if (keys["ArrowRight"]) red.x = Math.min(width - 160, red.x + 5);
+        if (keys["ArrowLeft"]) red.x = Math.max(width/2 + 5, red.x - 5);
+        if (keys["ArrowRight"]) red.x = Math.min(width - 155, red.x + 5);
         if (keys["ArrowUp"]) red.gunAngleDegree = Math.min(75, red.gunAngleDegree + 1);
         if (keys["ArrowDown"]) red.gunAngleDegree = Math.max(5, red.gunAngleDegree - 1);
         if (isRedFireKey(Object.keys(keys).find(k => keys[k] && isRedFireKey(k))) && !red.charging) {
@@ -681,6 +819,30 @@ function updateUI() {
     document.getElementById("blueBuff").innerText = getBuffText(blue);
     document.getElementById("redBuff").innerText = getBuffText(red);
 }
+
+
+// --- ĐIỀU KHIỂN CẢM ỨNG MOBILE ---
+document.querySelectorAll('.touch-btn').forEach(btn => {
+    const code = btn.dataset.key;
+    const press = (e) => {
+        e.preventDefault();
+        if (!gameRunning) return;
+        btn.classList.add('active');
+        keys[code] = true;
+    };
+    const release = (e) => {
+        e.preventDefault();
+        btn.classList.remove('active');
+        if (code === "Space" && blue && blue.charging) blue.shoot();
+        if (isRedFireKey(code) && isPvP && red && red.charging) red.shoot();
+        keys[code] = false;
+    };
+    btn.addEventListener('pointerdown', press, {passive:false});
+    btn.addEventListener('pointerup', release, {passive:false});
+    btn.addEventListener('pointercancel', release, {passive:false});
+    btn.addEventListener('pointerleave', release, {passive:false});
+});
+window.addEventListener('contextmenu', e => e.preventDefault());
 
 function loop() {
     oceanTime += 0.04;
