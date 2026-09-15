@@ -24,6 +24,8 @@
             min-height: 100vh;
             margin: 0;
             overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body::before {
@@ -162,6 +164,8 @@
             max-height: 70vh;
             justify-content: center;
             align-items: center;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .grid::before {
@@ -178,8 +182,12 @@
             overflow: hidden;
             border: 3px solid #69463a;
             box-shadow: inset 0 14px 22px rgba(0,0,0,.95), inset 0 -4px 5px rgba(255,255,255,.08), 0 5px 8px rgba(0,0,0,.4);
-            width: 80px;
-            height: 80px;
+            width: var(--cell-size, 80px);
+            height: var(--cell-size, 80px);
+            min-width: 0;
+            min-height: 0;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .hole::after {
@@ -276,13 +284,21 @@
         }
 
         @media (max-width: 900px) {
-            .hole { width: 62px; height: 62px; }
+            .dashboard { max-width: 96vw; }
+            .grid { max-width: 96vw; max-height: 58vh; gap: 8px; padding: 10px; border-width: 5px; }
+            .hole { border-width: 2px; }
+            .hint { max-width: 94vw; text-align: center; font-size: .82rem; }
         }
         @media (max-width: 650px) {
-            .dashboard { gap: 8px; padding: 10px 12px; }
-            select { padding: 5px 8px; }
-            .hole { width: 50px; height: 50px; }
-            #custom-tool { width: 92px; height: 92px; }
+            body { justify-content: flex-start; padding: 10px 0 14px; }
+            h1 { font-size: clamp(1.25rem, 7vw, 1.8rem); letter-spacing: 1.5px; margin-bottom: 8px; }
+            .dashboard { gap: 7px; padding: 9px 8px; margin-bottom: 9px; border-radius: 18px; font-size: .82rem; }
+            .control-group, .tool-picker { gap: 4px; }
+            select { padding: 5px 6px; font-size: .78rem; max-width: 42vw; }
+            .btn-start, .btn-audio { padding: 7px 10px; font-size: .8rem; }
+            .combo { min-width: 70px; }
+            #custom-tool { width: 82px; height: 82px; }
+            .hint { margin-top: 8px; padding: 5px 10px; }
         }
     </style>
 </head>
@@ -380,7 +396,7 @@
         </svg>
     </div>
 
-    <div class="hint">⚡ <b>Click chuột trái</b> hoặc <b>phím Space</b> để đập • Chọn công cụ + mục tiêu ở bảng điều khiển</div>
+    <div class="hint">⚡ <b>Chạm màn hình</b>, <b>click chuột trái</b> hoặc <b>phím Space</b> để đập • Chọn công cụ + mục tiêu ở bảng điều khiển</div>
 
     <script>
         const gameGrid = document.getElementById('game-grid');
@@ -656,10 +672,22 @@
             moles = targets;
         }
 
-        function renderGrid(){
+        function fitGrid(){
             const count = holeCountSelect.value, config = gridConfigs[count];
-            gameGrid.style.gridTemplateColumns = `repeat(${config.cols},1fr)`;
-            gameGrid.style.gridTemplateRows = `repeat(${config.rows},1fr)`;
+            const cs = getComputedStyle(gameGrid);
+            const gap = parseFloat(cs.gap) || 8;
+            const pad = (parseFloat(cs.paddingLeft) || 10) * 2;
+            const border = (parseFloat(cs.borderLeftWidth) || 0) * 2;
+            const availableW = Math.max(24, Math.min(window.innerWidth * 0.96, 920) - pad - border - gap * (config.cols - 1));
+            const availableH = Math.max(24, window.innerHeight * 0.58 - pad - border - gap * (config.rows - 1));
+            const size = Math.max(24, Math.min(80, availableW / config.cols, availableH / config.rows));
+            gameGrid.style.setProperty('--cell-size', `${Math.floor(size)}px`);
+            gameGrid.style.gridTemplateColumns = `repeat(${config.cols}, var(--cell-size))`;
+            gameGrid.style.gridTemplateRows = `repeat(${config.rows}, var(--cell-size))`;
+        }
+
+        function renderGrid(){
+            const count = holeCountSelect.value;
             gameGrid.innerHTML = '';
             for(let i=0; i<parseInt(count); i++){
                 const hole = document.createElement('div');
@@ -670,6 +698,7 @@
             holes = document.querySelectorAll('.hole');
             targets = document.querySelectorAll('.target');
             moles = targets;
+            fitGrid();
         }
 
         /* ================= CÔNG CỤ ĐẬP 3D ĐỢT MỚI VỚI NÂNG CẤP ĐỒ HỌA ================= */
@@ -761,10 +790,14 @@
             toolArt.innerHTML = shapes[toolSelect.value] || shapes.hammer;
         }
 
-        window.addEventListener('mousemove', e => {
-            tool.style.left = e.clientX + 'px';
-            tool.style.top = e.clientY + 'px';
-        });
+        function moveTool(x, y){
+            tool.style.left = x + 'px';
+            tool.style.top = y + 'px';
+        }
+
+        window.addEventListener('pointermove', e => {
+            moveTool(e.clientX, e.clientY);
+        }, {passive:true});
 
         function randomTime(min,max){ return Math.round(Math.random()*(max-min)+min); }
         function randomHole(list){
