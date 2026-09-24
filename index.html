@@ -259,6 +259,22 @@ iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;margin-top:18px}
 
 }
 
+.lesson-title {
+    grid-column: 1 / -1;
+
+    margin-top: 12px;
+    padding: 12px 16px;
+
+    background: #E3F2FD;
+    color: #1565C0;
+
+    border-radius: 10px;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
 </style>
 </head>
 <body>
@@ -268,14 +284,12 @@ Tiếng Anh 4
 <small>Global Success</small>
 </h1>
 <div class="top">
-<button onclick="location.href='https://online.flipbuilder.com/sdtta/nhxm/'">📚 Mở sách học</button>
-<button onclick="location.href='English_quiz.html'">🎯 English Quiz</button>
+<button onclick="location.href='https://online.flipbuilder.com/sdtta/nhxm/'">📚 Sách học English</button>
+<button onclick="location.href='English_quiz.html'">🎯 Đấu Trường English</button>
 </div>
 <div class="card">
 <label>Chọn Unit</label>
 <select id="unitSelect"></select>
-<label>Chọn Lesson</label>
-<select id="lessonSelect"></select>
 <div id="lessonButtons" class="buttons"></div>
 </div>
 <button id="videoBtn">🎬 Xem video bài học</button>
@@ -284,90 +298,157 @@ Tiếng Anh 4
 </div>
 
 <script src="data.js"></script>
+
 <script>
-const unitSelect=document.getElementById('unitSelect');
-const lessonSelect=document.getElementById('lessonSelect');
-const videoFrame=document.getElementById('videoFrame');
-const videoBox=document.getElementById('videoBox');
-const videoBtn=document.getElementById('videoBtn');
-const lessonButtons=document.getElementById('lessonButtons');
+const unitSelect = document.getElementById('unitSelect');
+const videoFrame = document.getElementById('videoFrame');
+const videoBox = document.getElementById('videoBox');
+const videoBtn = document.getElementById('videoBtn');
+const lessonButtons = document.getElementById('lessonButtons');
 
-for(const key in data){
- const op=document.createElement('option');
- op.value=key; op.textContent=data[key].title;
- unitSelect.appendChild(op);
+
+// ===============================
+// Tạo danh sách Unit
+// ===============================
+for (const key in data) {
+    const op = document.createElement('option');
+
+    op.value = key;
+    op.textContent = data[key].title;
+
+    unitSelect.appendChild(op);
 }
-if(localStorage.getItem('unit')) unitSelect.value=localStorage.getItem('unit');
 
-function loadLessons(){
- const unit=data[unitSelect.value];
- videoFrame.src="";
-videoBox.style.display="none";
-updateVideoButton();
- lessonSelect.innerHTML='';
- Object.keys(unit.lessons).forEach(name=>{
-   const op=document.createElement('option');
-   op.value=name; op.textContent=name;
-   lessonSelect.appendChild(op);
- });
- const saved=localStorage.getItem('lesson_'+unitSelect.value);
- if(saved && unit.lessons[saved]) lessonSelect.value=saved;
- loadButtons();
- localStorage.setItem('unit',unitSelect.value);
+
+// ===============================
+// Khôi phục Unit đã chọn
+// ===============================
+const savedUnit = localStorage.getItem('unit');
+
+if (savedUnit && data[savedUnit]) {
+    unitSelect.value = savedUnit;
 }
-function loadButtons(){
- const unit=data[unitSelect.value];
- const list=unit.lessons[lessonSelect.value];
- lessonButtons.innerHTML='';
- list.forEach(item=>{
-   const b=document.createElement('button');
-   b.textContent=item.title;
-   b.onclick=()=>location.href=item.url;
-   lessonButtons.appendChild(b);
- });
- localStorage.setItem('lesson_'+unitSelect.value,lessonSelect.value);
+
+
+// ===============================
+// Hiển thị tất cả Lesson
+// ===============================
+function loadLessons() {
+
+    const unit = data[unitSelect.value];
+
+    // Lưu Unit
+    localStorage.setItem('unit', unitSelect.value);
+
+    // Đóng video khi đổi Unit
+    videoFrame.src = "";
+    videoBox.style.display = "none";
+
+    updateVideoButton();
+
+    // Xóa danh sách cũ
+    lessonButtons.innerHTML = "";
+
+    // Duyệt tất cả Lesson
+    Object.keys(unit.lessons).forEach(lessonName => {
+
+        const lessonTitle = document.createElement('div');
+
+        lessonTitle.className = "lesson-title";
+        lessonTitle.textContent = lessonName;
+
+        lessonButtons.appendChild(lessonTitle);
+
+
+        // Các bài trong Lesson
+        const list = unit.lessons[lessonName];
+
+        list.forEach(item => {
+
+            const button = document.createElement('button');
+
+            button.textContent = item.title;
+
+            button.onclick = () => {
+                location.href = item.url;
+            };
+
+            lessonButtons.appendChild(button);
+
+        });
+
+    });
 }
-unitSelect.onchange=loadLessons;
-lessonSelect.onchange=loadButtons;
-videoBtn.onclick=function(){
 
-    if(videoBox.style.display==="none"){
 
-        videoFrame.src=data[unitSelect.value].video;
+// ===============================
+// Đổi Unit
+// ===============================
+unitSelect.onchange = loadLessons;
 
-        videoBox.style.display="block";
 
-        videoBtn.textContent = "❌ Đóng video " + unitSelect.value;
+// ===============================
+// Video
+// ===============================
+videoBtn.onclick = function () {
 
-        setTimeout(()=>{
+    if (videoBox.style.display === "none") {
+
+        const video = data[unitSelect.value].video;
+
+        if (!video) {
+            alert("Unit này chưa có video.");
+            return;
+        }
+
+        videoFrame.src = video;
+
+        videoBox.style.display = "block";
+
+        videoBtn.textContent =
+            "❌ Đóng video " + unitSelect.value;
+
+        setTimeout(() => {
 
             videoBox.scrollIntoView({
-
-                behavior:"smooth",
-
-                block:"start"
-
+                behavior: "smooth",
+                block: "start"
             });
 
-        },200);
+        }, 200);
 
-    }else{
+    } else {
 
-        videoFrame.src="";
+        videoFrame.src = "";
 
-        videoBox.style.display="none";
+        videoBox.style.display = "none";
 
         updateVideoButton();
 
     }
 
+};
+
+
+// ===============================
+// Cập nhật tên nút video
+// ===============================
+function updateVideoButton() {
+
+    const unitName = unitSelect.value;
+
+    videoBtn.textContent =
+        "🎬 Xem video " + unitName;
 }
 
-function updateVideoButton(){
-    const unitName = unitSelect.value;
-    videoBtn.textContent = "🎬 Xem video " + unitName;
-}
+
+// ===============================
+// Khởi động
+// ===============================
 loadLessons();
+
+</script>
+
 </script>
 </body>
 </html>
