@@ -300,6 +300,123 @@
             #custom-tool { width: 82px; height: 82px; }
             .hint { margin-top: 8px; padding: 5px 10px; }
         }
+		
+		/* ================= BẢNG HẾT GIỜ ================= */
+
+.game-over-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+
+    /* Không cho thao tác bàn phím đóng modal */
+    user-select: none;
+}
+
+.game-over-box {
+    width: min(90vw, 430px);
+    padding: 30px 25px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.20),
+            rgba(0,0,0,.35)
+        );
+
+    border: 2px solid rgba(255,235,59,.6);
+    border-radius: 28px;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.7),
+        inset 0 1px rgba(255,255,255,.25),
+        0 0 35px rgba(255,193,7,.25);
+
+    color: white;
+
+    animation: gameOverAppear .25s ease-out;
+}
+
+.game-over-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 900;
+    color: #ffeb3b;
+
+    text-shadow:
+        0 3px 0 #6d4c00,
+        0 0 20px rgba(255,235,59,.7);
+
+    margin-bottom: 18px;
+}
+
+.game-over-score {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.game-over-score strong {
+    display: block;
+
+    font-size: 3rem;
+    color: #76ff03;
+
+    text-shadow:
+        0 0 15px rgba(118,255,3,.7);
+
+    margin: 8px 0 18px;
+}
+
+.game-over-close {
+    padding: 11px 32px;
+
+    border: none;
+    border-radius: 22px;
+
+    background: linear-gradient(
+        45deg,
+        #ff5722,
+        #ff9800
+    );
+
+    color: white;
+    font-size: 1rem;
+    font-weight: 900;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 18px rgba(255,87,34,.45);
+
+    transition: .2s ease;
+}
+
+.game-over-close:hover {
+    transform: translateY(-2px) scale(1.03);
+
+    box-shadow:
+        0 8px 25px rgba(255,87,34,.7);
+}
+
+@keyframes gameOverAppear {
+    from {
+        opacity: 0;
+        transform: scale(.75) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
     </style>
 </head>
 <body>
@@ -398,6 +515,32 @@
 
     <div class="hint">⚡ <b>Chạm màn hình</b>, <b>click chuột trái</b> hoặc <b>phím Space</b> để đập • Chọn công cụ + mục tiêu ở bảng điều khiển</div>
 
+<!-- BẢNG THÔNG BÁO KẾT THÚC -->
+<div id="game-over-modal" class="game-over-modal">
+    <div class="game-over-box">
+
+        <div class="game-over-title">
+            🎉 HẾT GIỜ!
+        </div>
+
+        <div class="game-over-score">
+            🏆 TỔNG ĐIỂM
+            <strong id="final-score">0</strong>
+        </div>
+
+        <div class="game-over-hit">
+            🎯 NHÂN VẬT ĐÁNH TRÚNG
+            <strong id="final-hit-count">0 / 0</strong>
+        </div> <br>
+
+        <button id="close-game-over" class="game-over-close">
+            ĐÓNG
+        </button>
+
+    </div>
+</div>
+
+
     <script>
         const gameGrid = document.getElementById('game-grid');
         const holeCountSelect = document.getElementById('hole-count');
@@ -411,37 +554,44 @@
         const audioBtn = document.getElementById('audio-btn');
         const tool = document.getElementById('custom-tool');
         const toolArt = document.getElementById('tool-art');
+		const gameOverModal = document.getElementById('game-over-modal');
+		const finalScoreDisplay = document.getElementById('final-score');
+		const finalHitCountDisplay = document.getElementById('final-hit-count');
+		const closeGameOverBtn = document.getElementById('close-game-over');
 
-        let holes = [], moles = [], targets = [], lastHole = null;
-        let timeUp = true, score = 0, combo = 0, timeLeft = 30;
-        let countdownTimer, frenzyInterval = null, isMuted = false, bgmInterval = null;
+
+let holes = [], moles = [], targets = [], lastHole = null;
+let timeUp = true;
+let score = 0;
+let combo = 0;
+let timeLeft = 30;
+
+let hitCount = 0;              // Số nhân vật đánh trúng
+let totalTargetsShown = 0;     // Tổng số nhân vật đã xuất hiện
+
+let countdownTimer;
+let frenzyInterval = null;
+let isMuted = false;
+let bgmInterval = null;
+
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        const targetsData = {
-            mole: { points: 1 },
-            hedgehog: { points: 2 },
-            frog: { points: 2 },
-            robot: { points: 3 },
-            alien: { points: 4 },
-            carrot: { points: 2 },
-            radish: { points: 2 },
-            cat: { points: 3 },
-            pumpkin: { points: 3 },
-            tomato: { points: 2 }
-        };
+const tools = {
+    hammer: { sound: 160 },
+    mallet: { sound: 125 },
+    pan: { sound: 95 },
+    gavel: { sound: 190 },
+    toy: { sound: 260 },
+    lightsaber: { sound: 440 },
+    broom: { sound: 110 },
+    lightning: { sound: 520 },
+    axe: { sound: 140 }
+};
 
-        const tools = {
-            hammer: { points: 1, sound: 160 },
-            mallet: { points: 2, sound: 125 },
-            pan:    { points: 2, sound: 95 },
-            gavel:  { points: 3, sound: 190 },
-            toy:    { points: 1, sound: 260 },
-            lightsaber: { points: 4, sound: 440 },
-            broom:  { points: 1, sound: 110 },
-            lightning: { points: 5, sound: 520 },
-            axe:    { points: 3, sound: 140 }
-        };
+// Mỗi nhân vật có tối đa 10 điểm
+const MAX_TARGET_POINTS = 10;
+
 
         function toggleMute(){
             isMuted = !isMuted;
@@ -807,35 +957,92 @@
             lastHole = hole; return hole;
         }
 
-        function popMole(){
-            if(timeUp) return;
-            const level = difficultySelect.value, time = randomTime(levels[level].min, levels[level].max);
+function popMole(){
+    if(timeUp) return;
+
+    const level = difficultySelect.value;
+    const visibleDuration = randomTime(
+        levels[level].min,
+        levels[level].max
+    );
+
+    const hole = randomHole(holes);
+    if(!hole) return;
+
+    const mole = hole.querySelector('.target');
+    if(!mole) return;
+
+    // Ghi nhận thời điểm nhân vật xuất hiện
+    mole.dataset.spawnTime = performance.now();
+    mole.dataset.visibleDuration = visibleDuration;
+
+    // Mỗi lần nhân vật xuất hiện được tính 1 lượt
+    totalTargetsShown++;
+
+    hole.classList.add('up');
+
+    setTimeout(() => {
+        hole.classList.remove('up');
+
+        if(!timeUp && timeLeft > 5){
+            popMole();
+        }
+    }, visibleDuration);
+}
+
+function startFinalFeast(){
+    timeLeftDisplay.classList.add('time-frenzy');
+    startBGM(110);
+
+    frenzyInterval = setInterval(() => {
+        if(timeUp) return;
+
+        const countToPop = Math.min(
+            Math.floor(holes.length / 2),
+            5
+        );
+
+        for(let i = 0; i < countToPop; i++){
+
             const hole = randomHole(holes);
-            if(!hole) return;
-            hole.classList.add('up');
-            setTimeout(() => {
-                hole.classList.remove('up');
-                if(!timeUp && timeLeft > 5) popMole();
-            }, time);
+
+            if(hole && !hole.classList.contains('up')){
+
+                const mole = hole.querySelector('.target');
+
+                if(!mole) continue;
+
+                // 5 giây cuối: nhân vật tồn tại 650ms
+                const visibleDuration = 650;
+
+                // Ghi thời điểm xuất hiện
+                mole.dataset.spawnTime = performance.now();
+                mole.dataset.visibleDuration = visibleDuration;
+
+                // Tăng tổng số nhân vật đã xuất hiện
+                totalTargetsShown++;
+
+                hole.classList.add('up');
+
+                setTimeout(() => {
+                    hole.classList.remove('up');
+                }, visibleDuration);
+            }
         }
 
-        function startFinalFeast(){
-            timeLeftDisplay.classList.add('time-frenzy'); startBGM(110);
-            frenzyInterval = setInterval(() => {
-                if(timeUp) return;
-                const countToPop = Math.min(Math.floor(holes.length/2), 5);
-                for(let i=0; i<countToPop; i++){
-                    const hole = randomHole(holes);
-                    if(hole && !hole.classList.contains('up')){
-                        hole.classList.add('up');
-                        setTimeout(() => hole.classList.remove('up'), 650);
-                    }
-                }
-            }, 300);
-        }
+    }, 300);
+}
+
 
         function startGame(){
-            score = 0; combo = 0; timeLeft = 30; timeUp = false;
+    score = 0;
+    combo = 0;
+    hitCount = 0;
+    totalTargetsShown = 0;
+
+    timeLeft = 30;
+    timeUp = false;
+
             scoreDisplay.textContent = '0'; comboDisplay.textContent = '0';
             timeLeftDisplay.textContent = '30'; timeLeftDisplay.classList.remove('time-frenzy');
             startBtn.disabled = true; holeCountSelect.disabled = true; difficultySelect.disabled = true; toolSelect.disabled = true; targetSelect.disabled = true;
@@ -853,7 +1060,7 @@
                     holes.forEach(h => h.classList.remove('up'));
                     startBtn.disabled = false; holeCountSelect.disabled = false; difficultySelect.disabled = false; toolSelect.disabled = false; targetSelect.disabled = false;
                     tool.style.display = 'none'; document.body.classList.remove('playing');
-                    setTimeout(() => alert(`🎉 HẾT GIỜ! Thành tích VIP PRO 3D: ${score} điểm!`), 50);
+                    setTimeout(() => showGameOver(), 50);
                 }
             }, 1000);
         }
@@ -893,13 +1100,32 @@
                     const moleRect = mole.getBoundingClientRect();
                     if(isColliding(toolRect, moleRect)){
                         hitSomething = true;
-                        const t = tools[toolSelect.value] || tools.hammer;
-                        const targetBonus = (targetsData[targetSelect.value] || {points:1}).points; 
-                        const points = targetBonus + t.points - 1 + Math.min(combo, 5);
-                        score += points; combo++;
-                        scoreDisplay.textContent = score; comboDisplay.textContent = combo;
-                        playHitSound();
-                        mole.classList.add('hit');
+// Tính điểm dựa trên tốc độ phản ứng
+const spawnTime = parseFloat(mole.dataset.spawnTime) || performance.now();
+const visibleDuration = parseFloat(mole.dataset.visibleDuration) || 1000;
+
+const elapsed = performance.now() - spawnTime;
+
+const ratio = Math.min(elapsed / visibleDuration, 1);
+
+// Tối đa 10 điểm, càng chậm càng ít
+const points = Math.max(
+    1,
+    Math.ceil(MAX_TARGET_POINTS * (1 - ratio))
+);
+
+score += points;
+hitCount++;
+combo++;
+
+scoreDisplay.textContent = score;
+comboDisplay.textContent = combo;
+
+playHitSound();
+
+mole.classList.add('hit');
+
+
                         
                         createSparks(moleRect.left + moleRect.width/2, moleRect.top + moleRect.height/2);
                         showScore(moleRect.left + moleRect.width/2, moleRect.top, points);
@@ -921,6 +1147,24 @@
 
         renderGrid();
         changeTool();
+		
+function showGameOver(){
+    finalScoreDisplay.textContent = score;
+
+    finalHitCountDisplay.textContent =
+        `${hitCount} / ${totalTargetsShown}`;
+
+    gameOverModal.style.display = 'flex';
+}
+
+
+function closeGameOver(){
+    gameOverModal.style.display = 'none';
+}
+
+closeGameOverBtn.addEventListener('click', closeGameOver);
+
+
     </script>
 </body>
 </html>
