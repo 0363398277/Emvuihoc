@@ -145,24 +145,26 @@
                 linear-gradient(135deg, #06233d, #071321);
         }
 
-        /* hình chuột */
-        .mouse {
+        .boom-bg {
+            background:
+                radial-gradient(circle at 50% 45%, #f97316, transparent 40%),
+                linear-gradient(135deg, #431407, #1c0f0a);
+        }
+
+        .rocket-bg {
+            background:
+                radial-gradient(circle at 50% 45%, #ec4899, transparent 40%),
+                linear-gradient(135deg, #500724, #180914);
+        }
+
+        /* biểu tượng chung */
+        .game-icon {
             font-size: 125px;
             filter:
                 drop-shadow(0 15px 10px rgba(0,0,0,0.45))
                 drop-shadow(0 0 20px rgba(255,255,255,0.15));
 
             animation: floating 3s ease-in-out infinite;
-        }
-
-        /* hình tàu */
-        .ship {
-            font-size: 125px;
-            filter:
-                drop-shadow(0 15px 10px rgba(0,0,0,0.5))
-                drop-shadow(0 0 25px rgba(0,200,255,0.35));
-
-            animation: floating 3.5s ease-in-out infinite;
         }
 
         @keyframes floating {
@@ -251,6 +253,38 @@
                 0 10px 30px rgba(139,92,246,0.5);
         }
 
+        .orange-button {
+            background: linear-gradient(
+                90deg,
+                #f97316,
+                #dc2626
+            );
+
+            box-shadow:
+                0 8px 20px rgba(249,115,22,0.3);
+        }
+
+        .orange-button:hover {
+            box-shadow:
+                0 10px 30px rgba(249,115,22,0.5);
+        }
+
+        .pink-button {
+            background: linear-gradient(
+                90deg,
+                #ec4899,
+                #8b5cf6
+            );
+
+            box-shadow:
+                0 8px 20px rgba(236,72,153,0.3);
+        }
+
+        .pink-button:hover {
+            box-shadow:
+                0 10px 30px rgba(236,72,153,0.5);
+        }
+
         /* BADGE */
         .badge {
             position: absolute;
@@ -303,8 +337,7 @@
                 height: 210px;
             }
 
-            .mouse,
-            .ship {
+            .game-icon {
                 font-size: 100px;
             }
 
@@ -334,79 +367,79 @@
         <!-- GAME LIST -->
         <main class="games">
 
-            <!-- GAME 1 -->
-            <div class="game-card"
-                 onclick="openGame('Đập Chuột.html')">
-
+            <!-- GAME 1: Đập Chuột -->
+            <div class="game-card" onclick="openGame('Đập Chuột.html')">
                 <div class="game-image mouse-bg">
-
-                    <span class="badge">
-                        🐭 ARCADE
-                    </span>
-
+                    <span class="badge">🐭 ARCADE</span>
                     <div class="light"></div>
-
-                    <div class="mouse">
-                        🐭
-                    </div>
-
+                    <div class="game-icon">🐭</div>
                 </div>
-
                 <div class="game-info">
-
-                    <h2 class="game-title">
-                        Đập Chuột
-                    </h2>
-
+                    <h2 class="game-title">Đập Chuột</h2>
                     <p class="game-description">
-                        Nhanh tay đập những chú chuột xuất hiện
-                        và đạt điểm số cao nhất!
+                        Nhanh tay đập những chú chuột xuất hiện và đạt điểm số cao nhất!
                     </p>
-
                     <button class="play-button purple-button">
                         ▶ CHƠI NGAY
                     </button>
-
                 </div>
-
             </div>
 
 
-            <!-- GAME 2 -->
-            <div class="game-card"
-                 onclick="openGame('Thuyền chiến.html')">
-
+            <!-- GAME 2: Thuyền chiến -->
+            <div class="game-card" onclick="openGame('Thuyền chiến.html')">
                 <div class="game-image ship-bg">
-
-                    <span class="badge">
-                        🚢 ACTION
-                    </span>
-
+                    <span class="badge">🚢 ACTION</span>
                     <div class="light"></div>
-
-                    <div class="ship">
-                        🚢
-                    </div>
-
+                    <div class="game-icon">🚢</div>
                 </div>
-
                 <div class="game-info">
-
-                    <h2 class="game-title">
-                        Thuyền chiến
-                    </h2>
-
+                    <h2 class="game-title">Thuyền chiến</h2>
                     <p class="game-description">
-                        Điều khiển chiến hạm, chiến đấu trên biển
-                        và tiêu diệt đối thủ!
+                        Điều khiển chiến hạm, chiến đấu trên biển và tiêu diệt đối thủ!
                     </p>
-
                     <button class="play-button">
                         ▶ CHƠI NGAY
                     </button>
-
                 </div>
+            </div>
 
+
+            <!-- GAME 3: Đặc Boom -->
+            <div class="game-card" onclick="openGame('Boom.html')">
+                <div class="game-image boom-bg">
+                    <span class="badge">💣 STRATEGY</span>
+                    <div class="light"></div>
+                    <div class="game-icon">💣</div>
+                </div>
+                <div class="game-info">
+                    <h2 class="game-title">Đặc Boom</h2>
+                    <p class="game-description">
+                        Đặt bom chiến thuật, phá hủy chướng ngại vật và vượt qua thử thách!
+                    </p>
+                    <button class="play-button orange-button">
+                        ▶ CHƠI NGAY
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- GAME 4: Phi thuyền -->
+            <div class="game-card" onclick="openGame('Phi thuyền.html')">
+                <div class="game-image rocket-bg">
+                    <span class="badge">🚀 SHOOTER</span>
+                    <div class="light"></div>
+                    <div class="game-icon">🚀</div>
+                </div>
+                <div class="game-info">
+                    <h2 class="game-title">Phi thuyền</h2>
+                    <p class="game-description">
+                        Lái phi thuyền du hành vũ trụ, né đạn và tiêu diệt kẻ địch không gian!
+                    </p>
+                    <button class="play-button pink-button">
+                        ▶ CHƠI NGAY
+                    </button>
+                </div>
             </div>
 
         </main>
@@ -421,11 +454,9 @@
 
 
     <script>
-
         function openGame(game) {
             window.location.href = game;
         }
-
     </script>
 
 </body>
