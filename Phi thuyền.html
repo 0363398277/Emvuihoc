@@ -727,6 +727,988 @@ button span{
 </div>
 
 <script>
+/* =========================================================
+   CỬA HÀNG MUA VẬT PHẨM SAU MỖI BOSS
+   ========================================================= */
+
+(function(){
+
+    /* =====================================================
+       GIÁ VẬT PHẨM
+       ===================================================== */
+
+    const SHOP_ITEMS = {
+
+        life:{
+            name:"🚀 PHI CƠ SINH TỒN",
+            desc:"+1 mạng",
+            price:1200,
+            color:"#45ddff"
+        },
+
+        shield:{
+            name:"🛡️ PHI CƠ KHIÊN",
+            desc:"+10 giây bảo vệ",
+            price:600,
+            color:"#55ff7a"
+        },
+
+        power:{
+            name:"🔥 PHI CƠ LIÊN KÍCH",
+            desc:"+10 giây bắn 3 đạn",
+            price:600,
+            color:"#ff4fd8"
+        },
+
+        damage:{
+            name:"💥 PHI CƠ HỎA LỰC",
+            desc:"+10 giây tăng lực bắn",
+            price:700,
+            color:"#ff9d45"
+        }
+
+    };
+
+
+    /* =====================================================
+       THÊM BIẾN LỰC BẮN CHO PLAYER
+       ===================================================== */
+
+    const originalMakePlayer = makePlayer;
+
+    makePlayer = function(x,color){
+
+        const p =
+            originalMakePlayer(x,color);
+
+        /*
+            damageBoost tính theo dt của game.
+            600 = khoảng 10 giây.
+        */
+
+        p.damageBoost = 0;
+
+        return p;
+    };
+
+
+    /* =====================================================
+       CSS CỬA HÀNG
+       ===================================================== */
+
+    const shopStyle =
+        document.createElement("style");
+
+    shopStyle.textContent = `
+
+    #shopScreen{
+        position:fixed;
+        inset:0;
+        z-index:100;
+        display:none;
+        align-items:center;
+        justify-content:center;
+        background:
+            rgba(1,4,10,.94);
+        backdrop-filter:blur(8px);
+        overflow:auto;
+        padding:20px;
+    }
+
+    #shopPanel{
+        width:min(95vw,850px);
+        max-height:94vh;
+        overflow:auto;
+
+        padding:25px;
+
+        border-radius:22px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #0b2032,
+                #030a12
+            );
+
+        border:1px solid #28647c;
+
+        box-shadow:
+            0 0 70px
+            rgba(0,210,255,.16);
+
+        text-align:center;
+    }
+
+    #shopTitle{
+        color:#53e5ff;
+        font-size:30px;
+        letter-spacing:3px;
+        margin-bottom:5px;
+        text-shadow:
+            0 0 20px #00c8ff;
+    }
+
+    #shopSubTitle{
+        color:#8da5b5;
+        margin-bottom:18px;
+        font-size:14px;
+    }
+
+    #shopPlayers{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:15px;
+    }
+
+    .shopPlayer{
+        padding:15px;
+
+        background:
+            rgba(4,14,24,.95);
+
+        border:1px solid #21485d;
+
+        border-radius:16px;
+    }
+
+    .shopPlayer.p1{
+        border-color:#24708b;
+    }
+
+    .shopPlayer.p2{
+        border-color:#70334d;
+    }
+
+    .shopPlayerTitle{
+        font-size:18px;
+        font-weight:bold;
+        margin-bottom:5px;
+    }
+
+    .shopPlayer.p1 .shopPlayerTitle{
+        color:#45ddff;
+    }
+
+    .shopPlayer.p2 .shopPlayerTitle{
+        color:#ff668c;
+    }
+
+    .shopMoney{
+        margin-bottom:12px;
+        color:#ffd95c;
+        font-size:18px;
+        font-weight:bold;
+    }
+
+    .shopCards{
+        display:grid;
+        gap:8px;
+    }
+
+    .shopCard{
+        width:100%;
+        padding:11px;
+
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+
+        background:#071522;
+
+        border:1px solid #234559;
+
+        border-radius:11px;
+
+        color:white;
+
+        text-align:left;
+
+        cursor:pointer;
+
+        transition:.15s;
+    }
+
+    .shopCard:hover{
+        background:#0d2537;
+        transform:translateY(-1px);
+    }
+
+    .shopCard.disabled{
+        opacity:.4;
+        cursor:not-allowed;
+        transform:none;
+    }
+
+    .shopCardName{
+        font-weight:bold;
+        font-size:13px;
+    }
+
+    .shopCardDesc{
+        color:#8ca0ae;
+        font-size:11px;
+        margin-top:3px;
+    }
+
+    .shopCardPrice{
+        flex:none;
+        color:#ffd95c;
+        font-weight:bold;
+        font-size:13px;
+    }
+
+    #shopContinue{
+        margin-top:20px;
+
+        width:100%;
+
+        padding:14px;
+
+        border-radius:12px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #0c7897,
+                #18a7ca
+            );
+
+        border:1px solid #62eaff;
+
+        color:white;
+
+        font-size:16px;
+        font-weight:bold;
+
+        cursor:pointer;
+    }
+
+    #shopContinue:hover{
+        box-shadow:
+            0 0 25px
+            rgba(60,220,255,.5);
+    }
+
+    .shopEffect{
+        margin-top:8px;
+        color:#70ffbd;
+        font-size:11px;
+        line-height:1.5;
+    }
+
+    @media(max-width:650px){
+
+        #shopPlayers{
+            grid-template-columns:1fr;
+        }
+
+        #shopPanel{
+            padding:18px;
+        }
+
+        #shopTitle{
+            font-size:23px;
+        }
+
+    }
+
+    `;
+
+    document.head.appendChild(shopStyle);
+
+
+    /* =====================================================
+       TẠO HTML CỬA HÀNG
+       ===================================================== */
+
+    const shop =
+        document.createElement("div");
+
+    shop.id = "shopScreen";
+
+    shop.innerHTML = `
+
+        <div id="shopPanel">
+
+            <div id="shopTitle">
+                🛒 CỬA HÀNG PHI CƠ
+            </div>
+
+            <div id="shopSubTitle">
+                Boss đã bị tiêu diệt!
+                Dùng điểm kiếm được để nâng cấp phi thuyền.
+            </div>
+
+            <div id="shopPlayers"></div>
+
+            <button
+                id="shopContinue"
+                onclick="continueAfterShop()"
+            >
+                🚀 TIẾP TỤC CHIẾN ĐẤU
+            </button>
+
+        </div>
+    `;
+
+    document.body.appendChild(shop);
+
+
+    /* =====================================================
+       TRẠNG THÁI CỬA HÀNG
+       ===================================================== */
+
+    let shopOpen = false;
+
+
+    /* =====================================================
+       FORMAT ĐIỂM
+       ===================================================== */
+
+    function formatScore(number){
+
+        return Number(number || 0)
+            .toLocaleString("vi-VN");
+
+    }
+
+
+    /* =====================================================
+       THÔNG TIN HIỆU ỨNG
+       ===================================================== */
+
+    function getEffectText(p){
+
+        if(!p)
+            return "";
+
+        const text = [];
+
+        if(p.shield > 0){
+
+            text.push(
+                "🛡️ Khiên: " +
+                Math.ceil(p.shield / 60) +
+                " giây"
+            );
+
+        }
+
+        if(p.power > 0){
+
+            text.push(
+                "🔥 3 đạn: " +
+                Math.ceil(p.power / 60) +
+                " giây"
+            );
+
+        }
+
+        if(p.damageBoost > 0){
+
+            text.push(
+                "💥 Hỏa lực: " +
+                Math.ceil(p.damageBoost / 60) +
+                " giây"
+            );
+
+        }
+
+        if(text.length === 0)
+            return "Không có hiệu ứng đang hoạt động";
+
+        return text.join("<br>");
+
+    }
+
+
+    /* =====================================================
+       TẠO 1 THẺ MUA
+       ===================================================== */
+
+    function createShopCard(
+        playerId,
+        type
+    ){
+
+        const item =
+            SHOP_ITEMS[type];
+
+        const p =
+            playerId === 1
+                ? player1
+                : player2;
+
+        if(!p)
+            return "";
+
+        const canBuy =
+            p.score >= item.price;
+
+        return `
+
+            <button
+                class="
+                    shopCard
+                    ${canBuy ? "" : "disabled"}
+                "
+                style="
+                    border-color:
+                    ${canBuy
+                        ? item.color
+                        : "#234559"};
+                "
+                onclick="
+                    buyShopItem(
+                        ${playerId},
+                        '${type}'
+                    )
+                "
+            >
+
+                <div>
+
+                    <div
+                        class="shopCardName"
+                        style="color:${item.color}"
+                    >
+                        ${item.name}
+                    </div>
+
+                    <div class="shopCardDesc">
+                        ${item.desc}
+                    </div>
+
+                </div>
+
+                <div class="shopCardPrice">
+                    ${formatScore(item.price)} điểm
+                </div>
+
+            </button>
+        `;
+
+    }
+
+
+    /* =====================================================
+       HIỂN THỊ SHOP
+       ===================================================== */
+
+    function renderShop(){
+
+        const container =
+            document.getElementById(
+                "shopPlayers"
+            );
+
+        container.innerHTML = "";
+
+        const players =
+            player2
+                ? [
+                    {
+                        id:1,
+                        p:player1
+                    },
+                    {
+                        id:2,
+                        p:player2
+                    }
+                ]
+                : [
+                    {
+                        id:1,
+                        p:player1
+                    }
+                ];
+
+
+        for(const data of players){
+
+            const p = data.p;
+
+            if(!p)
+                continue;
+
+            const playerBox =
+                document.createElement("div");
+
+            playerBox.className =
+                "shopPlayer " +
+                (
+                    data.id === 1
+                        ? "p1"
+                        : "p2"
+                );
+
+
+            playerBox.innerHTML = `
+
+                <div class="shopPlayerTitle">
+                    🚀 NGƯỜI CHƠI ${data.id}
+                </div>
+
+                <div class="shopMoney">
+                    💰
+                    <span
+                        id="shopScore${data.id}"
+                    >
+                        ${formatScore(p.score)}
+                    </span>
+                    điểm
+                </div>
+
+                <div class="shopCards">
+
+                    ${createShopCard(
+                        data.id,
+                        "life"
+                    )}
+
+                    ${createShopCard(
+                        data.id,
+                        "shield"
+                    )}
+
+                    ${createShopCard(
+                        data.id,
+                        "power"
+                    )}
+
+                    ${createShopCard(
+                        data.id,
+                        "damage"
+                    )}
+
+                </div>
+
+                <div
+                    class="shopEffect"
+                    id="shopEffect${data.id}"
+                >
+                    ${getEffectText(p)}
+                </div>
+
+            `;
+
+            container.appendChild(
+                playerBox
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       MỞ SHOP
+       ===================================================== */
+
+    function openShop(){
+
+        shopOpen = true;
+
+        running = false;
+
+        renderShop();
+
+        document.getElementById(
+            "shopScreen"
+        ).style.display = "flex";
+
+        document.getElementById(
+            "help"
+        ).textContent =
+            "🛒 Mua vật phẩm bằng điểm sau khi hạ Boss";
+
+        draw();
+
+    }
+
+
+    /* =====================================================
+       ĐÓNG SHOP / TIẾP TỤC
+       ===================================================== */
+
+    window.continueAfterShop =
+        function(){
+
+            if(!shopOpen)
+                return;
+
+            shopOpen = false;
+
+            document.getElementById(
+                "shopScreen"
+            ).style.display = "none";
+
+            running = true;
+
+            lastTime =
+                performance.now();
+
+            document.getElementById(
+                "help"
+            ).textContent =
+                mode === "mouse"
+                    ? "🖱️ Di chuyển chuột • GIỮ CLICK để bắn • ↑ AUTO FIRE"
+                    : mode === "keyboard"
+                        ? "⌨️ A/D hoặc ←/→ • SPACE bắn • ↑ AUTO FIRE"
+                        : "👥 P1: A/D + SPACE + W AUTO • P2: ←/→ + ENTER + ↑ AUTO";
+
+            requestAnimationFrame(loop);
+
+        };
+
+
+    /* =====================================================
+       MUA VẬT PHẨM
+       ===================================================== */
+
+    window.buyShopItem =
+        function(playerId,type){
+
+            const p =
+                playerId === 1
+                    ? player1
+                    : player2;
+
+            if(!p)
+                return;
+
+            const item =
+                SHOP_ITEMS[type];
+
+            if(!item)
+                return;
+
+
+            /*
+                Không đủ điểm
+            */
+
+            if(p.score < item.price){
+
+                tone(
+                    140,
+                    .12,
+                    "square",
+                    .04,
+                    -40
+                );
+
+                return;
+
+            }
+
+
+            /*
+                TRỪ ĐIỂM
+            */
+
+            p.score -= item.price;
+
+
+            /* =========================================
+               +1 MẠNG
+               ========================================= */
+
+            if(type === "life"){
+
+                p.hp++;
+
+                /*
+                    Nếu người chơi đã chết
+                    thì mua mạng sẽ hồi sinh.
+                */
+
+                if(!p.alive){
+
+                    p.alive = true;
+
+                    p.x =
+                        playerId === 1
+                            ? W*.35
+                            : W*.70;
+
+                    p.y = H-75;
+
+                    p.targetX = p.x;
+
+                }
+
+            }
+
+
+            /* =========================================
+               +10 GIÂY BẢO VỆ
+               ========================================= */
+
+            if(type === "shield"){
+
+                p.shield =
+                    Math.max(
+                        0,
+                        p.shield
+                    ) + 600;
+
+            }
+
+
+            /* =========================================
+               +10 GIÂY BẮN NHIỀU ĐẠN
+               ========================================= */
+
+            if(type === "power"){
+
+                p.power =
+                    Math.max(
+                        0,
+                        p.power
+                    ) + 600;
+
+            }
+
+
+            /* =========================================
+               +10 GIÂY TĂNG LỰC BẮN
+               ========================================= */
+
+            if(type === "damage"){
+
+                p.damageBoost =
+                    Math.max(
+                        0,
+                        p.damageBoost
+                    ) + 600;
+
+            }
+
+
+            /*
+                Âm thanh mua hàng
+            */
+
+            tone(
+                700,
+                .08,
+                "sine",
+                .06,
+                250
+            );
+
+            setTimeout(
+                () => {
+
+                    tone(
+                        1100,
+                        .10,
+                        "sine",
+                        .05,
+                        250
+                    );
+
+                },
+                70
+            );
+
+
+            updateUI();
+
+            renderShop();
+
+        };
+
+
+    /* =====================================================
+       THÊM DAMAGE BOOST VÀO PLAYER UPDATE
+       ===================================================== */
+
+    const originalUpdatePlayer =
+        updatePlayer;
+
+    updatePlayer =
+        function(p,id,dt){
+
+            originalUpdatePlayer(
+                p,
+                id,
+                dt
+            );
+
+            if(!p)
+                return;
+
+            p.damageBoost =
+                Math.max(
+                    0,
+                    (p.damageBoost || 0)-dt
+                );
+
+        };
+
+
+    /* =====================================================
+       TĂNG LỰC BẮN
+       ===================================================== */
+
+    const originalShootPlayer =
+        shootPlayer;
+
+    shootPlayer =
+        function(p){
+
+            if(!p)
+                return;
+
+            const before =
+                bullets.length;
+
+            originalShootPlayer(p);
+
+            /*
+                originalShootPlayer đã tạo đạn.
+                Ta tăng damage của những viên đạn
+                vừa tạo nếu đang có HỎA LỰC.
+            */
+
+            if(
+                p.damageBoost > 0
+            ){
+
+                for(
+                    let i=before;
+                    i<bullets.length;
+                    i++
+                ){
+
+                    bullets[i].damage += 1;
+
+                    /*
+                        Đổi màu để người chơi
+                        nhận biết đang có hỏa lực.
+                    */
+
+                    bullets[i].color =
+                        "#ff9d45";
+
+                }
+
+            }
+
+        };
+
+
+    /* =====================================================
+       SAU KHI HẠ BOSS -> MỞ SHOP
+       ===================================================== */
+
+    const originalDestroyBoss =
+        destroyBoss;
+
+    destroyBoss =
+        function(){
+
+            /*
+                Chạy toàn bộ logic hạ boss
+                hiện tại của game trước.
+            */
+
+            originalDestroyBoss();
+
+            /*
+                Boss đã chết.
+                Điểm đã được cộng.
+                Level đã tăng.
+                Bây giờ mở cửa hàng.
+            */
+
+            setTimeout(
+                () => {
+
+                    if(
+                        !running &&
+                        !document
+                            .getElementById(
+                                "gameOver"
+                            )
+                            .style
+                            .display === "flex"
+                    ){
+                        openShop();
+                    }
+
+                    else{
+
+                        /*
+                            Trong trường hợp game
+                            vẫn còn hoạt động.
+                        */
+
+                        openShop();
+
+                    }
+
+                },
+                100
+            );
+
+        };
+
+
+    /* =====================================================
+       ĐỔI UI SCORE / HP SANG TIẾNG VIỆT
+       ===================================================== */
+
+    function changeGameLabels(){
+
+        const labels =
+            document.querySelectorAll(
+                ".stat small"
+            );
+
+        labels.forEach(
+            label => {
+
+                const text =
+                    label.textContent
+                        .trim()
+                        .toUpperCase();
+
+                if(text === "SCORE")
+                    label.textContent =
+                        "ĐIỂM";
+
+                if(text === "HP")
+                    label.textContent =
+                        "MẠNG";
+
+            }
+        );
+
+    }
+
+
+    changeGameLabels();
+
+
+    /* =====================================================
+       HIỂN THỊ SHOP KHI BOSS CHẾT
+       ===================================================== */
+
+    window.openShop =
+        openShop;
+
+
+    console.log(
+        "✅ Đã thêm hệ thống Cửa hàng Phi Cơ!"
+    );
+
+})();
+
 
 /* =====================================================
    CANVAS
