@@ -520,6 +520,85 @@ button span{
         font-size:14px;
     }
 }
+.effectRow {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.effectCircle {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(5, 15, 25, 0.9);
+
+    border: 2px solid #334;
+
+    color: white;
+
+    opacity: 0.35;
+
+    box-sizing: border-box;
+}
+
+.effectCircle span {
+    font-size: 9px;
+    font-weight: bold;
+    line-height: 10px;
+}
+
+.effectCircle small {
+    font-size: 12px;
+    line-height: 13px;
+}
+
+
+/* Khi hiệu ứng đang hoạt động */
+
+.effectCircle.active {
+    opacity: 1;
+}
+
+
+/* BẢO VỆ */
+
+#shieldUI1,
+#shieldUI2 {
+    border-color: #35ff78;
+
+    box-shadow:
+        0 0 8px rgba(53,255,120,.5);
+}
+
+
+/* NHIỀU ĐẠN */
+
+#powerUI1,
+#powerUI2 {
+    border-color: #ff4de1;
+
+    box-shadow:
+        0 0 8px rgba(255,77,225,.5);
+}
+
+
+/* BẮN NHANH */
+
+#rapidUI1,
+#rapidUI2 {
+    border-color: #ffd43b;
+
+    box-shadow:
+        0 0 8px rgba(255,212,59,.5);
+}
+
 </style>
 </head>
 
@@ -531,47 +610,91 @@ button span{
 
     <div class="playerUI">
 
-        <div class="playerName p1name">
-            🚀 PLAYER 1
+    <div class="playerName p1name">
+        🚀 PLAYER 1
+    </div>
+
+    <div class="row">
+
+        <div class="stat">
+            <small>ĐIỂM</small>
+            <b id="score1">2840</b>
         </div>
 
-        <div class="row">
-
-            <div class="stat">
-                <small>Score</small>
-                <b id="score1">0</b>
-            </div>
-
-            <div class="stat">
-                <small>HP</small>
-                <b id="hp1">3</b>
-            </div>
-
+        <div class="stat">
+            <small>MẠNG</small>
+            <b id="hp1">5</b>
         </div>
 
     </div>
 
-    <div class="playerUI p2">
 
-        <div class="playerName p2name">
-            🚀 PLAYER 2
+    <!-- 3 HIỆU ỨNG PLAYER 1 -->
+
+    <div class="effectRow">
+
+        <div class="effectCircle" id="shieldUI1">
+            <span id="shieldTime1">0</span>
+            <small>🛡️</small>
         </div>
 
-        <div class="row">
+        <div class="effectCircle" id="powerUI1">
+            <span id="powerTime1">0</span>
+            <small>🔥</small>
+        </div>
 
-            <div class="stat">
-                <small>Score</small>
-                <b id="score2">0</b>
-            </div>
-
-            <div class="stat">
-                <small>HP</small>
-                <b id="hp2">3</b>
-            </div>
-
+        <div class="effectCircle" id="rapidUI1">
+            <span id="rapidTime1">0</span>
+            <small>⚡</small>
         </div>
 
     </div>
+
+</div>
+<div class="playerUI p2">
+
+    <div class="playerName p2name">
+        🚀 PLAYER 2
+    </div>
+
+    <div class="row">
+
+        <div class="stat">
+            <small>ĐIỂM</small>
+            <b id="score2">0</b>
+        </div>
+
+        <div class="stat">
+            <small>MẠNG</small>
+            <b id="hp2">0</b>
+        </div>
+
+    </div>
+
+
+    <!-- 3 HIỆU ỨNG PLAYER 2 -->
+
+    <div class="effectRow">
+
+        <div class="effectCircle" id="shieldUI2">
+            <span id="shieldTime2">0</span>
+            <small>🛡️</small>
+        </div>
+
+        <div class="effectCircle" id="powerUI2">
+            <span id="powerTime2">0</span>
+            <small>🔥</small>
+        </div>
+
+        <div class="effectCircle" id="rapidUI2">
+            <span id="rapidTime2">0</span>
+            <small>⚡</small>
+        </div>
+
+    </div>
+
+</div>
+
 
 </div>
 
@@ -7107,17 +7230,12 @@ function loop(time){
 
     lastTime = time;
 
-    updatePlayer(
-        player1,
-        1,
-        dt
-    );
+    updatePlayer(player1, 1, dt);
+updatePlayer(player2, 2, dt);
 
-    updatePlayer(
-        player2,
-        2,
-        dt
-    );
+updateEffectDisplay(player1, 1);
+updateEffectDisplay(player2, 2);
+
 
     updateBullets(dt);
 
@@ -7158,6 +7276,59 @@ resize();
 createStars();
 
 draw();
+
+function updateEffectDisplay(player, id) {
+
+    updateOneEffectDisplay(
+        player.shield,
+        "shieldUI" + id,
+        "shieldTime" + id
+    );
+
+    updateOneEffectDisplay(
+        player.power,
+        "powerUI" + id,
+        "powerTime" + id
+    );
+
+    updateOneEffectDisplay(
+        player.rapid,
+        "rapidUI" + id,
+        "rapidTime" + id
+    );
+
+}
+
+
+function updateOneEffectDisplay(time, circleId, textId) {
+
+    const circle =
+        document.getElementById(circleId);
+
+    const text =
+        document.getElementById(textId);
+
+    if (!circle || !text)
+        return;
+
+
+    if (time > 0) {
+
+        circle.classList.add("active");
+
+        text.textContent =
+            Math.ceil(time / 60) + "s";
+
+    } else {
+
+        circle.classList.remove("active");
+
+        text.textContent = "0";
+
+    }
+
+}
+
 
 </script>
 
