@@ -933,11 +933,11 @@ button span{
     const SHOP_ITEMS = {
 
     life:{
-        name:"🚀 PHI CƠ SINH TỒN",
-        desc:"+1 mạng",
-        price:2500,
-        color:"#45ddff"
-    },
+    name:"🚀 MỞ RỘNG SỨC CHỨA",
+    desc:"+1 sức chứa mạng",
+    price:2500,
+    color:"#45ddff"
+},
 
     shield:{
         name:"🛡️ KHOANG CHỨA BẢO VỆ",
@@ -1280,7 +1280,7 @@ button span{
 
     return `
         ❤️ Mạng:
-        ${p.hp} / ${p.hpMax}
+        ${p.hpMax}
         <br>
 
         🛡️ Khiên:
@@ -2845,19 +2845,23 @@ function makePlayer(x,color){
 
         color,
 
-        hp:3, 
-		hpMax:3, 
-		score:0,
+        // MẠNG HIỆN CÓ
+        hp:3,
+
+        // SỨC CHỨA MẠNG
+        hpMax:5,
+
+        score:0,
 
         speed:7,
 
         cooldown:0,
 
         rapid:0,
-		rapidMax:600,
+        rapidMax:600,
 
-		shield:0,
-		shieldMax:600,
+        shield:0,
+        shieldMax:600,
 
         power:0,
         powerMax:600,
@@ -2869,7 +2873,6 @@ function makePlayer(x,color){
         alive:true
     };
 }
-
 
 /* =====================================================
    START
@@ -2993,10 +2996,10 @@ function updateUI(){
         player1 ? player1.score : 0;
 
     document.getElementById("hp1").textContent =
-        player1 ? player1.hp : 0;
+    player1 ? player1.hp : 0;
 
-    document.getElementById("score2").textContent =
-        player2 ? player2.score : 0;
+    document.getElementById("hp2").textContent =
+    player2 ? player2.hp : 0;
 
     document.getElementById("hp2").textContent =
         player2 ? player2.hp : 0;
@@ -3550,7 +3553,7 @@ function spawnEnemy(){
 
             radius:size,
 
-            hp:5,
+            hp:3,
             maxHp:5,
 
             speed:
@@ -4460,12 +4463,13 @@ function collectItem(item,p){
 
     if(item.type === "heal"){
 
-        p.hp =
-            Math.min(
-                5,
-                p.hp+1
-            );
-    }
+    p.hp =
+        Math.min(
+            p.hpMax,
+            p.hp + 1
+        );
+
+}
 
     if(item.type === "rapid"){
 
@@ -7067,7 +7071,10 @@ function resetLevelUpgrades(){
             còn lại của level cũ
         */
 
-        p.rapid = 0;
+p.hp = 3;
+p.hpMax = 5;
+
+p.rapid = 0;
 p.rapidMax = 600;
 
 p.shield = 0;
