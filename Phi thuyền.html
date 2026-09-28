@@ -910,7 +910,7 @@ button span{
         */
 
             p.damageBoost = 0;
-    p.damageBoostMax = 600;
+			p.damageBoostMax = 600;
 
         return p;
     };
@@ -4428,6 +4428,16 @@ if(item.type === "power"){
         Math.min(
             p.powerMax,
             p.power + 600
+        );
+
+}
+
+if(item.type === "damage"){
+
+    p.damageBoost =
+        Math.min(
+            p.damageBoostMax,
+            p.damageBoost + 600
         );
 
 }
