@@ -862,35 +862,35 @@ button span{
 
     const SHOP_ITEMS = {
 
-        life:{
-            name:"🚀 PHI CƠ SINH TỒN",
-            desc:"+1 mạng",
-            price:1200,
-            color:"#45ddff"
-        },
+    life:{
+        name:"🚀 PHI CƠ SINH TỒN",
+        desc:"+1 mạng",
+        price:1200,
+        color:"#45ddff"
+    },
 
-        shield:{
-            name:"🛡️ PHI CƠ KHIÊN",
-            desc:"+10 giây bảo vệ",
-            price:600,
-            color:"#55ff7a"
-        },
+    shield:{
+        name:"🛡️ KHOANG CHỨA BẢO VỆ",
+        desc:"+10 giây sức chứa khiên",
+        price:600,
+        color:"#55ff7a"
+    },
 
-        power:{
-            name:"🔥 PHI CƠ LIÊN KÍCH",
-            desc:"+10 giây bắn 3 đạn",
-            price:600,
-            color:"#ff4fd8"
-        },
+    power:{
+        name:"🔥 KHOANG CHỨA ĐẠN",
+        desc:"+10 giây sức chứa bắn 3 đạn",
+        price:600,
+        color:"#ff4fd8"
+    },
 
-        damage:{
-            name:"💥 PHI CƠ HỎA LỰC",
-            desc:"+10 giây tăng lực bắn",
-            price:700,
-            color:"#ff9d45"
-        }
+    damage:{
+        name:"💥 KHOANG CHỨA HỎA LỰC",
+        desc:"+10 giây sức chứa lực bắn",
+        price:700,
+        color:"#ff9d45"
+    }
 
-    };
+};
 
 
     /* =====================================================
@@ -909,7 +909,8 @@ button span{
             600 = khoảng 10 giây.
         */
 
-        p.damageBoost = 0;
+            p.damageBoost = 0;
+    p.damageBoostMax = 600;
 
         return p;
     };
@@ -1204,48 +1205,32 @@ button span{
 
     function getEffectText(p){
 
-        if(!p)
-            return "";
+    if(!p)
+        return "";
 
-        const text = [];
+    return `
+        🛡️ Khiên:
+        ${Math.ceil(p.shield / 60)}
+        /
+        ${Math.ceil(p.shieldMax / 60)}
+        giây
+        <br>
 
-        if(p.shield > 0){
+        🔥 3 đạn:
+        ${Math.ceil(p.power / 60)}
+        /
+        ${Math.ceil(p.powerMax / 60)}
+        giây
+        <br>
 
-            text.push(
-                "🛡️ Khiên: " +
-                Math.ceil(p.shield / 60) +
-                " giây"
-            );
+        💥 Hỏa lực:
+        ${Math.ceil(p.damageBoost / 60)}
+        /
+        ${Math.ceil(p.damageBoostMax / 60)}
+        giây
+    `;
 
-        }
-
-        if(p.power > 0){
-
-            text.push(
-                "🔥 3 đạn: " +
-                Math.ceil(p.power / 60) +
-                " giây"
-            );
-
-        }
-
-        if(p.damageBoost > 0){
-
-            text.push(
-                "💥 Hỏa lực: " +
-                Math.ceil(p.damageBoost / 60) +
-                " giây"
-            );
-
-        }
-
-        if(text.length === 0)
-            return "Không có hiệu ứng đang hoạt động";
-
-        return text.join("<br>");
-
-    }
-
+}
 
     /* =====================================================
        TẠO 1 THẺ MUA
@@ -1566,49 +1551,40 @@ button span{
             }
 
 
-            /* =========================================
-               +10 GIÂY BẢO VỆ
-               ========================================= */
+/* =========================================
+   TĂNG SỨC CHỨA BẢO VỆ
+   Không kích hoạt khiên
+   ========================================= */
 
-            if(type === "shield"){
+if(type === "shield"){
 
-                p.shield =
-                    Math.max(
-                        0,
-                        p.shield
-                    ) + 600;
+    p.shieldMax += 600;
 
-            }
+}
 
 
-            /* =========================================
-               +10 GIÂY BẮN NHIỀU ĐẠN
-               ========================================= */
+/* =========================================
+   TĂNG SỨC CHỨA 3 ĐẠN
+   Không kích hoạt 3 đạn
+   ========================================= */
 
-            if(type === "power"){
+if(type === "power"){
 
-                p.power =
-                    Math.max(
-                        0,
-                        p.power
-                    ) + 600;
+    p.powerMax += 600;
 
-            }
+}
 
 
-            /* =========================================
-               +10 GIÂY TĂNG LỰC BẮN
-               ========================================= */
+/* =========================================
+   TĂNG SỨC CHỨA HỎA LỰC
+   Không kích hoạt hỏa lực
+   ========================================= */
 
-            if(type === "damage"){
+if(type === "damage"){
 
-                p.damageBoost =
-                    Math.max(
-                        0,
-                        p.damageBoost
-                    ) + 600;
+    p.damageBoostMax += 600;
 
-            }
+}
 
 
             /*
@@ -2820,9 +2796,13 @@ function makePlayer(x,color){
 
         cooldown:0,
 
-        rapid:0,
+                rapid:0,
+
         shield:0,
+        shieldMax:600,
+
         power:0,
+        powerMax:600,
 
         shooting:false,
 
@@ -4432,11 +4412,25 @@ function collectItem(item,p){
     if(item.type === "rapid")
         p.rapid = 600;
 
-    if(item.type === "shield")
-        p.shield = 600;
+if(item.type === "shield"){
 
-    if(item.type === "power")
-        p.power = 600;
+    p.shield =
+        Math.min(
+            p.shieldMax,
+            p.shield + 600
+        );
+
+}
+
+if(item.type === "power"){
+
+    p.power =
+        Math.min(
+            p.powerMax,
+            p.power + 600
+        );
+
+}
 
     soundItem();
 
@@ -6977,6 +6971,44 @@ function drawBossSkull(){
     ctx.stroke();
 }
 
+/* =====================================================
+   RESET SỨC CHỨA KHI KẾT THÚC LEVEL
+   ===================================================== */
+
+function resetLevelUpgrades(){
+
+    const players =
+        player2
+            ? [player1,player2]
+            : [player1];
+
+    for(const p of players){
+
+        if(!p)
+            continue;
+
+        /*
+            Xóa thời gian hiệu ứng
+            còn lại của level cũ
+        */
+
+        p.shield = 0;
+        p.power = 0;
+        p.damageBoost = 0;
+
+
+        /*
+            Đưa sức chứa về mặc định
+            600 frame ≈ 10 giây
+        */
+
+        p.shieldMax = 600;
+        p.powerMax = 600;
+        p.damageBoostMax = 600;
+
+    }
+
+}
 
 /* =====================================================
    DESTROY BOSS
@@ -7038,9 +7070,19 @@ function destroyBoss(){
 
     boss = null;
 
-    hideBossUI();
+hideBossUI();
 
-    level++;
+
+/*
+    Level cũ đã kết thúc.
+    Xóa hiệu ứng và reset
+    sức chứa về 10 giây.
+*/
+
+resetLevelUpgrades();
+
+
+level++;
 
     document.getElementById(
         "levelDisplay"
