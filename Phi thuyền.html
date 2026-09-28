@@ -567,6 +567,7 @@ button span{
 }
 
 
+
 /* BẢO VỆ */
 
 #shieldUI1,
@@ -599,21 +600,83 @@ button span{
         0 0 8px rgba(255,212,59,.5);
 }
 
+```css
+/* ================================
+   KHUNG PHI THUYỀN TRONG MENU
+   ================================ */
+
 .battleShipCanvasBox {
-    width: 100%;
-    height: 175px;
+    width: 420px;
+    max-width: 100%;
+
+    height: 230px;
+
+    margin: 0 auto 18px;
+
+    position: relative;
+
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
     overflow: hidden;
-    margin: 0 auto 8px;
+
+    border-radius: 18px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0, 200, 255, 0.12),
+            rgba(0, 0, 0, 0.20)
+        );
+
+    border: 1px solid rgba(80, 220, 255, 0.35);
+
+    box-shadow:
+        inset 0 0 25px rgba(0, 180, 255, 0.10),
+        0 0 20px rgba(0, 180, 255, 0.08);
 }
 
+
+/* Canvas phi thuyền */
+
 #battleShipCanvas {
-    width: 330px;
-    height: auto;
     display: block;
+
+    width: 420px;
+    height: 230px;
+
+    max-width: 100%;
+
+    margin: 0 auto;
+
+    position: relative;
+
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+
+    transform: none;
 }
+
+
+/* Màn hình nhỏ */
+
+@media (max-width: 600px) {
+
+    .battleShipCanvasBox {
+        width: 100%;
+        height: 190px;
+    }
+
+    #battleShipCanvas {
+        width: 100%;
+        height: 190px;
+    }
+}
+```
+
 </style>
 </head>
 
@@ -1210,34 +1273,35 @@ button span{
        THÔNG TIN HIỆU ỨNG
        ===================================================== */
 
-    function getEffectText(p){
-
-    if(!p)
+    function getEffectText(p) {
+    if (!p) {
         return "";
+    }
 
     return `
+        ❤️ Mạng:
+        ${p.hp} / ${p.hpMax}
+        <br>
+
         🛡️ Khiên:
-        ${Math.ceil(p.shield / 60)}
-        /
+        ${Math.ceil(p.shield / 60)} /
         ${Math.ceil(p.shieldMax / 60)}
         giây
         <br>
 
         🔥 3 đạn:
-        ${Math.ceil(p.power / 60)}
-        /
+        ${Math.ceil(p.power / 60)} /
         ${Math.ceil(p.powerMax / 60)}
         giây
         <br>
 
         ⚡ Hỏa lực:
-${Math.ceil(p.rapid / 60)}
-/
-${Math.ceil(p.rapidMax / 60)}
-giây
+        ${Math.ceil(p.rapid / 60)} /
+        ${Math.ceil(p.rapidMax / 60)}
+        giây
     `;
-
 }
+
 
     /* =====================================================
        TẠO 1 THẺ MUA
@@ -1531,31 +1595,16 @@ giây
                +1 MẠNG
                ========================================= */
 
-            if(type === "life"){
+            /* =========================================
+   TĂNG SỨC CHỨA MẠNG
+   Không cộng mạng ngay
+   Không hồi sinh ngay
+   ========================================= */
 
-                p.hp++;
+if (type === "life") {
+    p.hpMax++;
+}
 
-                /*
-                    Nếu người chơi đã chết
-                    thì mua mạng sẽ hồi sinh.
-                */
-
-                if(!p.alive){
-
-                    p.alive = true;
-
-                    p.x =
-                        playerId === 1
-                            ? W*.35
-                            : W*.70;
-
-                    p.y = H-75;
-
-                    p.targetX = p.x;
-
-                }
-
-            }
 
 
 /* =========================================
@@ -2796,8 +2845,9 @@ function makePlayer(x,color){
 
         color,
 
-        hp:3,
-        score:0,
+        hp:3, 
+		hpMax:3, 
+		score:0,
 
         speed:7,
 
