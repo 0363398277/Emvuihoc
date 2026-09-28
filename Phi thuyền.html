@@ -1223,11 +1223,11 @@ button span{
         giây
         <br>
 
-        💥 Hỏa lực:
-        ${Math.ceil(p.damageBoost / 60)}
-        /
-        ${Math.ceil(p.damageBoostMax / 60)}
-        giây
+        ⚡ Hỏa lực:
+${Math.ceil(p.rapid / 60)}
+/
+${Math.ceil(p.rapidMax / 60)}
+giây
     `;
 
 }
@@ -1582,7 +1582,7 @@ if(type === "power"){
 
 if(type === "damage"){
 
-    p.damageBoostMax += 600;
+    p.rapidMax += 600;
 
 }
 
@@ -2796,10 +2796,11 @@ function makePlayer(x,color){
 
         cooldown:0,
 
-                rapid:0,
+        rapid:0,
+		rapidMax:600,
 
-        shield:0,
-        shieldMax:600,
+		shield:0,
+		shieldMax:600,
 
         power:0,
         powerMax:600,
@@ -4409,8 +4410,15 @@ function collectItem(item,p){
             );
     }
 
-    if(item.type === "rapid")
-        p.rapid = 600;
+    if(item.type === "rapid"){
+
+    p.rapid =
+        Math.min(
+            p.rapidMax,
+            p.rapid + 600
+        );
+
+}
 
 if(item.type === "shield"){
 
@@ -7002,19 +7010,14 @@ function resetLevelUpgrades(){
             còn lại của level cũ
         */
 
-        p.shield = 0;
-        p.power = 0;
-        p.damageBoost = 0;
+        p.rapid = 0;
+p.rapidMax = 600;
 
+p.shield = 0;
+p.shieldMax = 600;
 
-        /*
-            Đưa sức chứa về mặc định
-            600 frame ≈ 10 giây
-        */
-
-        p.shieldMax = 600;
-        p.powerMax = 600;
-        p.damageBoostMax = 600;
+p.power = 0;
+p.powerMax = 600;
 
     }
 
