@@ -2992,19 +2992,27 @@ function resetGame(){
 
 function updateUI(){
 
+    /* ===============================
+       PLAYER 1
+       =============================== */
+
     document.getElementById("score1").textContent =
         player1 ? player1.score : 0;
 
     document.getElementById("hp1").textContent =
-    player1 ? player1.hp : 0;
+        player1 ? player1.hpMax : 0;
+
+
+    /* ===============================
+       PLAYER 2
+       =============================== */
+
+    document.getElementById("score2").textContent =
+        player2 ? player2.score : 0;
 
     document.getElementById("hp2").textContent =
-    player2 ? player2.hp : 0;
-
-    document.getElementById("hp2").textContent =
-        player2 ? player2.hp : 0;
+        player2 ? player2.hpMax : 0;
 }
-
 
 /* =====================================================
    KEYBOARD
