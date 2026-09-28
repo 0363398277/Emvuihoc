@@ -8225,6 +8225,9 @@ draw();
 
 function updateEffectDisplay(player, id) {
 
+    // Chế độ 1 người không có Player 2
+    if (!player) return;
+
     updateOneEffectDisplay(
         player.shield,
         "shieldUI" + id,
@@ -8242,8 +8245,8 @@ function updateEffectDisplay(player, id) {
         "rapidUI" + id,
         "rapidTime" + id
     );
-
 }
+
 
 
 function updateOneEffectDisplay(time, circleId, textId) {
