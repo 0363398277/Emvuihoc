@@ -599,6 +599,21 @@ button span{
         0 0 8px rgba(255,212,59,.5);
 }
 
+.battleShipCanvasBox {
+    width: 100%;
+    height: 175px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin: 0 auto 8px;
+}
+
+#battleShipCanvas {
+    width: 330px;
+    height: auto;
+    display: block;
+}
 </style>
 </head>
 
@@ -781,17 +796,9 @@ button span{
 
     <div class="panel">
 
-        <h1>GALAXY SHOOTER</h1>
-
-        <p>
-            🚀 Phi thuyền người chơi<br>
-            👽 Phi thuyền người ngoài hành tinh<br>
-            🦠 Virus • 🪨 Khối đá<br>
-            👹 <b>40 BOSS NGẪU NHIÊN</b><br>
-            ✨ Vật phẩm phát sáng<br>
-            ⚡ Chuyển động mượt tối ưu FPS<br>
-            🔊 Âm thanh nền và hiệu ứng chiến đấu
-        </p>
+<div class="battleShipCanvasBox">
+    <canvas id="battleShipCanvas" width="420" height="230"></canvas>
+</div>
 
         <div class="buttons">
 
@@ -865,28 +872,28 @@ button span{
     life:{
         name:"🚀 PHI CƠ SINH TỒN",
         desc:"+1 mạng",
-        price:1200,
+        price:2500,
         color:"#45ddff"
     },
 
     shield:{
         name:"🛡️ KHOANG CHỨA BẢO VỆ",
-        desc:"+10 giây sức chứa khiên",
-        price:600,
+        desc:"+5 giây sức chứa khiên",
+        price:1000,
         color:"#55ff7a"
     },
 
     power:{
         name:"🔥 KHOANG CHỨA ĐẠN",
-        desc:"+10 giây sức chứa bắn 3 đạn",
-        price:600,
+        desc:"+5 giây sức chứa bắn 3 đạn",
+        price:1000,
         color:"#ff4fd8"
     },
 
     damage:{
         name:"💥 KHOANG CHỨA HỎA LỰC",
-        desc:"+10 giây sức chứa lực bắn",
-        price:700,
+        desc:"+5 giây sức chứa lực bắn",
+        price:1000,
         color:"#ff9d45"
     }
 
@@ -1558,7 +1565,7 @@ giây
 
 if(type === "shield"){
 
-    p.shieldMax += 600;
+    p.shieldMax += 300;
 
 }
 
@@ -1570,7 +1577,7 @@ if(type === "shield"){
 
 if(type === "power"){
 
-    p.powerMax += 600;
+    p.powerMax += 300;
 
 }
 
@@ -1582,7 +1589,7 @@ if(type === "power"){
 
 if(type === "damage"){
 
-    p.rapidMax += 600;
+    p.rapidMax += 300;
 
 }
 
@@ -7383,7 +7390,572 @@ function updateOneEffectDisplay(time, circleId, textId) {
     }
 
 }
+/* =========================================
+   PHI THUYỀN CHIẾN ĐẤU - CANVAS
+   ========================================= */
 
+function drawBattleShip(){
+
+    const canvas =
+        document.getElementById("battleShipCanvas");
+
+    if(!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    const W = canvas.width;
+const H = canvas.height;
+
+ctx.imageSmoothingEnabled = true;
+
+    ctx.clearRect(0,0,W,H);
+
+    /* =========================
+       NỀN KHÔNG GIAN
+       ========================= */
+
+    const bg =
+        ctx.createRadialGradient(
+            W/2,
+            H/2,
+            10,
+            W/2,
+            H/2,
+            220
+        );
+
+    bg.addColorStop(0,"rgba(20,60,100,.28)");
+    bg.addColorStop(.5,"rgba(5,20,40,.18)");
+    bg.addColorStop(1,"rgba(0,0,0,0)");
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+
+    /* =========================
+       HÀO QUANG PHI THUYỀN
+       ========================= */
+
+    ctx.save();
+
+    ctx.translate(W/2,H/2 + 5);
+
+    ctx.shadowBlur = 35;
+    ctx.shadowColor = "#20eaff";
+
+    ctx.strokeStyle =
+        "rgba(40,220,255,.18)";
+
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.ellipse(
+        0,
+        12,
+        150,
+        45,
+        0,
+        0,
+        Math.PI*2
+    );
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =========================
+       ĐỘNG CƠ
+       ========================= */
+
+    function engine(x,y,size){
+
+        const g =
+            ctx.createRadialGradient(
+                x,
+                y,
+                1,
+                x,
+                y,
+                size
+            );
+
+        g.addColorStop(0,"#ffffff");
+        g.addColorStop(.25,"#63f7ff");
+        g.addColorStop(.6,"#168dff");
+        g.addColorStop(1,"rgba(0,80,255,0)");
+
+        ctx.save();
+
+        ctx.fillStyle = g;
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = "#19dfff";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            x,
+            y,
+            size * .55,
+            size,
+            0,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    engine(112,157,18);
+    engine(145,166,22);
+    engine(210,171,25);
+    engine(275,166,22);
+    engine(308,157,18);
+
+
+    /* =========================
+       CÁNH TRÁI
+       ========================= */
+
+    ctx.save();
+
+    ctx.translate(W/2,H/2 + 5);
+
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = "#22eaff";
+
+    const wingGradient =
+        ctx.createLinearGradient(
+            -160,
+            0,
+            0,
+            0
+        );
+
+    wingGradient.addColorStop(
+        0,
+        "#082c49"
+    );
+
+    wingGradient.addColorStop(
+        .5,
+        "#0b7190"
+    );
+
+    wingGradient.addColorStop(
+        1,
+        "#27eaff"
+    );
+
+    ctx.fillStyle = wingGradient;
+
+    ctx.beginPath();
+
+    ctx.moveTo(-18,-15);
+    ctx.lineTo(-65,-35);
+    ctx.lineTo(-155,28);
+    ctx.lineTo(-105,34);
+    ctx.lineTo(-42,15);
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.strokeStyle = "#53f3ff";
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+    /* đường giáp */
+
+    ctx.strokeStyle =
+        "rgba(160,250,255,.7)";
+
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    ctx.moveTo(-40,-12);
+    ctx.lineTo(-115,25);
+
+    ctx.moveTo(-60,-25);
+    ctx.lineTo(-125,18);
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =========================
+       CÁNH PHẢI
+       ========================= */
+
+    ctx.save();
+
+    ctx.translate(W/2,H/2 + 5);
+
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = "#22eaff";
+
+    const wingGradient2 =
+        ctx.createLinearGradient(
+            160,
+            0,
+            0,
+            0
+        );
+
+    wingGradient2.addColorStop(
+        0,
+        "#082c49"
+    );
+
+    wingGradient2.addColorStop(
+        .5,
+        "#0b7190"
+    );
+
+    wingGradient2.addColorStop(
+        1,
+        "#27eaff"
+    );
+
+    ctx.fillStyle = wingGradient2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(18,-15);
+    ctx.lineTo(65,-35);
+    ctx.lineTo(155,28);
+    ctx.lineTo(105,34);
+    ctx.lineTo(42,15);
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.strokeStyle = "#53f3ff";
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+    ctx.strokeStyle =
+        "rgba(160,250,255,.7)";
+
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    ctx.moveTo(40,-12);
+    ctx.lineTo(115,25);
+
+    ctx.moveTo(60,-25);
+    ctx.lineTo(125,18);
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =========================
+       THÂN PHI THUYỀN
+       ========================= */
+
+    ctx.save();
+
+    ctx.translate(W/2,H/2);
+
+    const body =
+        ctx.createLinearGradient(
+            0,
+            -80,
+            0,
+            80
+        );
+
+    body.addColorStop(
+        0,
+        "#d9fbff"
+    );
+
+    body.addColorStop(
+        .2,
+        "#54d8ed"
+    );
+
+    body.addColorStop(
+        .5,
+        "#16728e"
+    );
+
+    body.addColorStop(
+        .8,
+        "#082d48"
+    );
+
+    body.addColorStop(
+        1,
+        "#020c18"
+    );
+
+    ctx.fillStyle = body;
+
+    ctx.shadowBlur = 22;
+    ctx.shadowColor = "#20eaff";
+
+    ctx.beginPath();
+
+    ctx.moveTo(0,-82);
+
+    ctx.quadraticCurveTo(
+        -25,-55,
+        -38,-8
+    );
+
+    ctx.lineTo(-32,53);
+
+    ctx.lineTo(-15,73);
+
+    ctx.lineTo(0,82);
+
+    ctx.lineTo(15,73);
+
+    ctx.lineTo(32,53);
+
+    ctx.lineTo(38,-8);
+
+    ctx.quadraticCurveTo(
+        25,-55,
+        0,-82
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.strokeStyle = "#9effff";
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+
+    /* =========================
+       BUỒNG LÁI
+       ========================= */
+
+    const cockpit =
+        ctx.createRadialGradient(
+            0,
+            -28,
+            2,
+            0,
+            -28,
+            28
+        );
+
+    cockpit.addColorStop(
+        0,
+        "#dfffff"
+    );
+
+    cockpit.addColorStop(
+        .25,
+        "#5ef2ff"
+    );
+
+    cockpit.addColorStop(
+        .65,
+        "#1478b2"
+    );
+
+    cockpit.addColorStop(
+        1,
+        "#061d39"
+    );
+
+    ctx.fillStyle = cockpit;
+
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = "#52f7ff";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        -30,
+        18,
+        28,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle = "#b7ffff";
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+
+    /* =========================
+       LÕI NĂNG LƯỢNG
+       ========================= */
+
+    const core =
+        ctx.createRadialGradient(
+            0,
+            15,
+            1,
+            0,
+            15,
+            25
+        );
+
+    core.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    core.addColorStop(
+        .25,
+        "#54ffff"
+    );
+
+    core.addColorStop(
+        .65,
+        "#087cff"
+    );
+
+    core.addColorStop(
+        1,
+        "rgba(0,90,255,0)"
+    );
+
+    ctx.fillStyle = core;
+
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = "#00eaff";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        15,
+        20,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /* =========================
+       VŨ KHÍ
+       ========================= */
+
+    ctx.fillStyle = "#9cffff";
+
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = "#52ffff";
+
+    /* súng trái */
+
+    ctx.fillRect(
+        -27,
+        30,
+        7,
+        28
+    );
+
+    /* súng phải */
+
+    ctx.fillRect(
+        20,
+        30,
+        7,
+        28
+    );
+
+
+    /* =========================
+       ĐÈN TRANG TRÍ
+       ========================= */
+
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#ff4de1";
+
+    ctx.fillStyle = "#ff4de1";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -25,
+        3,
+        3,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        25,
+        3,
+        3,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    /* =========================
+       ĐƯỜNG VIỀN THÂN
+       ========================= */
+
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle =
+        "rgba(130,250,255,.8)";
+
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    ctx.moveTo(0,-65);
+    ctx.lineTo(0,68);
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =========================
+       TÊN
+       ========================= */
+
+    ctx.save();
+
+    ctx.textAlign = "center";
+
+    ctx.font =
+        "bold 16px Arial";
+
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = "#1de9ff";
+
+    ctx.fillStyle = "#b9faff";
+
+    ctx.fillText(
+        "⚡ PHI THUYỀN CHIẾN ĐẤU ⚡",
+        W/2,
+        215
+    );
+
+    ctx.restore();
+}
+
+
+/* Vẽ ngay khi trang tải xong */
+drawBattleShip();
 
 </script>
 
