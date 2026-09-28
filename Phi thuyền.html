@@ -7058,7 +7058,7 @@ function resetLevelUpgrades(){
 
     const players =
         player2
-            ? [player1,player2]
+            ? [player1, player2]
             : [player1];
 
     for(const p of players){
@@ -7066,25 +7066,61 @@ function resetLevelUpgrades(){
         if(!p)
             continue;
 
-        /*
-            Xóa thời gian hiệu ứng
-            còn lại của level cũ
-        */
 
-p.hp = 3;
-p.hpMax = 5;
+        /* ===============================
+           HỒI SINH KHI SANG LEVEL MỚI
+           =============================== */
 
-p.rapid = 0;
-p.rapidMax = 600;
+        p.alive = true;
 
-p.shield = 0;
-p.shieldMax = 600;
 
-p.power = 0;
-p.powerMax = 600;
+        /* ===============================
+           RESET MẠNG + SỨC CHỨA
+           =============================== */
 
+        p.hp = 3;
+        p.hpMax = 5;
+
+
+        /* ===============================
+           RESET RAPID FIRE
+           =============================== */
+
+        p.rapid = 0;
+        p.rapidMax = 600;
+
+
+        /* ===============================
+           RESET SHIELD
+           =============================== */
+
+        p.shield = 0;
+        p.shieldMax = 600;
+
+
+        /* ===============================
+           RESET POWER
+           =============================== */
+
+        p.power = 0;
+        p.powerMax = 600;
+
+
+        /* ===============================
+           RESET DAMAGE BOOST
+           =============================== */
+
+        p.damageBoost = 0;
+        p.damageBoostMax = 600;
+
+
+        /* ===============================
+           RESET TRẠNG THÁI BẮN
+           =============================== */
+
+        p.shooting = false;
+        p.cooldown = 0;
     }
-
 }
 
 /* =====================================================
