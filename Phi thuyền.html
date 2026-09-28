@@ -44,32 +44,111 @@ canvas{
 }
 
 .playerUI{
-    min-width:155px;
-    padding:10px 13px;
-    background:rgba(4,12,23,.88);
-    border:1px solid #21445c;
-    border-radius:12px;
-    box-shadow:0 0 18px rgba(0,200,255,.08);
+    position:relative;
+
+    min-width:190px;
+
+    padding:12px 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(5,25,43,.96),
+            rgba(2,8,18,.94)
+        );
+
+    border:1px solid rgba(69,221,255,.45);
+
+    border-radius:16px;
+
+    box-shadow:
+        0 0 12px rgba(0,220,255,.12),
+        inset 0 0 20px rgba(0,180,255,.06);
+
+    overflow:hidden;
+
+    backdrop-filter:blur(8px);
 }
 
 .playerUI.p2{
-    border-color:#70334d;
+
+    border-color:
+        rgba(255,72,157,.55);
+
     text-align:right;
+
+    box-shadow:
+        0 0 12px rgba(255,50,150,.14),
+        inset 0 0 20px rgba(255,50,150,.06);
 }
 
 .playerName{
     font-size:12px;
-    font-weight:bold;
-    letter-spacing:1px;
-}
 
+    font-weight:900;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    text-shadow:
+        0 0 8px currentColor;
+}
 .p1name{color:#45ddff}
 .p2name{color:#ff668c}
 
 .row{
+
     display:flex;
-    gap:15px;
-    margin-top:6px;
+
+    gap:24px;
+
+    margin-top:8px;
+
+    align-items:flex-end;
+}
+
+.playerUI::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:45%;
+
+    height:2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #45ddff,
+            transparent
+        );
+
+    box-shadow:
+        0 0 10px #45ddff;
+}
+
+
+.playerUI.p2::before{
+
+    left:auto;
+    right:0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #ff489d,
+            transparent
+        );
+
+    box-shadow:
+        0 0 10px #ff489d;
 }
 
 .p2 .row{
@@ -77,14 +156,62 @@ canvas{
 }
 
 .stat b{
-    font-size:18px;
+
+    display:block;
+
+    margin-top:2px;
+
+    font-size:22px;
+
+    font-weight:900;
+
+    letter-spacing:1px;
+
+    text-shadow:
+        0 0 8px currentColor;
 }
 
 .stat small{
+
     display:block;
-    color:#718798;
-    font-size:9px;
+
+    color:#7895a8;
+
+    font-size:8px;
+
+    font-weight:bold;
+
+    letter-spacing:1.5px;
+
     text-transform:uppercase;
+}
+
+.playerUI .stat:last-child b{
+
+    color:#ffffff;
+
+    min-width:28px;
+
+    text-align:center;
+
+    padding:2px 7px;
+
+    border-radius:8px;
+
+    background:
+        rgba(69,221,255,.08);
+
+    border:
+        1px solid rgba(69,221,255,.2);
+}
+
+.playerUI.p2 .stat:last-child b{
+
+    background:
+        rgba(255,72,157,.08);
+
+    border-color:
+        rgba(255,72,157,.2);
 }
 
 /* =====================================================
@@ -5046,6 +5173,12 @@ function drawItems(){
    PLAYER DRAW
 ===================================================== */
 
+/* =====================================================
+   PLAYER SHIP - NEON BATTLESHIP
+   P1: CYAN
+   P2: MAGENTA
+===================================================== */
+
 function drawPlayer(p){
 
     if(!p || !p.alive)
@@ -5058,97 +5191,745 @@ function drawPlayer(p){
         p.y
     );
 
+
+    /* =================================================
+       MÀU TÀU
+       ================================================= */
+
+    const mainColor =
+        p.color || "#45ddff";
+
+    const isP2 =
+        mainColor.toLowerCase() === "#ff668c";
+
+    const secondaryColor =
+        isP2
+            ? "#ff2fa4"
+            : "#00aaff";
+
+    const glowColor =
+        isP2
+            ? "#ff3fbd"
+            : "#32eaff";
+
+
+    /* =================================================
+       KHIÊN
+       ================================================= */
+
     if(p.shield > 0){
+
+        const pulse =
+            Math.sin(performance.now() * .006) * 2;
+
+        ctx.save();
 
         ctx.strokeStyle = "#55ff99";
 
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 25;
         ctx.shadowColor = "#55ff99";
 
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
+
+        ctx.globalAlpha =
+            .65 +
+            Math.sin(performance.now() * .008) * .15;
 
         ctx.beginPath();
 
         ctx.arc(
             0,
             0,
-            36,
+            38 + pulse,
             0,
-            Math.PI*2
+            Math.PI * 2
         );
 
         ctx.stroke();
+
+        /* vòng khiên thứ hai */
+
+        ctx.globalAlpha = .25;
+
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            43 + pulse,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.stroke();
+
+        ctx.restore();
     }
 
-    ctx.fillStyle = "#ff9d00";
 
-    ctx.shadowBlur = 12;
-    ctx.shadowColor = "#ff7b00";
+    /* =================================================
+       ÁNH SÁNG DƯỚI TÀU
+       ================================================= */
 
-    ctx.beginPath();
+    ctx.save();
 
-    ctx.moveTo(-7,15);
-    ctx.lineTo(0,34);
-    ctx.lineTo(7,15);
+    const enginePulse =
+        1 +
+        Math.sin(performance.now() * .018) * .15;
 
-    ctx.closePath();
+    ctx.globalAlpha = .25;
 
-    ctx.fill();
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = glowColor;
 
-    ctx.shadowBlur = 18;
-    ctx.shadowColor = p.color;
-    ctx.fillStyle = p.color;
-
-    ctx.beginPath();
-
-    ctx.moveTo(0,-28);
-    ctx.lineTo(-13,17);
-    ctx.lineTo(0,11);
-    ctx.lineTo(13,17);
-
-    ctx.closePath();
-
-    ctx.fill();
+    ctx.fillStyle = glowColor;
 
     ctx.beginPath();
 
-    ctx.moveTo(-6,-3);
-    ctx.lineTo(-27,18);
-    ctx.lineTo(-8,13);
-
-    ctx.closePath();
-
-    ctx.fill();
-
-    ctx.beginPath();
-
-    ctx.moveTo(6,-3);
-    ctx.lineTo(27,18);
-    ctx.lineTo(8,13);
-
-    ctx.closePath();
-
-    ctx.fill();
-
-    ctx.fillStyle = "#fff";
-
-    ctx.shadowBlur = 7;
-
-    ctx.beginPath();
-
-    ctx.arc(
+    ctx.ellipse(
         0,
-        -8,
-        5,
+        24,
+        22 * enginePulse,
+        9 * enginePulse,
         0,
-        Math.PI*2
+        0,
+        Math.PI * 2
     );
 
     ctx.fill();
 
     ctx.restore();
-}
 
+
+    /* =================================================
+       LỬA ĐỘNG CƠ
+       ================================================= */
+
+    ctx.save();
+
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = "#ff7b00";
+
+    const flameSize =
+        1 +
+        Math.sin(
+            performance.now() * .025
+        ) * .18;
+
+
+    /* Lửa ngoài */
+
+    ctx.fillStyle = "#ff7a00";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -9,
+        14
+    );
+
+    ctx.lineTo(
+        0,
+        38 * flameSize
+    );
+
+    ctx.lineTo(
+        9,
+        14
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /* Lửa giữa */
+
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = "#ffe45c";
+
+    ctx.fillStyle = "#ffd83d";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -5,
+        13
+    );
+
+    ctx.lineTo(
+        0,
+        31 * flameSize
+    );
+
+    ctx.lineTo(
+        5,
+        13
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /* Lõi trắng */
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -2.5,
+        13
+    );
+
+    ctx.lineTo(
+        0,
+        23 * flameSize
+    );
+
+    ctx.lineTo(
+        2.5,
+        13
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.restore();
+
+
+    /* =================================================
+       CÁNH TRÁI
+       ================================================= */
+
+    ctx.save();
+
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = mainColor;
+
+    const wingGradient =
+        ctx.createLinearGradient(
+            -30,
+            0,
+            0,
+            0
+        );
+
+    wingGradient.addColorStop(
+        0,
+        secondaryColor
+    );
+
+    wingGradient.addColorStop(
+        1,
+        mainColor
+    );
+
+    ctx.fillStyle =
+        wingGradient;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -7,
+        -5
+    );
+
+    ctx.lineTo(
+        -30,
+        18
+    );
+
+    ctx.lineTo(
+        -9,
+        13
+    );
+
+    ctx.lineTo(
+        -3,
+        3
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /* viền cánh */
+
+    ctx.strokeStyle =
+        glowColor;
+
+    ctx.lineWidth = 1.3;
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =================================================
+       CÁNH PHẢI
+       ================================================= */
+
+    ctx.save();
+
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = mainColor;
+
+    const wingGradient2 =
+        ctx.createLinearGradient(
+            30,
+            0,
+            0,
+            0
+        );
+
+    wingGradient2.addColorStop(
+        0,
+        secondaryColor
+    );
+
+    wingGradient2.addColorStop(
+        1,
+        mainColor
+    );
+
+    ctx.fillStyle =
+        wingGradient2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        7,
+        -5
+    );
+
+    ctx.lineTo(
+        30,
+        18
+    );
+
+    ctx.lineTo(
+        9,
+        13
+    );
+
+    ctx.lineTo(
+        3,
+        3
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /* viền cánh */
+
+    ctx.strokeStyle =
+        glowColor;
+
+    ctx.lineWidth = 1.3;
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =================================================
+       THÂN CHÍNH
+       ================================================= */
+
+    ctx.save();
+
+    ctx.shadowBlur = 22;
+    ctx.shadowColor = mainColor;
+
+
+    const bodyGradient =
+        ctx.createLinearGradient(
+            0,
+            -30,
+            0,
+            18
+        );
+
+    bodyGradient.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    bodyGradient.addColorStop(
+        .18,
+        mainColor
+    );
+
+    bodyGradient.addColorStop(
+        .65,
+        secondaryColor
+    );
+
+    bodyGradient.addColorStop(
+        1,
+        "#06121d"
+    );
+
+    ctx.fillStyle =
+        bodyGradient;
+
+
+    /* thân tàu */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -31
+    );
+
+    ctx.lineTo(
+        -12,
+        13
+    );
+
+    ctx.lineTo(
+        -5,
+        10
+    );
+
+    ctx.lineTo(
+        0,
+        17
+    );
+
+    ctx.lineTo(
+        5,
+        10
+    );
+
+    ctx.lineTo(
+        12,
+        13
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /* viền thân */
+
+    ctx.strokeStyle =
+        glowColor;
+
+    ctx.lineWidth = 1.5;
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =================================================
+       MŨI TÀU
+       ================================================= */
+
+    ctx.save();
+
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#ffffff";
+
+    const noseGradient =
+        ctx.createLinearGradient(
+            0,
+            -30,
+            0,
+            -10
+        );
+
+    noseGradient.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    noseGradient.addColorStop(
+        .4,
+        mainColor
+    );
+
+    noseGradient.addColorStop(
+        1,
+        secondaryColor
+    );
+
+    ctx.fillStyle =
+        noseGradient;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -31
+    );
+
+    ctx.lineTo(
+        -6,
+        -12
+    );
+
+    ctx.lineTo(
+        0,
+        -7
+    );
+
+    ctx.lineTo(
+        6,
+        -12
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.restore();
+
+
+    /* =================================================
+       BUỒNG LÁI
+       ================================================= */
+
+    ctx.save();
+
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = "#8cf6ff";
+
+    const cockpitGradient =
+        ctx.createRadialGradient(
+            0,
+            -10,
+            1,
+            0,
+            -10,
+            9
+        );
+
+    cockpitGradient.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    cockpitGradient.addColorStop(
+        .3,
+        "#b9faff"
+    );
+
+    cockpitGradient.addColorStop(
+        .7,
+        isP2
+            ? "#ff83d1"
+            : "#31dcff"
+    );
+
+    cockpitGradient.addColorStop(
+        1,
+        "#092133"
+    );
+
+    ctx.fillStyle =
+        cockpitGradient;
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        -9,
+        5.5,
+        8,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "#ffffff";
+
+    ctx.lineWidth = .8;
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =================================================
+       2 ĐÈN CÁNH
+       ================================================= */
+
+    ctx.save();
+
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = glowColor;
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -18,
+        13,
+        2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.beginPath();
+
+    ctx.arc(
+        18,
+        13,
+        2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+
+
+    /* =================================================
+       ĐƯỜNG NĂNG LƯỢNG TRÊN THÂN
+       ================================================= */
+
+    ctx.save();
+
+    ctx.strokeStyle =
+        "#ffffff";
+
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = glowColor;
+
+    ctx.globalAlpha = .75;
+
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -24
+    );
+
+    ctx.lineTo(
+        0,
+        5
+    );
+
+    ctx.stroke();
+
+    ctx.restore();
+
+
+    /* =================================================
+       HIỆU ỨNG ĐANG BẮN
+       ================================================= */
+
+    if(p.shooting){
+
+        ctx.save();
+
+        ctx.globalAlpha = .75;
+
+        ctx.shadowBlur = 18;
+        ctx.shadowColor =
+            glowColor;
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -31,
+            2.5,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    /* =================================================
+       PARTICLE NHỎ QUANH TÀU
+       ================================================= */
+
+    ctx.save();
+
+    ctx.fillStyle =
+        glowColor;
+
+    ctx.shadowBlur = 10;
+    ctx.shadowColor =
+        glowColor;
+
+    const t =
+        performance.now() * .002;
+
+    for(let i=0;i<4;i++){
+
+        const angle =
+            t +
+            i * Math.PI / 2;
+
+        const radius =
+            29 +
+            Math.sin(
+                t * 2 + i
+            ) * 2;
+
+        const x =
+            Math.cos(angle) *
+            radius;
+
+        const y =
+            Math.sin(angle) *
+            radius;
+
+        ctx.globalAlpha =
+            .35 +
+            Math.sin(
+                t * 3 + i
+            ) * .2;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            1.2,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+
+    ctx.restore();
+
+
+    ctx.restore();
+}
 
 /* =====================================================
    PARTICLES
