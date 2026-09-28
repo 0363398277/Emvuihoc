@@ -1060,28 +1060,28 @@ button span{
     const SHOP_ITEMS = {
 
     life:{
-    name:"🚀 MỞ RỘNG SỨC CHỨA",
+    name:"🚀 TĂNG LƯỢT MẠNG",
     desc:"+1 sức chứa mạng",
     price:2500,
     color:"#45ddff"
 },
 
     shield:{
-        name:"🛡️ KHOANG CHỨA BẢO VỆ",
+        name:"🛡️ TĂNG THỜI GIAN BẢO VỆ",
         desc:"+5 giây sức chứa khiên",
         price:1000,
         color:"#55ff7a"
     },
 
     power:{
-        name:"🔥 KHOANG CHỨA ĐẠN",
+        name:"🔥 tĂNG THỜI GIAN HỎA LỰC",
         desc:"+5 giây sức chứa bắn 3 đạn",
         price:1000,
         color:"#ff4fd8"
     },
 
     damage:{
-        name:"💥 KHOANG CHỨA HỎA LỰC",
+        name:"⚡ tĂNG THỜI GIAN TỐC ĐỘ",
         desc:"+5 giây sức chứa lực bắn",
         price:1000,
         color:"#ff9d45"
@@ -1281,13 +1281,7 @@ button span{
     }
 
     #shopContinue{
-        margin-top:20px;
-
-        width:100%;
-
-        padding:14px;
-
-        border-radius:12px;
+        margin-top:10px;
 
         background:
             linear-gradient(
@@ -1352,10 +1346,6 @@ button span{
     shop.innerHTML = `
 
         <div id="shopPanel">
-
-            <div id="shopTitle">
-                🛒 CỬA HÀNG PHI CƠ
-            </div>
 
             <div id="shopSubTitle">
                 Boss đã bị tiêu diệt!
@@ -1651,6 +1641,18 @@ button span{
                 "shopScreen"
             ).style.display = "none";
 
+    // ==============================
+    // BẮT ĐẦU ĐẾM BOSS TẠI ĐÂY
+    // ==============================
+
+    bossState = "charge";
+    bossChargeStartTime = performance.now();
+
+
+    // ==============================
+    // TIẾP TỤC GAME
+    // ==============================
+	
             running = true;
 
             lastTime =
@@ -3012,6 +3014,9 @@ function startGame(selected){
     mode = selected;
 
     resetGame();
+	bossProgress = 0;
+bossState = "charge";
+bossChargeStartTime = performance.now();
 
     running = true;
 
@@ -3070,10 +3075,7 @@ function resetGame(){
     level = 1;
 
     bossProgress = 0;
-    bossState = "charge";
-
-    bossChargeStartTime =
-        performance.now();
+	bossState = "shop";
 
     boss = null;
 
