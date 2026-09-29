@@ -143,6 +143,77 @@
     .btn:hover { transform: scale(1.05); }
     
     #game-over { display: none; }
+	
+	/* ================================
+   VÒNG ĐẾM NGƯỢC POWER-UP
+================================ */
+
+.buff-status {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+}
+
+.buff-timers {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.buff-timer {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+}
+
+.buff-timer svg {
+    width: 42px;
+    height: 42px;
+    transform: rotate(-90deg);
+}
+
+.buff-timer-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.13);
+    stroke-width: 4;
+}
+
+.buff-timer-progress {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.buff-timer.mega .buff-timer-progress {
+    stroke: #d500ff;
+    filter: drop-shadow(0 0 5px #ff00dd);
+}
+
+.buff-timer.triple .buff-timer-progress {
+    stroke: #ffd000;
+    filter: drop-shadow(0 0 5px #ff9d00);
+}
+
+/* GIÁP - KHÔNG ĐẾM NGƯỢC */
+.buff-timer.shield .buff-timer-progress {
+    stroke: #00aaff;
+    filter: drop-shadow(0 0 5px #00d9ff);
+}
+
+.buff-timer-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 17px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 1px 3px black;
+}
+
+
 </style>
 </head>
 <body>
@@ -159,7 +230,10 @@
                 <div class="bar-bg"><div id="blueHpBar" class="bar-fill hp-blue"></div></div>
                 <div class="player-title" style="font-size:11px; margin: 4px 0 2px 0;">LỰC BẮN</div>
                 <div class="bar-bg" style="height:10px;"><div id="bluePowerBar" class="bar-fill power-bar"></div></div>
-                <div id="blueBuff" class="buff-status">Trạng thái: Bình thường</div>
+                <div id="blueBuff" class="buff-status">
+    <div class="buff-timers"></div>
+</div>
+
             </div>
 
             <div class="player-card red">
@@ -167,7 +241,10 @@
                 <div class="bar-bg"><div id="redHpBar" class="bar-fill hp-red"></div></div>
                 <div class="player-title" style="font-size:11px; margin: 4px 0 2px 0;">LỰC BẮN</div>
                 <div class="bar-bg" style="height:10px;"><div id="redPowerBar" class="bar-fill power-bar"></div></div>
-                <div id="redBuff" class="buff-status">Trạng thái: Bình thường</div>
+                <div id="redBuff" class="buff-status">
+    <div class="buff-timers"></div>
+</div>
+
             </div>
         </div>
 
@@ -244,6 +321,7 @@
     </div>
 </div>
 
+<script src="Thuyen_chien.js"></script>
 <script>
 // --- HỆ THỐNG ÂM THANH ---
 class SoundManager {
@@ -398,6 +476,45 @@ window.addEventListener('resize', resize);
 resize();
 
 let oceanTime = 0;
+
+// =========================
+// SCREEN SHAKE
+// =========================
+
+let screenShake = 0;
+let screenShakePower = 0;
+
+function triggerScreenShake(power = 12) {
+    screenShake = 15;
+    screenShakePower = power;
+}
+
+function updateScreenShake() {
+
+    if (screenShake <= 0) {
+        return;
+    }
+
+    screenShake--;
+
+    const progress = screenShake / 15;
+
+    const strength =
+        screenShakePower * progress;
+
+    const x =
+        (Math.random() - 0.5) * strength;
+
+    const y =
+        (Math.random() - 0.5) * strength;
+
+    ctx.translate(x, y);
+
+    screenShakePower *= 0.85;
+}
+
+
+
 function getWaveY(x) {
     return height * 0.65 + Math.sin(x * 0.008 + oceanTime) * 10 + Math.cos(x * 0.015 + oceanTime * 1.5) * 5;
 }
@@ -412,10 +529,15 @@ class Boat {
         this.gunAngleDegree = 30; 
         this.power = 0;
         this.charging = false;
+		this.powerDirection = 1;
         this.shield = false;
         this.tripleShot = false;
         this.megaShot = false;
-        this.buffTimer = 0;
+this.megaTimer = 0;
+
+this.tripleShot = false;
+this.tripleTimer = 0;
+
     }
 
     update() {
@@ -424,20 +546,57 @@ class Boat {
         this.y = waveY - 60;
         this.pitch = Math.atan2(waveY2 - waveY, 20);
 
-        if (this.charging) {
-            this.power = Math.min(this.power + 1.5, 100);
-            if (Math.random() < 0.3) {
-                audio.playChargePitch(this.power / 100);
-            }
-        }
+       if (this.charging) {
 
-        if (this.buffTimer > 0) {
-            this.buffTimer--;
-            if (this.buffTimer === 0) {
-                this.tripleShot = false;
-                this.megaShot = false;
-            }
-        }
+    // =========================
+    // THANH LỰC CHẠY QUA LẠI
+    // =========================
+
+    this.power += 1.5 * this.powerDirection;
+
+    // Chạm 100 → quay đầu
+    if (this.power >= 100) {
+        this.power = 100;
+        this.powerDirection = -1;
+    }
+
+    // Chạm 0 → quay đầu lại
+    if (this.power <= 0) {
+        this.power = 0;
+        this.powerDirection = 1;
+    }
+
+    // Âm thanh nạp
+    if (Math.random() < 0.3) {
+        audio.playChargePitch(this.power / 100);
+    }
+}
+
+
+        // ===============================
+// MEGA TIMER
+// ===============================
+if (this.megaTimer > 0) {
+    this.megaTimer--;
+
+    if (this.megaTimer <= 0) {
+        this.megaTimer = 0;
+        this.megaShot = false;
+    }
+}
+
+// ===============================
+// TRIPLE SHOT TIMER
+// ===============================
+if (this.tripleTimer > 0) {
+    this.tripleTimer--;
+
+    if (this.tripleTimer <= 0) {
+        this.tripleTimer = 0;
+        this.tripleShot = false;
+    }
+}
+
     }
 
     getFireAngleRadian() {
@@ -446,117 +605,7 @@ class Boat {
     }
 
     draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.pitch);
-
-        if (this.shield) {
-            ctx.beginPath();
-            ctx.arc(75, 40, 85, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(0, 240, 255, 0.3)";
-            ctx.strokeStyle = "#00f0ff";
-            ctx.lineWidth = 3.5;
-            ctx.fill();
-            ctx.stroke();
-        }
-
-        ctx.save();
-        ctx.translate(75, 20); 
-        let cannonRotation = this.isRed 
-            ? Math.PI + (this.gunAngleDegree * Math.PI / 180) 
-            : -(this.gunAngleDegree * Math.PI / 180);
-        
-        ctx.rotate(cannonRotation);
-        
-        ctx.fillStyle = "#1a1a1a";
-        ctx.fillRect(0, -7, 55, 14);
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(0, -7, 55, 14);
-        
-        ctx.fillStyle = this.isRed ? "#ff3333" : "#00f0ff";
-        ctx.fillRect(45, -9, 12, 18);
-        ctx.restore();
-
-        const palettes = [
-            {main: this.isRed ? "#ff3333" : "#00e5ff", dark: this.isRed ? "#990000" : "#005580", deck: this.isRed ? "#ff8888" : "#80f0ff", glass:"#00aaff", flag:this.isRed ? "#ffff00" : "#ff0055"},
-            {main: this.isRed ? "#ff7a18" : "#32ff7e", dark: this.isRed ? "#a52f00" : "#087a3a", deck:"#f5f5f5", glass:"#162b44", flag:"#ffe900"},
-            {main: this.isRed ? "#c41e3a" : "#4169e1", dark:"#151b55", deck:"#777", glass:"#b9ecff", flag:"#fff"},
-            {main: this.isRed ? "#ff4d8d" : "#9b5cff", dark:"#4b176f", deck:"#d8c8ff", glass:"#182238", flag:"#ffe900"},
-            {main: this.isRed ? "#9b2c2c" : "#8b5a2b", dark:"#3a1f0b", deck:"#d7b98e", glass:"#1d3344", flag:"#fff"},
-            {main: this.isRed ? "#bdbdbd" : "#607d8b", dark:"#263238", deck:"#90a4ae", glass:"#80deea", flag:"#ffea00"}
-        ];
-        const pal = palettes[this.styleId % palettes.length];
-        let hullGrad = ctx.createLinearGradient(0, 0, 0, 55);
-        hullGrad.addColorStop(0, pal.main);
-        hullGrad.addColorStop(1, pal.dark);
-        ctx.fillStyle = hullGrad;
-
-        ctx.beginPath();
-        if (this.styleId === 1) {
-            ctx.moveTo(5, 38); ctx.lineTo(35, 20); ctx.lineTo(118, 20); ctx.lineTo(145, 38);
-            ctx.lineTo(112, 58); ctx.lineTo(32, 58); ctx.closePath();
-        } else if (this.styleId === 2) {
-            ctx.roundRect(5, 24, 140, 38, 10);
-        } else if (this.styleId === 3) {
-            ctx.moveTo(0, 38); ctx.lineTo(18, 22); ctx.lineTo(132, 22); ctx.lineTo(150, 38);
-            ctx.lineTo(128, 58); ctx.lineTo(20, 58); ctx.closePath();
-        } else if (this.styleId === 4) {
-            ctx.moveTo(5, 40); ctx.quadraticCurveTo(75, 72, 145, 40); ctx.lineTo(125, 58); ctx.lineTo(25, 58); ctx.closePath();
-        } else if (this.styleId === 5) {
-            ctx.ellipse(75, 42, 72, 25, 0, 0, Math.PI * 2);
-        } else {
-            ctx.arc(75, 40, 70, 0, Math.PI, false);
-        }
-        ctx.fill();
-        ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-
-        ctx.fillStyle = pal.deck;
-        if (this.styleId === 5) {
-            ctx.fillRect(18, 29, 114, 20);
-        } else {
-            ctx.fillRect(18, 20, 115, 22);
-        }
-        ctx.strokeStyle = "#000";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(18, this.styleId === 5 ? 29 : 20, 115, 20);
-
-        // Cabin / bridge
-        ctx.fillStyle = pal.deck;
-        ctx.fillRect(52, -12, 46, 32);
-        ctx.strokeRect(52, -12, 46, 32);
-        ctx.fillStyle = pal.glass;
-        ctx.fillRect(58, -4, 12, 12);
-        ctx.fillRect(78, -4, 12, 12);
-        ctx.strokeStyle = "#000";
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(58, -4, 12, 12);
-        ctx.strokeRect(78, -4, 12, 12);
-
-        // Style-specific details
-        ctx.fillStyle = pal.main;
-        if (this.styleId === 2) {
-            ctx.fillRect(28, 5, 20, 14);
-            ctx.fillRect(102, 5, 20, 14);
-        } else if (this.styleId === 3) {
-            ctx.fillRect(20, 8, 28, 10);
-            ctx.fillRect(102, 8, 28, 10);
-        } else if (this.styleId === 4) {
-            ctx.beginPath(); ctx.arc(40, 18, 7, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(110, 18, 7, 0, Math.PI*2); ctx.fill();
-        } else if (this.styleId === 5) {
-            ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.moveTo(75, -20); ctx.lineTo(75, -5); ctx.stroke();
-        }
-
-        ctx.fillStyle = pal.flag;
-        ctx.beginPath();
-        ctx.moveTo(75, -65); ctx.lineTo(113, -57); ctx.lineTo(75, -49); ctx.closePath();
-        ctx.fill(); ctx.stroke();
-
-        ctx.restore();
+        drawBoat(ctx, this);
     }
 
     shoot() {
@@ -581,80 +630,887 @@ class Boat {
         });
 
         this.power = 0;
-        this.charging = false;
+this.powerDirection = 1;
+this.charging = false;
+
     }
 }
 
 // --- LỚP ĐẠN ---
 class Bullet {
+
     constructor(x, y, vx, vy, owner, isMega) {
-        this.x = x; this.y = y;
-        this.vx = vx; this.vy = vy;
+
+        this.x = x;
+        this.y = y;
+
+        this.vx = vx;
+        this.vy = vy;
+
         this.owner = owner;
         this.isMega = isMega;
-        this.radius = isMega ? 11 : 7.5;
+
+        // Mega to hơn rất nhiều
+        this.radius = isMega ? 14 : 7.5;
+
+        // Thời gian tồn tại để tạo hiệu ứng
+        this.life = 0;
     }
 
+
     update() {
+
+        this.life++;
+
+        // Trọng lực
         this.vy += 0.22;
+
         this.x += this.vx;
         this.y += this.vy;
     }
 
+
     draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        
+
+        ctx.save();
+
+        // =====================================================
+        // MEGA BULLET
+        // =====================================================
+
         if (this.isMega) {
-            ctx.fillStyle = "#ff0077";
-            ctx.shadowColor = "#ff00aa";
-        } else if (this.owner.isRed) {
-            ctx.fillStyle = "#ff3333";
-            ctx.shadowColor = "#ff0000";
-        } else {
-            ctx.fillStyle = "#00f0ff";
-            ctx.shadowColor = "#00aaff";
+
+            // -----------------------------
+            // Hào quang ngoài
+            // -----------------------------
+
+            const glow = ctx.createRadialGradient(
+                this.x,
+                this.y,
+                2,
+                this.x,
+                this.y,
+                32
+            );
+
+            glow.addColorStop(
+                0,
+                "rgba(255,255,255,0.95)"
+            );
+
+            glow.addColorStop(
+                0.25,
+                "rgba(255,0,220,0.8)"
+            );
+
+            glow.addColorStop(
+                0.55,
+                "rgba(150,0,255,0.45)"
+            );
+
+            glow.addColorStop(
+                1,
+                "rgba(80,0,255,0)"
+            );
+
+            ctx.fillStyle = glow;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                this.x,
+                this.y,
+                32,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // -----------------------------
+            // Vòng năng lượng
+            // -----------------------------
+
+            ctx.save();
+
+            ctx.translate(this.x, this.y);
+
+            ctx.rotate(this.life * 0.12);
+
+            ctx.strokeStyle = "#ff00e6";
+            ctx.lineWidth = 3;
+
+            ctx.shadowColor = "#ff00e6";
+            ctx.shadowBlur = 18;
+
+            ctx.setLineDash([6, 5]);
+
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                0,
+                21,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+
+            ctx.restore();
+
+
+            // -----------------------------
+            // Viên đạn chính
+            // -----------------------------
+
+            const megaGradient =
+                ctx.createRadialGradient(
+                    this.x - 4,
+                    this.y - 5,
+                    2,
+                    this.x,
+                    this.y,
+                    this.radius
+                );
+
+            megaGradient.addColorStop(
+                0,
+                "#ffffff"
+            );
+
+            megaGradient.addColorStop(
+                0.2,
+                "#ffb3ff"
+            );
+
+            megaGradient.addColorStop(
+                0.5,
+                "#ff00dd"
+            );
+
+            megaGradient.addColorStop(
+                0.8,
+                "#8a00ff"
+            );
+
+            megaGradient.addColorStop(
+                1,
+                "#32006b"
+            );
+
+            ctx.fillStyle = megaGradient;
+
+            ctx.shadowColor = "#ff00e6";
+            ctx.shadowBlur = 25;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                this.x,
+                this.y,
+                this.radius,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // -----------------------------
+            // Lõi trắng
+            // -----------------------------
+
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = "#ffffff";
+
+            ctx.beginPath();
+
+            ctx.arc(
+                this.x - 3,
+                this.y - 3,
+                4,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+
+            // -----------------------------
+            // Tia năng lượng
+            // -----------------------------
+
+            ctx.strokeStyle = "#ff66ee";
+            ctx.lineWidth = 2;
+
+            ctx.shadowColor = "#ff00dd";
+            ctx.shadowBlur = 10;
+
+            for (let i = 0; i < 4; i++) {
+
+                const angle =
+                    this.life * 0.08 +
+                    i * Math.PI / 2;
+
+                const startX =
+                    this.x +
+                    Math.cos(angle) * 17;
+
+                const startY =
+                    this.y +
+                    Math.sin(angle) * 17;
+
+                const endX =
+                    this.x +
+                    Math.cos(angle) * 25;
+
+                const endY =
+                    this.y +
+                    Math.sin(angle) * 25;
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    startX,
+                    startY
+                );
+
+                ctx.lineTo(
+                    endX,
+                    endY
+                );
+
+                ctx.stroke();
+            }
+
         }
 
-        ctx.shadowBlur = 12;
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius * 0.4, 0, Math.PI * 2);
-        ctx.fillStyle = "#ffffff";
-        ctx.fill();
+        // =====================================================
+        // ĐẠN THƯỜNG
+        // =====================================================
 
-        ctx.shadowBlur = 0;
+        else {
+
+            ctx.beginPath();
+
+            ctx.arc(
+                this.x,
+                this.y,
+                this.radius,
+                0,
+                Math.PI * 2
+            );
+
+            if (this.owner.isRed) {
+
+                ctx.fillStyle = "#ff3333";
+                ctx.shadowColor = "#ff0000";
+
+            } else {
+
+                ctx.fillStyle = "#00f0ff";
+                ctx.shadowColor = "#00aaff";
+            }
+
+            ctx.shadowBlur = 12;
+
+            ctx.fill();
+
+
+            // Lõi trắng
+
+            ctx.beginPath();
+
+            ctx.arc(
+                this.x,
+                this.y,
+                this.radius * 0.4,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle = "#ffffff";
+
+            ctx.fill();
+        }
+
+        ctx.restore();
     }
 }
+
+
+function hexToRgba(hex, alpha) {
+    hex = hex.replace("#", "");
+
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+
 
 // --- QUÀ HỖ TRỢ ---
 class PowerUp {
     constructor() {
-        this.x = Math.random() * (width - 300) + 150;
-        this.y = -20;
-        this.type = ['heal', 'shield', 'triple', 'mega'][Math.floor(Math.random() * 4)];
-        this.vy = 1.2;
+
+        // ============================================
+        // XÁC ĐỊNH KHU VỰC GIỮA 2 THUYỀN
+        // ============================================
+
+        const center = width / 2;
+
+        // Khoảng cách tối đa vật phẩm được phép lệch
+        // khỏi chính giữa màn hình.
+        const middleRange = Math.min(width * 0.18, 260);
+
+        let minX = center - middleRange;
+        let maxX = center + middleRange;
+
+        // Không cho vật phẩm quá sát mép màn hình
+        minX = Math.max(minX, 100);
+        maxX = Math.min(maxX, width - 100);
+
+        // Không cho vật phẩm rơi vào vị trí thuyền
+        if (blue) {
+            minX = Math.max(minX, blue.x + 130);
+        }
+
+        if (red) {
+            maxX = Math.min(maxX, red.x - 40);
+        }
+
+        // Nếu khu vực giữa quá hẹp,
+        // ép vật phẩm về đúng trung tâm.
+        if (maxX <= minX) {
+            this.x = center;
+        } else {
+            this.x = minX + Math.random() * (maxX - minX);
+        }
+
+        // ============================================
+        // VỊ TRÍ RƠI
+        // ============================================
+
+        this.y = 30;
+
+        // ============================================
+        // LOẠI VẬT PHẨM
+        // ============================================
+
+        this.type = [
+            'heal',
+            'shield',
+            'triple',
+            'mega'
+        ][Math.floor(Math.random() * 4)];
+
+        // ============================================
+        // TỐC ĐỘ RƠI
+        // ============================================
+
+        this.vy = 0.8 + Math.random() * 0.35;
+
+        // ============================================
+        // ANIMATION
+        // ============================================
+
+        this.rotation = Math.random() * Math.PI * 2;
+
+        this.rotationSpeed =
+            (Math.random() - 0.5) * 0.035;
+
+        this.pulse = Math.random() * Math.PI * 2;
+
+        // ============================================
+        // KÍCH THƯỚC
+        // ============================================
+
+        this.size = 18;
+
+        // ============================================
+        // THỜI GIAN SỐNG
+        // ============================================
+
+        this.life = 0;
+        this.maxLife = 900;
     }
-    update() { this.y += this.vy; }
+
+    update() {
+        this.life++;
+
+        this.y += this.vy;
+
+        // Dao động nhẹ
+        this.x += Math.sin(this.life * 0.025) * 0.25;
+
+        this.rotation += this.rotationSpeed;
+        this.pulse += 0.08;
+
+        // Chạm mặt nước thì biến mất
+        if (this.y >= getWaveY(this.x) - 25) {
+            this.y = getWaveY(this.x) - 25;
+            this.life = this.maxLife;
+        }
+    }
+
     draw() {
+    ctx.save();
+
+    ctx.translate(this.x, this.y);
+
+    // Hiệu ứng xoay
+    ctx.rotate(this.rotation);
+
+    const pulse = 1 + Math.sin(this.pulse) * 0.08;
+
+    ctx.scale(pulse, pulse);
+
+    // =========================================================
+    // THÔNG TIN TỪNG LOẠI VẬT PHẨM
+    // =========================================================
+
+    const data = {
+        heal: {
+            color: "#ff1744",
+            glow: "#ff003c",
+            symbol: "♥"
+        },
+
+        shield: {
+            color: "#00aaff",
+            glow: "#008cff",
+            symbol: "🛡"
+        },
+
+        triple: {
+            color: "#ffd000",
+            glow: "#ff8c00",
+            symbol: "⚡"
+        },
+
+        mega: {
+            color: "#d500ff",
+            glow: "#ff00aa",
+            symbol: "💥"
+        }
+    }[this.type];
+
+
+    // =========================================================
+    // AURA LỚN BÊN NGOÀI
+    // =========================================================
+
+    const aura = ctx.createRadialGradient(
+        0, 0, 3,
+        0, 0, 42
+    );
+
+    aura.addColorStop(
+        0,
+        hexToRgba(data.color, 0.45)
+    );
+
+    aura.addColorStop(
+        0.4,
+        hexToRgba(data.glow, 0.22)
+    );
+
+    aura.addColorStop(
+        1,
+        "rgba(0,0,0,0)"
+    );
+
+    ctx.fillStyle = aura;
+
+    ctx.beginPath();
+    ctx.arc(0, 0, 42, 0, Math.PI * 2);
+    ctx.fill();
+
+
+    // =========================================================
+    // VÒNG TRÒN PHÁT SÁNG
+    // =========================================================
+
+    ctx.save();
+
+    ctx.rotate(this.rotation * -1.8);
+
+    ctx.shadowColor = data.glow;
+    ctx.shadowBlur = 22;
+
+    ctx.strokeStyle = data.color;
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.arc(
+        0,
+        0,
+        25,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    // =========================================================
+    // VÒNG TRÒN ĐỨT ĐOẠN XOAY
+    // =========================================================
+
+    ctx.strokeStyle = "#ffffff";
+    ctx.globalAlpha = 0.8;
+    ctx.lineWidth = 2;
+
+    ctx.setLineDash([6, 7]);
+
+    ctx.beginPath();
+    ctx.arc(
+        0,
+        0,
+        31,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+
+    ctx.restore();
+
+
+    // =========================================================
+    // NỀN TRÒN
+    // =========================================================
+
+    const circle = ctx.createRadialGradient(
+        -5,
+        -6,
+        2,
+        0,
+        0,
+        22
+    );
+
+    circle.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    circle.addColorStop(
+        0.18,
+        data.color
+    );
+
+    circle.addColorStop(
+        0.65,
+        data.glow
+    );
+
+    circle.addColorStop(
+        1,
+        "#07101c"
+    );
+
+    ctx.shadowColor = data.glow;
+    ctx.shadowBlur = 25;
+
+    ctx.fillStyle = circle;
+
+    ctx.beginPath();
+    ctx.arc(
+        0,
+        0,
+        20,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+
+    // =========================================================
+    // VIỀN TRẮNG
+    // =========================================================
+
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.arc(
+        0,
+        0,
+        20,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+
+    // =========================================================
+    // VẼ BIỂU TƯỢNG RIÊNG CHO TỪNG VẬT PHẨM
+    // =========================================================
+
+    if (this.type === "heal") {
+
+        // ❤️ TRÁI TIM
         ctx.save();
-        ctx.translate(this.x, this.y);
+
+        ctx.rotate(-this.rotation);
+
+        ctx.fillStyle = "#ffffff";
+
+        ctx.shadowColor = "#ff1744";
+        ctx.shadowBlur = 12;
+
         ctx.beginPath();
-        ctx.arc(0, 0, 16, 0, Math.PI * 2);
-        let colors = { heal: '#2ecc71', shield: '#3498db', triple: '#f1c40f', mega: '#e74c3c' };
-        let icons = { heal: '🩹', shield: '🛡️', triple: '⚡', mega: '💣' };
-        ctx.fillStyle = colors[this.type];
+
+        ctx.moveTo(0, 11);
+
+        ctx.bezierCurveTo(
+            -4, 7,
+            -11, 3,
+            -11, -3
+        );
+
+        ctx.bezierCurveTo(
+            -11, -9,
+            -4, -11,
+            0, -6
+        );
+
+        ctx.bezierCurveTo(
+            4, -11,
+            11, -9,
+            11, -3
+        );
+
+        ctx.bezierCurveTo(
+            11, 3,
+            4, 7,
+            0, 11
+        );
+
+        ctx.closePath();
+
         ctx.fill();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "#fff";
-        ctx.stroke();
-        ctx.font = "14px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(icons[this.type], 0, 0);
+
         ctx.restore();
     }
+
+
+    else if (this.type === "shield") {
+
+        // 🛡️ KHIÊN
+        ctx.save();
+
+        ctx.rotate(-this.rotation);
+
+        ctx.fillStyle = "#ffffff";
+
+        ctx.shadowColor = "#00aaff";
+        ctx.shadowBlur = 12;
+
+        ctx.beginPath();
+
+        ctx.moveTo(0, -12);
+
+        ctx.lineTo(10, -8);
+
+        ctx.lineTo(8, 3);
+
+        ctx.bezierCurveTo(
+            7, 9,
+            3, 13,
+            0, 15
+        );
+
+        ctx.bezierCurveTo(
+            -3, 13,
+            -7, 9,
+            -8, 3
+        );
+
+        ctx.lineTo(-10, -8);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        // Dấu cộng trên khiên
+        ctx.fillStyle = "#008cff";
+
+        ctx.fillRect(
+            -2,
+            -7,
+            4,
+            12
+        );
+
+        ctx.fillRect(
+            -6,
+            -3,
+            12,
+            4
+        );
+
+        ctx.restore();
+    }
+
+
+    else if (this.type === "triple") {
+
+        // ⚡ SÉT
+        ctx.save();
+
+        ctx.rotate(-this.rotation);
+
+        ctx.fillStyle = "#ffffff";
+
+        ctx.shadowColor = "#ffd000";
+        ctx.shadowBlur = 14;
+
+        ctx.beginPath();
+
+        ctx.moveTo(4, -14);
+
+        ctx.lineTo(-8, 1);
+
+        ctx.lineTo(-2, 1);
+
+        ctx.lineTo(-5, 14);
+
+        ctx.lineTo(9, -4);
+
+        ctx.lineTo(3, -4);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    else if (this.type === "mega") {
+
+        // 💥 NĂNG LƯỢNG MEGA
+        ctx.save();
+
+        ctx.rotate(-this.rotation);
+
+        ctx.fillStyle = "#ffffff";
+
+        ctx.shadowColor = "#ff00aa";
+        ctx.shadowBlur = 15;
+
+        // Ngôi sao nổ
+        ctx.beginPath();
+
+        const spikes = 8;
+
+        for (let i = 0; i < spikes * 2; i++) {
+
+            const angle =
+                (Math.PI * 2 * i) /
+                (spikes * 2);
+
+            const radius =
+                i % 2 === 0 ? 14 : 6;
+
+            const x =
+                Math.cos(angle) * radius;
+
+            const y =
+                Math.sin(angle) * radius;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+
+        ctx.closePath();
+        ctx.fill();
+
+        // Lõi năng lượng
+        ctx.fillStyle = "#ff00aa";
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+
+    // =========================================================
+    // CÁC HẠT SÁNG XOAY XUNG QUANH
+    // =========================================================
+
+    ctx.save();
+
+    ctx.rotate(this.pulse * 0.7);
+
+    for (let i = 0; i < 6; i++) {
+
+        const angle =
+            (Math.PI * 2 / 6) * i;
+
+        const distance = 34;
+
+        const x =
+            Math.cos(angle) * distance;
+
+        const y =
+            Math.sin(angle) * distance;
+
+        const alpha =
+            0.4 +
+            Math.sin(this.pulse * 2 + i) * 0.4;
+
+        ctx.globalAlpha =
+            Math.max(0.15, alpha);
+
+        ctx.fillStyle = "#ffffff";
+
+        ctx.shadowColor = data.glow;
+        ctx.shadowBlur = 8;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            2,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+
+    ctx.restore();
+}
+
 }
 
 let blue, red;
@@ -801,23 +1657,187 @@ function createExplosionEffect(x, y, color) {
 }
 
 function updateUI() {
-    document.getElementById("blueHpBar").style.width = blue.hp + "%";
-    document.getElementById("blueHpText").innerText = Math.ceil(blue.hp) + " HP";
-    document.getElementById("bluePowerBar").style.width = blue.power + "%";
 
-    document.getElementById("redHpBar").style.width = red.hp + "%";
-    document.getElementById("redHpText").innerText = Math.ceil(red.hp) + " HP";
-    document.getElementById("redPowerBar").style.width = red.power + "%";
+    // =========================
+    // HP
+    // =========================
 
-    let getBuffText = (b) => {
-        let list = [];
-        if (b.shield) list.push("🛡️ Giáp");
-        if (b.tripleShot) list.push("⚡ Đạn x3");
-        if (b.megaShot) list.push("💣 Mega");
-        return list.length ? "Đang có: " + list.join(", ") : "Trạng thái: Bình thường";
-    };
-    document.getElementById("blueBuff").innerText = getBuffText(blue);
-    document.getElementById("redBuff").innerText = getBuffText(red);
+    document.getElementById("blueHpBar").style.width =
+        blue.hp + "%";
+
+    document.getElementById("blueHpText").innerText =
+        Math.ceil(blue.hp) + " HP";
+
+    document.getElementById("bluePowerBar").style.width =
+        blue.power + "%";
+
+
+    document.getElementById("redHpBar").style.width =
+        red.hp + "%";
+
+    document.getElementById("redHpText").innerText =
+        Math.ceil(red.hp) + " HP";
+
+    document.getElementById("redPowerBar").style.width =
+        red.power + "%";
+
+
+    // =========================
+    // TẠO VÒNG BUFF
+    // =========================
+
+    function createTimer(type, timer, maxTimer, icon) {
+
+        const radius = 16;
+        const circumference = 2 * Math.PI * radius;
+
+        const progress =
+            Math.max(0, Math.min(1, timer / maxTimer));
+
+        const offset =
+            circumference * (1 - progress);
+
+        const seconds =
+            (timer / 60).toFixed(1);
+
+        return `
+            <div class="buff-timer ${type}">
+
+                <svg viewBox="0 0 42 42">
+
+                    <circle
+                        class="buff-timer-bg"
+                        cx="21"
+                        cy="21"
+                        r="${radius}">
+                    </circle>
+
+                    <circle
+                        class="buff-timer-progress"
+                        cx="21"
+                        cy="21"
+                        r="${radius}"
+                        stroke-dasharray="${circumference}"
+                        stroke-dashoffset="${offset}">
+                    </circle>
+
+                </svg>
+
+                <div class="buff-timer-text">
+                    ${icon}
+                    <span style="
+                        position:absolute;
+                        bottom:-2px;
+                        font-size:8px;
+                    ">${seconds}</span>
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    // =========================
+    // VÒNG GIÁP
+    // =========================
+
+    function createShield() {
+
+        const radius = 16;
+        const circumference = 2 * Math.PI * radius;
+
+        return `
+            <div class="buff-timer shield">
+
+                <svg viewBox="0 0 42 42">
+
+                    <circle
+                        class="buff-timer-bg"
+                        cx="21"
+                        cy="21"
+                        r="${radius}">
+                    </circle>
+
+                    <circle
+                        class="buff-timer-progress"
+                        cx="21"
+                        cy="21"
+                        r="${radius}"
+                        stroke-dasharray="${circumference}"
+                        stroke-dashoffset="0">
+                    </circle>
+
+                </svg>
+
+                <div class="buff-timer-text">
+                    🛡️
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    // =========================
+    // CẬP NHẬT BUFF
+    // =========================
+
+    function updateBuffUI(boat, elementId) {
+
+        const element =
+            document.getElementById(elementId);
+
+        const timersElement =
+            element.querySelector(".buff-timers");
+
+        let html = "";
+
+
+        // -------------------------
+        // GIÁP
+        // -------------------------
+
+        if (boat.shield) {
+            html += createShield();
+        }
+
+
+        // -------------------------
+        // ĐẠN X3
+        // -------------------------
+
+        if (boat.tripleShot) {
+
+            html += createTimer(
+                "triple",
+                boat.tripleTimer,
+                350,
+                "⚡"
+            );
+        }
+
+
+        // -------------------------
+        // MEGA
+        // -------------------------
+
+        if (boat.megaShot) {
+
+            html += createTimer(
+                "mega",
+                boat.megaTimer,
+                300,
+                "💥"
+            );
+        }
+
+
+        timersElement.innerHTML = html;
+    }
+
+
+    updateBuffUI(blue, "blueBuff");
+    updateBuffUI(red, "redBuff");
 }
 
 
@@ -846,7 +1866,10 @@ window.addEventListener('contextmenu', e => e.preventDefault());
 
 function loop() {
     oceanTime += 0.04;
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, height);
+	updateScreenShake();
+
 
     let sky = ctx.createLinearGradient(0, 0, 0, height * 0.35);
     sky.addColorStop(0, "#3a7bd5");
@@ -867,7 +1890,7 @@ function loop() {
         blue.update();
         red.update();
 
-        if (Math.random() < 0.002 && powerUps.length < 2) powerUps.push(new PowerUp());
+        if (Math.random() < 0.005 && powerUps.length < 2) powerUps.push(new PowerUp());
     }
 
     if (blue) blue.draw();
@@ -886,8 +1909,9 @@ function loop() {
 
         let target = (b.owner === blue) ? red : blue;
         if (Math.hypot(b.x - (target.x + 75), b.y - (target.y + 30)) < 55) {
-            let dmg = b.isMega ? 35 : 15;
-            if (target.shield) {
+            triggerScreenShake(b.isMega ? 22 : 12);
+			let dmg = b.isMega ? 30 : 15;
+			            if (target.shield) {
                 target.shield = false;
             } else {
                 target.hp -= dmg;
@@ -909,20 +1933,62 @@ function loop() {
         p.update();
         p.draw();
 
-        bullets.forEach(b => {
-            if (Math.hypot(b.x - p.x, b.y - p.y) < 22) {
-                audio.playPowerUp();
-                let boat = b.owner;
-                if (p.type === 'heal') boat.hp = Math.min(100, boat.hp + 30);
-                if (p.type === 'shield') boat.shield = true;
-                if (p.type === 'triple') { boat.tripleShot = true; boat.buffTimer = 350; }
-                if (p.type === 'mega') { boat.megaShot = true; boat.buffTimer = 250; }
-                createExplosionEffect(p.x, p.y, "#00d2ff");
-                powerUps.splice(i, 1);
-            }
-        });
+        bullets.forEach((b, bulletIndex) => {
+    if (Math.hypot(b.x - p.x, b.y - p.y) < 22) {
 
-        if (p.y > getWaveY(p.x)) powerUps.splice(i, 1);
+        audio.playPowerUp();
+
+        let boat = b.owner;
+
+        // =========================
+        // KÍCH HOẠT POWER-UP
+        // =========================
+
+        if (p.type === 'heal') {
+            boat.hp = Math.min(100, boat.hp + 30);
+        }
+
+        if (p.type === 'shield') {
+            boat.shield = true;
+        }
+
+        if (p.type === 'triple') {
+            boat.tripleShot = true;
+            boat.tripleTimer = 350;
+        }
+
+        if (p.type === 'mega') {
+            boat.megaShot = true;
+            boat.megaTimer = 300;
+        }
+
+        // Hiệu ứng
+        createExplosionEffect(
+            p.x,
+            p.y,
+            "#00d2ff"
+        );
+
+        // =========================
+        // XÓA ĐẠN
+        // =========================
+
+        bullets.splice(bulletIndex, 1);
+
+        // =========================
+        // XÓA VẬT PHẨM
+        // =========================
+
+        powerUps.splice(i, 1);
+    }
+});
+
+
+        if (p.y >= getWaveY(p.x) - 25) {
+    powerUps.splice(i, 1);
+    continue;
+}
+
     }
 
     for (let i = particles.length - 1; i >= 0; i--) {
