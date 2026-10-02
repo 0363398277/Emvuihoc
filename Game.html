@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Game Center</title>
 
     <style>
@@ -24,7 +25,7 @@
                 linear-gradient(135deg, #080b1a, #11162d 50%, #090b18);
         }
 
-        /* Hiệu ứng nền */
+        /* HIỆU ỨNG NỀN */
         body::before {
             content: "";
             position: fixed;
@@ -123,43 +124,50 @@
                 0 0 35px rgba(0,200,255,0.18);
         }
 
-        /* vùng hình */
+        /* VÙNG HÌNH */
         .game-image {
             height: 245px;
             position: relative;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             overflow: hidden;
         }
 
+        /* ĐẬP CHUỘT */
         .mouse-bg {
             background:
                 radial-gradient(circle at 50% 40%, #8b5cf6, transparent 35%),
                 linear-gradient(135deg, #241047, #101a3c);
         }
 
+        /* THUYỀN */
         .ship-bg {
             background:
                 radial-gradient(circle at 50% 45%, #0879a5, transparent 40%),
                 linear-gradient(135deg, #06233d, #071321);
         }
 
+        /* BOOM */
         .boom-bg {
             background:
                 radial-gradient(circle at 50% 45%, #f97316, transparent 40%),
                 linear-gradient(135deg, #431407, #1c0f0a);
         }
 
+        /* PHI THUYỀN */
         .rocket-bg {
             background:
                 radial-gradient(circle at 50% 45%, #ec4899, transparent 40%),
                 linear-gradient(135deg, #500724, #180914);
         }
 
-        /* biểu tượng chung */
+        /* BIỂU TƯỢNG */
         .game-icon {
             font-size: 125px;
+
             filter:
                 drop-shadow(0 15px 10px rgba(0,0,0,0.45))
                 drop-shadow(0 0 20px rgba(255,255,255,0.15));
@@ -177,14 +185,17 @@
             }
         }
 
-        /* tia sáng */
+        /* TIA SÁNG */
         .light {
             position: absolute;
+
             width: 250px;
             height: 250px;
+
             border-radius: 50%;
 
             background: rgba(255,255,255,0.08);
+
             filter: blur(35px);
         }
 
@@ -205,11 +216,14 @@
             min-height: 48px;
         }
 
+        /* BUTTON */
         .play-button {
             margin-top: 20px;
             width: 100%;
+
             border: none;
             border-radius: 14px;
+
             padding: 14px 20px;
 
             color: white;
@@ -237,6 +251,7 @@
                 0 10px 30px rgba(0,160,255,0.5);
         }
 
+        /* PURPLE */
         .purple-button {
             background: linear-gradient(
                 90deg,
@@ -253,6 +268,7 @@
                 0 10px 30px rgba(139,92,246,0.5);
         }
 
+        /* ORANGE */
         .orange-button {
             background: linear-gradient(
                 90deg,
@@ -269,6 +285,7 @@
                 0 10px 30px rgba(249,115,22,0.5);
         }
 
+        /* PINK */
         .pink-button {
             background: linear-gradient(
                 90deg,
@@ -288,26 +305,34 @@
         /* BADGE */
         .badge {
             position: absolute;
+
             top: 18px;
             left: 18px;
 
             padding: 7px 12px;
+
             border-radius: 20px;
 
             background: rgba(0,0,0,0.4);
+
             border: 1px solid rgba(255,255,255,0.15);
 
             font-size: 13px;
             font-weight: bold;
 
             backdrop-filter: blur(8px);
+
+            z-index: 2;
         }
 
         /* FOOTER */
         footer {
             text-align: center;
+
             margin-top: 50px;
+
             color: #69738d;
+
             font-size: 14px;
         }
 
@@ -354,6 +379,7 @@
 
         <!-- HEADER -->
         <header class="header">
+
             <div class="logo">🎮</div>
 
             <h1>GAME CENTER</h1>
@@ -361,86 +387,253 @@
             <p class="subtitle">
                 Chọn một trò chơi và bắt đầu ngay!
             </p>
+
         </header>
 
 
         <!-- GAME LIST -->
         <main class="games">
 
-            <!-- GAME 1: Đập Chuột -->
-            <div class="game-card" onclick="openGame('Đập Chuột.html')">
+
+            <!-- GAME 1: ĐẬP CHUỘT -->
+            <div
+                class="game-card"
+                onclick="openGame('Đập Chuột.html')"
+            >
+
                 <div class="game-image mouse-bg">
-                    <span class="badge">🐭 ARCADE</span>
+
+                    <span class="badge">
+                        🐭 ARCADE
+                    </span>
+
                     <div class="light"></div>
-                    <div class="game-icon">🐭</div>
+
+                    <div class="game-icon">
+                        🐭
+                    </div>
+
                 </div>
+
                 <div class="game-info">
-                    <h2 class="game-title">Đập Chuột</h2>
+
+                    <h2 class="game-title">
+                        Đập Chuột
+                    </h2>
+
                     <p class="game-description">
-                        Nhanh tay đập những chú chuột xuất hiện và đạt điểm số cao nhất!
+                        Nhanh tay đập những chú chuột xuất hiện
+                        và đạt điểm số cao nhất!
                     </p>
+
                     <button class="play-button purple-button">
                         ▶ CHƠI NGAY
                     </button>
+
                 </div>
+
             </div>
 
 
-            <!-- GAME 2: Thuyền chiến -->
-            <div class="game-card" onclick="openGame('Thuyền chiến.html')">
+            <!-- GAME 2: THUYỀN CHIẾN -->
+            <div
+                class="game-card"
+                onclick="openGame('Thuyền chiến.html')"
+            >
+
                 <div class="game-image ship-bg">
-                    <span class="badge">🚢 ACTION</span>
+
+                    <span class="badge">
+                        🚢 ACTION
+                    </span>
+
                     <div class="light"></div>
-                    <div class="game-icon">🚢</div>
+
+                    <div class="game-icon">
+                        🚢
+                    </div>
+
                 </div>
+
                 <div class="game-info">
-                    <h2 class="game-title">Thuyền chiến</h2>
+
+                    <h2 class="game-title">
+                        Thuyền chiến
+                    </h2>
+
                     <p class="game-description">
-                        Điều khiển chiến hạm, chiến đấu trên biển và tiêu diệt đối thủ!
+                        Điều khiển chiến hạm, chiến đấu trên biển
+                        và tiêu diệt đối thủ!
                     </p>
+
                     <button class="play-button">
                         ▶ CHƠI NGAY
                     </button>
+
                 </div>
+
             </div>
 
 
-            <!-- GAME 3: Đặt Boom -->
-            <div class="game-card" onclick="openGame('Boom.html')">
+            <!-- GAME 3: BOOM V1 -->
+            <div
+                class="game-card"
+                onclick="openGame('Boom V1.html')"
+            >
+
                 <div class="game-image boom-bg">
-                    <span class="badge">💣 STRATEGY</span>
+
+                    <span class="badge">
+                        💣 BOOM V1
+                    </span>
+
                     <div class="light"></div>
-                    <div class="game-icon">💣</div>
+
+                    <div class="game-icon">
+                        💣
+                    </div>
+
                 </div>
+
                 <div class="game-info">
-                    <h2 class="game-title">Đặt Boom</h2>
+
+                    <h2 class="game-title">
+                        Đặt Boom V1
+                    </h2>
+
                     <p class="game-description">
-                        Đặt bom chiến thuật, phá hủy chướng ngại vật và vượt qua thử thách!
+                        Phiên bản Boom đầu tiên,
+                        đặt bom chiến thuật và phá hủy chướng ngại vật!
                     </p>
+
                     <button class="play-button orange-button">
                         ▶ CHƠI NGAY
                     </button>
+
                 </div>
+
             </div>
 
 
-            <!-- GAME 4: Phi thuyền -->
-            <div class="game-card" onclick="openGame('Phi thuyền.html')">
-                <div class="game-image rocket-bg">
-                    <span class="badge">🚀 SHOOTER</span>
+            <!-- GAME 4: BOOM V2 -->
+            <div
+                class="game-card"
+                onclick="openGame('boom V2.html')"
+            >
+
+                <div class="game-image boom-bg">
+
+                    <span class="badge">
+                        💣 BOOM V2
+                    </span>
+
                     <div class="light"></div>
-                    <div class="game-icon">🚀</div>
+
+                    <div class="game-icon">
+                        💣
+                    </div>
+
                 </div>
+
                 <div class="game-info">
-                    <h2 class="game-title">Phi thuyền</h2>
+
+                    <h2 class="game-title">
+                        Đặt Boom V2
+                    </h2>
+
                     <p class="game-description">
-                        Lái phi thuyền du hành vũ trụ, né đạn và tiêu diệt kẻ địch không gian!
+                        Phiên bản Boom V2 với những
+                        thử thách và trải nghiệm mới!
                     </p>
+
+                    <button class="play-button orange-button">
+                        ▶ CHƠI NGAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 5: BOOM V3 -->
+            <div
+                class="game-card"
+                onclick="openGame('Boom V3.html')"
+            >
+
+                <div class="game-image boom-bg">
+
+                    <span class="badge">
+                        💣 BOOM V3
+                    </span>
+
+                    <div class="light"></div>
+
+                    <div class="game-icon">
+                        💣
+                    </div>
+
+                </div>
+
+                <div class="game-info">
+
+                    <h2 class="game-title">
+                        Đặt Boom V3
+                    </h2>
+
+                    <p class="game-description">
+                        Phiên bản Boom V3 với nhiều
+                        cải tiến và thử thách hấp dẫn!
+                    </p>
+
+                    <button class="play-button orange-button">
+                        ▶ CHƠI NGAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- GAME 6: PHI THUYỀN -->
+            <div
+                class="game-card"
+                onclick="openGame('Phi thuyền.html')"
+            >
+
+                <div class="game-image rocket-bg">
+
+                    <span class="badge">
+                        🚀 SHOOTER
+                    </span>
+
+                    <div class="light"></div>
+
+                    <div class="game-icon">
+                        🚀
+                    </div>
+
+                </div>
+
+                <div class="game-info">
+
+                    <h2 class="game-title">
+                        Phi thuyền
+                    </h2>
+
+                    <p class="game-description">
+                        Lái phi thuyền du hành vũ trụ,
+                        né đạn và tiêu diệt kẻ địch không gian!
+                    </p>
+
                     <button class="play-button pink-button">
                         ▶ CHƠI NGAY
                     </button>
+
                 </div>
+
             </div>
+
 
         </main>
 
@@ -453,10 +646,13 @@
     </div>
 
 
+    <!-- JAVASCRIPT -->
     <script>
+
         function openGame(game) {
             window.location.href = game;
         }
+
     </script>
 
 </body>
