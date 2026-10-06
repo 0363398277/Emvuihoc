@@ -164,7 +164,14 @@
                 linear-gradient(135deg, #500724, #180914);
         }
 
-        /* BIỂU TƯỢNG */
+        /* CỜ TƯỚNG */
+        .chess-bg {
+            background:
+                radial-gradient(circle at 50% 45%, #d4a017, transparent 40%),
+                linear-gradient(135deg, #3b1608, #180d08);
+        }
+
+        /* BIỂU TƯỢNG GAME */
         .game-icon {
             font-size: 125px;
 
@@ -182,6 +189,28 @@
 
             50% {
                 transform: translateY(-12px) rotate(2deg);
+            }
+        }
+
+        /* CANVAS QUÂN CỜ TƯỚNG */
+        .chess-canvas {
+            width: 150px;
+            height: 150px;
+
+            filter:
+                drop-shadow(0 15px 10px rgba(0,0,0,0.45))
+                drop-shadow(0 0 20px rgba(255,190,50,0.25));
+
+            animation: chessFloating 3s ease-in-out infinite;
+        }
+
+        @keyframes chessFloating {
+            0%, 100% {
+                transform: translateY(0) rotate(-1deg);
+            }
+
+            50% {
+                transform: translateY(-12px) rotate(1deg);
             }
         }
 
@@ -302,6 +331,23 @@
                 0 10px 30px rgba(236,72,153,0.5);
         }
 
+        /* CỜ TƯỚNG */
+        .chess-button {
+            background: linear-gradient(
+                90deg,
+                #d4a017,
+                #b45309
+            );
+
+            box-shadow:
+                0 8px 20px rgba(212,160,23,0.3);
+        }
+
+        .chess-button:hover {
+            box-shadow:
+                0 10px 30px rgba(212,160,23,0.5);
+        }
+
         /* BADGE */
         .badge {
             position: absolute;
@@ -364,6 +410,11 @@
 
             .game-icon {
                 font-size: 100px;
+            }
+
+            .chess-canvas {
+                width: 125px;
+                height: 125px;
             }
 
             .game-title {
@@ -635,6 +686,50 @@
             </div>
 
 
+            <!-- GAME 7: CỜ TƯỚNG -->
+            <div
+                class="game-card"
+                onclick="openGame('Co_Tuong.html')"
+            >
+
+                <div class="game-image chess-bg">
+
+                    <span class="badge">
+                        🀄 STRATEGY
+                    </span>
+
+                    <div class="light"></div>
+
+                    <!-- CANVAS QUÂN TƯỚNG -->
+                    <canvas
+                        id="chessCanvas"
+                        class="chess-canvas"
+                        width="180"
+                        height="180">
+                    </canvas>
+
+                </div>
+
+                <div class="game-info">
+
+                    <h2 class="game-title">
+                        Cờ Tướng
+                    </h2>
+
+                    <p class="game-description">
+                        Đấu trí cùng đối thủ, vận dụng chiến thuật
+                        và giành chiến thắng trên bàn cờ!
+                    </p>
+
+                    <button class="play-button chess-button">
+                        ▶ CHƠI NGAY
+                    </button>
+
+                </div>
+
+            </div>
+
+
         </main>
 
 
@@ -649,9 +744,204 @@
     <!-- JAVASCRIPT -->
     <script>
 
+        /* ==============================
+           MỞ GAME
+        ============================== */
+
         function openGame(game) {
             window.location.href = game;
         }
+
+
+        /* ==============================
+           VẼ QUÂN CỜ TƯỚNG BẰNG CANVAS
+        ============================== */
+
+        const canvas = document.getElementById("chessCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function drawChineseChessPiece() {
+
+            const cx = 90;
+            const cy = 90;
+
+            ctx.clearRect(0, 0, 180, 180);
+
+
+            /* BÓNG */
+
+            ctx.beginPath();
+
+            ctx.arc(
+                cx,
+                cy + 8,
+                67,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle = "rgba(0,0,0,0.35)";
+
+            ctx.filter = "blur(8px)";
+
+            ctx.fill();
+
+            ctx.filter = "none";
+
+
+            /* VIỀN NGOÀI */
+
+            ctx.beginPath();
+
+            ctx.arc(
+                cx,
+                cy,
+                62,
+                0,
+                Math.PI * 2
+            );
+
+            const outerGradient =
+                ctx.createRadialGradient(
+                    70,
+                    65,
+                    10,
+                    90,
+                    90,
+                    65
+                );
+
+            outerGradient.addColorStop(
+                0,
+                "#fff4c2"
+            );
+
+            outerGradient.addColorStop(
+                0.45,
+                "#d6a84f"
+            );
+
+            outerGradient.addColorStop(
+                0.8,
+                "#8b5a16"
+            );
+
+            outerGradient.addColorStop(
+                1,
+                "#4a2808"
+            );
+
+            ctx.fillStyle = outerGradient;
+
+            ctx.fill();
+
+
+            /* MẶT QUÂN CỜ */
+
+            ctx.beginPath();
+
+            ctx.arc(
+                cx,
+                cy,
+                53,
+                0,
+                Math.PI * 2
+            );
+
+            const faceGradient =
+                ctx.createRadialGradient(
+                    70,
+                    68,
+                    5,
+                    90,
+                    90,
+                    55
+                );
+
+            faceGradient.addColorStop(
+                0,
+                "#fffdf0"
+            );
+
+            faceGradient.addColorStop(
+                0.65,
+                "#f1d98b"
+            );
+
+            faceGradient.addColorStop(
+                1,
+                "#b98228"
+            );
+
+            ctx.fillStyle = faceGradient;
+
+            ctx.fill();
+
+
+            /* VIỀN MẶT */
+
+            ctx.lineWidth = 4;
+
+            ctx.strokeStyle = "#6b3d0c";
+
+            ctx.stroke();
+
+
+            /* CHỮ TƯỚNG */
+
+            ctx.font =
+                "bold 48px 'Noto Serif SC', 'Microsoft YaHei', serif";
+
+            ctx.textAlign = "center";
+
+            ctx.textBaseline = "middle";
+
+
+            /* BÓNG CHỮ */
+
+            ctx.fillStyle =
+                "rgba(0,0,0,0.25)";
+
+            ctx.fillText(
+                "將",
+                cx + 2,
+                cy + 3
+            );
+
+
+            /* CHỮ CHÍNH */
+
+            ctx.fillStyle = "#b91c1c";
+
+            ctx.fillText(
+                "將",
+                cx,
+                cy
+            );
+
+
+            /* HIGHLIGHT */
+
+            ctx.beginPath();
+
+            ctx.arc(
+                72,
+                65,
+                8,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "rgba(255,255,255,0.35)";
+
+            ctx.fill();
+        }
+
+
+        /* VẼ NGAY KHI TRANG LOAD */
+
+        drawChineseChessPiece();
 
     </script>
 
