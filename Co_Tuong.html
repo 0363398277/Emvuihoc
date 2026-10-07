@@ -1,0 +1,4602 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cờ Tướng 2 Người</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --gold:#f4d98b;--wood:#7a3f22;--ink:#24140b;
+  --line:#3b2113;--red:#d51f2b;--blue:#67d7ff;
+}
+html,body{margin:0;min-height:100%;font-family:"Segoe UI","Noto Sans","Roboto",Arial,sans-serif}
+body{
+  min-height:100vh;display:flex;justify-content:center;align-items:center;
+  padding:18px 0;
+  background:
+    radial-gradient(circle at 50% 15%,#284a78 0,#101d36 35%,#03060d 78%,#010207 100%);
+  color:#f7e6b5;overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:-20%;pointer-events:none;
+  background-image:
+    radial-gradient(circle,#bde7ff55 0 1px,transparent 1.8px),
+    radial-gradient(circle,#fff8 0 .8px,transparent 1.6px);
+  background-size:43px 43px,79px 79px;
+  animation:drift 26s linear infinite;
+  opacity:.5;
+}
+@keyframes drift{to{transform:translate3d(70px,35px,0) rotate(8deg)}}
+
+.app{width:min(94vw,680px);text-align:center;position:relative;z-index:1}
+h1{
+  margin:2px 0 10px;font-size:30px;letter-spacing:2px;
+  text-shadow:0 0 14px #74caff99,0 3px 0 #000;
+}
+.status{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  margin:10px auto 15px;padding:11px 15px;width:min(94vw,600px);
+  background:linear-gradient(145deg,#1b3153,#091326);
+  border:1px solid #9bcfff55;border-radius:13px;
+  box-shadow:0 12px 28px #0009,inset 0 1px #fff2;
+  font-weight:bold;
+}
+button{
+  border:1px solid #e9c878aa;border-radius:9px;padding:9px 15px;cursor:pointer;
+  background:linear-gradient(#e4b85b,#80501f);color:#fff5d4;font-weight:bold;
+  box-shadow:0 5px 0 #3d210e,0 0 18px #e3b45b55;
+}
+button:hover{filter:brightness(1.15)}
+
+#board{
+  width:min(92vw,590px);aspect-ratio:9/10;margin:auto;position:relative;
+  padding:0;
+  background:
+    linear-gradient(90deg,#5b2c17aa,#c27a3e22 14%,transparent 50%,#5b2c1766),
+    linear-gradient(145deg,#c8874b,#9c572d 45%,#6a321b);
+  border:9px solid #291207;border-radius:14px;
+  box-shadow:
+    0 28px 55px #000c,
+    0 0 0 2px #e4b65e,
+    0 0 0 5px #4b2512,
+    0 0 38px #63c8ff38;
+  overflow:hidden;touch-action:manipulation;
+}
+#board:after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:
+    linear-gradient(115deg,#fff4 0 2%,transparent 10% 70%,#0004 100%),
+    repeating-linear-gradient(0deg,#fff008 0 1px,transparent 1px 5px);
+  opacity:.07;mix-blend-mode:screen;
+}
+.grid{
+  position:absolute;
+  left:5%;right:5%;top:4.5%;bottom:4.5%;
+  z-index:1;
+}
+.line{
+  position:absolute;background:linear-gradient(90deg,#1e1009,#4a2918,#1e1009);
+  box-shadow:0 0 1px #0009,0 1px #f2c07833;
+}
+.h{height:2px;left:0;right:0;transform:translateY(-1px)}
+.v{width:2px;top:0;bottom:0;transform:translateX(-1px)}
+
+.palace{
+  position:absolute;left:37.5%;top:0;width:25%;height:22.222%;
+  pointer-events:none;z-index:2;
+}
+.palace.bottom{top:auto;bottom:0}
+.palace:before,.palace:after{
+  content:"";position:absolute;left:0;top:0;width:100%;height:100%;
+  background:
+    linear-gradient(45deg,transparent 49%,#4a2918 49.4%,#4a2918 50.6%,transparent 51%),
+    linear-gradient(-45deg,transparent 49%,#4a2918 49.4%,#4a2918 50.6%,transparent 51%);
+}
+.palace:after{display:none}
+
+.river{
+  position:absolute;left:0;right:0;top:50%;height:10%;
+  transform:translateY(-50%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(20px,5vw,32px);letter-spacing:8px;
+  font-family:"KaiTi","STKaiti",serif;color:#512817;
+  text-shadow:0 1px #e9bb72,0 0 8px #fff2;
+  pointer-events:none;z-index:2;
+  background:linear-gradient(90deg,transparent,#d58c4b 8%,#d58c4b 92%,transparent);
+  border-top:1px solid #6b351b55;border-bottom:1px solid #6b351b55;
+}
+
+.mark{
+  position:absolute;width:13px;height:13px;z-index:2;pointer-events:none;
+}
+.mark:before,.mark:after{
+  content:"";position:absolute;background:#4a2918;box-shadow:0 0 1px #000;
+}
+.mark:before{width:13px;height:2px;left:0;top:5px}
+.mark:after{width:2px;height:13px;left:5px;top:0}
+.mark.tl{transform:translate(-2px,-2px)}
+.mark.tr{transform:translate(-11px,-2px)}
+.mark.bl{transform:translate(-2px,-11px)}
+.mark.br{transform:translate(-11px,-11px)}
+
+.pieces{position:absolute;inset:0;z-index:3}
+.piece{
+  position:absolute;width:10.7%;aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(19.8px,5.4vw,32.4px);
+  font-family:"KaiTi","STKaiti","Noto Serif CJK SC",serif;
+  font-weight:bold;
+  user-select:none;cursor:pointer;
+  transition:transform .14s ease,filter .18s ease;
+  isolation:isolate;
+}
+.piece:before{
+  content:"";position:absolute;inset:2%;
+  border-radius:50%;z-index:-2;
+  background:
+    radial-gradient(circle at 32% 22%,#fffbdc 0 5%,#f4d895 15%,#c98b45 49%,#6f3519 78%,#35160c 100%);
+  box-shadow:
+    inset 4px 4px 8px #fff9,
+    inset -7px -8px 12px #35150caa,
+    inset 0 -2px 2px #fff3,
+    0 8px 9px #0009,
+    0 0 0 2px #3c1c0e,
+    0 0 0 4px #d8a85b55;
+}
+.piece:after{
+  content:"";position:absolute;inset:9%;
+  border-radius:50%;z-index:-1;
+  border:1px solid #fff8;
+  box-shadow:inset 0 0 7px #5b2a1488,0 0 5px #fff3;
+}
+.piece:hover{filter:brightness(1.13);transform:translate(-50%,-50%) translateY(-3px) scale(1.025)}
+.red{color:#c9192a;text-shadow:0 1px #fff,0 0 5px #ffb0a099}
+.black{color:#17100d;text-shadow:0 1px #fff8,0 0 4px #fff5}
+.last-origin{filter:brightness(1.08);box-shadow:0 0 0 2px #f8e47a55 inset,0 0 10px #f8d95744}
+.last{
+  animation:lastMoveGlow 1.15s ease-in-out infinite alternate;
+  box-shadow:
+    0 0 0 3px #ffe76b inset,
+    0 0 12px #ffe45c,
+    0 0 30px #ffd84d99,
+    0 7px 9px #0009;
+}
+.last:before{
+  box-shadow:
+    inset 4px 4px 8px #fff9,
+    inset -7px -8px 12px #35150caa,
+    0 0 0 2px #ffe45e,
+    0 0 12px #ffe45e,
+    0 0 27px #ffce3d;
+}
+@keyframes lastMoveGlow{
+  from{filter:brightness(1.05);transform:translate(-50%,-50%) scale(1.015)}
+  to{filter:brightness(1.25);transform:translate(-50%,-50%) scale(1.055)}
+}
+.piece.face-down{
+  color:#5b2b14;
+  text-shadow:0 1px #f7d58d,0 0 7px #fff3;
+}
+.piece.face-down:before{
+  background:
+    radial-gradient(circle at 32% 22%,#fff3c8 0 5%,#dca95b 16%,#8b4c25 50%,#4d2312 78%,#241008 100%);
+}
+.cup-back{
+  font-family:Arial,sans-serif;
+  font-size:clamp(23px,5.8vw,35px);
+  font-weight:900;
+  color:#f7d98b;
+  text-shadow:0 1px #35160b,0 0 7px #fff6;
+}
+#mainMenu #modeCupBtn{
+  position:relative;
+}
+.selected{
+  transform:translate(-50%,-50%) scale(1.06);
+  filter:brightness(1.15);
+  animation:selectedPiece .9s ease-in-out infinite alternate;
+}
+.selected:before{
+  box-shadow:
+    inset 4px 4px 8px #fff9,
+    inset -7px -8px 12px #35150caa,
+    0 0 0 2px #72dcff,
+    0 0 12px #58d9ff,
+    0 0 28px #55cfff,
+    0 0 48px #69dfff88;
+}
+.selected:after{
+  border-color:#bff5ff;
+  box-shadow:inset 0 0 8px #72e5ff,0 0 9px #5bdfff;
+}
+.selected .spark{display:block}
+.spark{
+  display:none;position:absolute;inset:-28%;z-index:4;pointer-events:none;
+}
+.spark i{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:#fff;box-shadow:0 0 7px #9fefff,0 0 15px #6bdcff;
+  animation:sparkle 1.15s ease-in-out infinite;
+}
+.spark i:nth-child(1){left:18%;top:22%}.spark i:nth-child(2){right:18%;top:31%;animation-delay:.25s}
+.spark i:nth-child(3){left:27%;bottom:16%;animation-delay:.45s}.spark i:nth-child(4){right:24%;bottom:22%;animation-delay:.7s}
+@keyframes sparkle{0%,100%{opacity:.15;transform:scale(.45)}50%{opacity:1;transform:scale(1.45)}}
+@keyframes selectedPiece{
+  from{filter:brightness(1.05);transform:translate(-50%,-50%) scale(1.045)}
+  to{filter:brightness(1.22);transform:translate(-50%,-50%) scale(1.075)}
+}
+
+.turn-popup{
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) scale(.72);
+  width:min(88vw,500px);
+  min-height:155px;
+  z-index:100;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+  border-radius:30px;
+
+  /* Trong suốt khoảng 40%, không phủ kín nền */
+  background:rgba(9,16,38,.40);
+  border:1px solid rgba(225,248,255,.55);
+
+  box-shadow:
+    0 0 0 1px rgba(105,220,255,.18),
+    0 0 20px rgba(125,230,255,.75),
+    0 0 55px rgba(95,190,255,.50),
+    0 22px 70px rgba(0,0,0,.55),
+    inset 0 1px rgba(255,255,255,.7);
+
+  backdrop-filter:blur(3px);
+}
+.turn-popup.show{
+  visibility:visible;
+  animation:angelPopup 2s cubic-bezier(.18,.8,.24,1) forwards;
+}
+
+/* Vòng ma pháp phát sáng phía sau */
+.turn-popup .magic-ring{
+  position:absolute;
+  width:260px;height:260px;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  border:1px solid rgba(164,240,255,.65);
+  box-shadow:
+    0 0 10px rgba(140,239,255,.8),
+    0 0 28px rgba(99,211,255,.55),
+    inset 0 0 22px rgba(105,220,255,.25);
+  animation:ringRotate 4s linear infinite;
+}
+.turn-popup .magic-ring:before,
+.turn-popup .magic-ring:after{
+  content:"";
+  position:absolute;
+  inset:17px;
+  border-radius:50%;
+  border:1px dashed rgba(255,239,164,.7);
+}
+.turn-popup .magic-ring:after{
+  inset:38px;
+  border:1px solid rgba(199,244,255,.5);
+  animation:ringRotateReverse 3s linear infinite;
+}
+@keyframes ringRotate{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes ringRotateReverse{to{transform:rotate(-360deg)}}
+
+.turn-popup:before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.32) 0 2%,transparent 9%),
+    radial-gradient(circle,rgba(97,222,255,.22),transparent 55%);
+  filter:blur(3px);
+  animation:auraPulse 1.1s ease-in-out infinite alternate;
+}
+@keyframes auraPulse{
+  from{transform:scale(.9);opacity:.65}
+  to{transform:scale(1.08);opacity:1}
+}
+
+.popup-content{
+  position:relative;
+  z-index:20;
+  text-align:center;
+  padding:30px 85px 25px;
+  min-width:270px;
+}
+
+/* Chữ luôn nằm trên tất cả hiệu ứng */
+.popup-small{
+  position:relative;
+  z-index:30;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:4px;
+  color:#f4fbff;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 8px #8deaff,
+    0 0 18px #4acfff;
+}
+.popup-title{
+  position:relative;
+  z-index:30;
+  margin:5px 0 3px;
+  font-size:38px;
+  line-height:42px;
+  font-weight:900;
+  letter-spacing:8px;
+  color:#fff;
+  text-shadow:
+    0 1px 1px #15233a,
+    0 0 4px #fff,
+    0 0 12px #fff,
+    0 0 25px #71ddff,
+    0 0 42px #63cfff;
+}
+.popup-sub{
+  position:relative;
+  z-index:30;
+  font-size:13px;
+  font-weight:600;
+  color:#f1fbff;
+  text-shadow:0 0 4px #17243a,0 0 9px #72dcff;
+}
+
+.red-turn .popup-title{
+  color:#fff5d2;
+  text-shadow:0 0 4px #fff,0 0 14px #ffca62,0 0 30px #ff674f;
+}
+.black-turn .popup-title{
+  color:#eafaff;
+  text-shadow:0 0 4px #fff,0 0 14px #75e7ff,0 0 30px #547eff;
+}
+
+/* Cánh ánh sáng hai bên */
+.popup-wing{
+  position:absolute;
+  top:50%;
+  width:150px;height:110px;
+  z-index:10;
+  transform:translateY(-50%);
+  opacity:.82;
+  filter:drop-shadow(0 0 8px #baf6ff);
+}
+.popup-wing.left{left:-15px}
+.popup-wing.right{right:-15px;transform:translateY(-50%) scaleX(-1)}
+.popup-wing span{
+  position:absolute;
+  right:0;top:50%;
+  width:95px;height:20px;
+  border-radius:100% 0 100% 0;
+  background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(178,243,255,.45),transparent);
+  transform-origin:right center;
+  box-shadow:0 0 12px rgba(182,246,255,.9);
+}
+.popup-wing span:nth-child(1){transform:rotate(-38deg)}
+.popup-wing span:nth-child(2){transform:rotate(-20deg) scale(.92)}
+.popup-wing span:nth-child(3){transform:rotate(-2deg) scale(.82)}
+.popup-wing span:nth-child(4){transform:rotate(16deg) scale(.68)}
+.popup-wing span:nth-child(5){transform:rotate(34deg) scale(.52)}
+
+@keyframes angelPopup{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.55);filter:blur(7px)}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(1.04);filter:blur(0)}
+  24%{transform:translate(-50%,-50%) scale(.98)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-54%) scale(1.07);filter:blur(2px)}
+}
+
+/* Sao bay */
+.popup-star{
+  position:absolute;
+  z-index:25;
+  width:5px;height:5px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 5px #fff,0 0 13px #7eeaff,0 0 25px #68dfff;
+  animation:starFly 1.2s ease-in-out infinite;
+}
+.popup-star:after{
+  content:"✦";
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  color:#fff9bd;
+  font-size:15px;
+  text-shadow:0 0 7px #fff,0 0 15px #67ddff;
+}
+.popup-star.s1{left:12%;top:28%;animation-delay:0s}
+.popup-star.s2{left:22%;top:72%;animation-delay:.18s}
+.popup-star.s3{left:39%;top:12%;animation-delay:.37s}
+.popup-star.s4{right:13%;top:25%;animation-delay:.52s}
+.popup-star.s5{right:22%;bottom:19%;animation-delay:.72s}
+.popup-star.s6{right:38%;top:12%;animation-delay:.9s}
+.popup-star.s7{left:7%;top:52%;animation-delay:.45s}
+.popup-star.s8{right:7%;top:56%;animation-delay:.2s}
+@keyframes starFly{
+  0%,100%{opacity:.15;transform:translate(0,8px) scale(.45) rotate(0)}
+  35%{opacity:1}
+  50%{transform:translate(0,-5px) scale(1.25) rotate(45deg)}
+  75%{opacity:.8}
+}
+
+/* Tia sáng bay xuyên quanh popup */
+.popup-ray{
+  position:absolute;
+  z-index:5;
+  width:110px;height:2px;
+  background:linear-gradient(90deg,transparent,#fff,#83eaff,transparent);
+  box-shadow:0 0 8px #8ceaff;
+  opacity:0;
+  animation:rayFly 1.4s ease-out infinite;
+}
+.popup-ray.r1{left:-15%;top:25%;transform:rotate(16deg)}
+.popup-ray.r2{right:-15%;top:62%;transform:rotate(-18deg);animation-delay:.45s}
+.popup-ray.r3{left:15%;bottom:8%;transform:rotate(-9deg);animation-delay:.8s}
+@keyframes rayFly{
+  0%{opacity:0;transform:translateX(-35px) scaleX(.4)}
+  25%{opacity:1}
+  100%{opacity:0;transform:translateX(230px) scaleX(1.2)}
+}
+
+.board-hit{
+  position:absolute;width:90px;height:90px;z-index:20;
+  pointer-events:none;transform:translate(-50%,-50%) scale(.1);
+  border-radius:50%;opacity:0;
+}
+.board-hit.show{animation:hitBurst .58s ease-out forwards}
+.board-hit:before{
+  content:"";position:absolute;inset:18%;
+  border-radius:50%;
+  background:radial-gradient(circle,#fff 0 4%,#fff7c2 7%,#ffd84d 18%,#ff8a22 33%,#ff3d21 48%,transparent 70%);
+  box-shadow:0 0 15px #fff,0 0 32px #ffb52e,0 0 65px #ff5722;
+}
+.board-hit:after{
+  content:"";position:absolute;inset:-12%;
+  border-radius:50%;
+  border:5px solid #ffe77b;
+  box-shadow:0 0 15px #fff,0 0 28px #ffb82e,0 0 50px #ff4c22;
+  animation:shockwave .58s ease-out forwards;
+}
+@keyframes hitBurst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.08)}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(.5)}
+  35%{opacity:1;transform:translate(-50%,-50%) scale(1.35)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}
+}
+@keyframes shockwave{
+  0%{transform:scale(.2);opacity:1}
+  100%{transform:scale(2.3);opacity:0}
+}
+.explode-piece{
+  animation:pieceExplosion .52s cubic-bezier(.2,.8,.3,1) forwards!important;
+  pointer-events:none!important;
+}
+@keyframes pieceExplosion{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  15%{filter:brightness(2.5);transform:translate(-50%,-50%) scale(1.22)}
+  38%{opacity:1;transform:translate(-50%,-50%) scale(.55)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.8) rotate(24deg);filter:brightness(3) blur(5px)}
+}
+@media(max-width:430px){
+  .turn-popup{min-height:135px}
+  .popup-content{padding:27px 48px 20px;min-width:245px}
+  .popup-title{font-size:29px;line-height:34px;letter-spacing:5px}
+  .popup-wing{width:95px}
+  .popup-wing span{width:60px}
+}
+.hint{margin-top:11px;font-size:14px;color:#c9d8ec;text-shadow:0 1px #000}
+@media(max-width:430px){
+  h1{font-size:24px}.status{font-size:14px}.hint{font-size:12px}
+}
+
+/* ===== MENU CHINH + CHE DO AI ===== */
+#mainMenu{
+  position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  padding:18px;background:rgba(1,5,13,.82);backdrop-filter:blur(7px);
+}
+.menu-box{
+  width:min(92vw,460px);padding:28px 24px;border-radius:24px;text-align:center;
+  background:linear-gradient(145deg,#172b49,#07101f);border:1px solid #9bcfff88;
+  box-shadow:0 0 0 2px #66dfff22,0 0 45px #57d9ff44,0 25px 80px #000c;
+}
+.menu-title{font-size:clamp(28px,7vw,42px);font-weight:900;letter-spacing:4px;color:#ffe7a0;text-shadow:0 0 14px #74caff88;margin-bottom:6px}
+.menu-sub{font-size:13px;color:#a9c9e5;margin-bottom:22px}
+.menu-label{font-size:11px;font-weight:900;letter-spacing:2px;color:#dff7ff;margin:15px 0 9px}
+.menu-options{display:grid;gap:10px}
+.menu-btn{width:100%;min-height:52px;font-size:16px;border-radius:13px}
+.menu-btn.selected{border-color:#fff0a0;box-shadow:0 0 18px #ffd85c77,0 5px 0 #3d210e}
+#levelOptions{display:none;grid-template-columns:repeat(3,1fr);gap:8px}
+#levelOptions.show{display:grid}
+.level-btn{padding:10px 5px;min-height:58px;font-size:13px}
+.level-btn small{display:block;font-size:9px;margin-top:4px;opacity:.8}
+#startGameBtn{margin-top:18px;width:100%;min-height:50px;font-size:17px;display:none}
+#startGameBtn.show{display:block}
+.ai-badge{display:inline-block;margin-top:9px;padding:4px 9px;border-radius:99px;background:#58dfff18;border:1px solid #58dfff55;color:#9feaff;font-size:10px;font-weight:800}
+@media(max-width:520px){
+  .menu-box{padding:23px 15px;border-radius:20px}
+  .menu-title{letter-spacing:2px}
+  .menu-btn{min-height:48px;font-size:15px}
+}
+
+/* ===== CHỌN ĐỘI ĐI TRƯỚC + HOÁN ĐỔI BÊN ===== */
+#sideSwapBtn{
+  margin-top:10px;
+  width:100%;
+  min-height:48px;
+  font-size:15px;
+}
+#sideSwapBtn.active{
+  border-color:#fff0a0;
+  box-shadow:0 0 20px #ffd85c88,0 5px 0 #3d210e;
+}
+#gameStartOverlay{
+  position:absolute;
+  inset:0;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(3,8,18,.58);
+  backdrop-filter:blur(3px);
+}
+#gameStartOverlay.hidden{display:none}
+.start-panel{
+  width:min(90%,390px);
+  padding:22px 20px 20px;
+  border-radius:22px;
+  background:linear-gradient(145deg,#172b49ee,#07101fee);
+  border:1px solid #9bcfff99;
+  box-shadow:0 0 0 2px #66dfff22,0 0 35px #57d9ff55,0 18px 55px #000c;
+  text-align:center;
+}
+.start-title{
+  font-size:clamp(22px,6vw,32px);
+  font-weight:900;
+  letter-spacing:3px;
+  color:#ffe7a0;
+  text-shadow:0 0 12px #74caff88;
+  margin-bottom:6px;
+}
+.start-sub{font-size:12px;color:#bcd6ed;margin-bottom:16px}
+.puzzle-start-remaining{display:none;margin:10px auto 12px;width:max-content;max-width:100%;padding:7px 12px;box-sizing:border-box;border-radius:10px;background:linear-gradient(145deg,#172b49,#0b1728);border:1px solid #9bcfff55;box-shadow:0 4px 12px #0005;color:#ffe7a0;font-size:11px;font-weight:900;line-height:1.25;white-space:nowrap}.puzzle-start-remaining.show{display:block}.puzzle-start-remaining strong{font-size:15px;color:#fff0a8}
+.first-turn-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:16px;
+}
+.first-turn-option{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:54px;
+  padding:9px 8px;
+  border:1px solid #9bcfff55;
+  border-radius:13px;
+  background:#0d1b31;
+  color:#f4fbff;
+  font-weight:800;
+  cursor:pointer;
+}
+.first-turn-option:has(input:checked){
+  border-color:#ffe27b;
+  box-shadow:0 0 18px #ffd85c55,inset 0 0 14px #ffd85c18;
+}
+.first-turn-option input{
+  width:18px;
+  height:18px;
+  accent-color:#f4c85d;
+  cursor:pointer;
+}
+#beginGameBtn{
+  width:100%;
+  min-height:52px;
+  font-size:17px;
+  opacity:.5;
+}
+#beginGameBtn.ready{opacity:1}
+@media(max-width:430px){
+  .start-panel{padding:18px 14px 16px}
+  .first-turn-option{min-height:50px;font-size:13px}
+}
+</style>
+<style>
+
+*{box-sizing:border-box}
+:root{
+  --gold:#f4d98b;--wood:#7a3f22;--ink:#24140b;
+  --line:#3b2113;--red:#d51f2b;--blue:#67d7ff;
+}
+html,body{margin:0;min-height:100%;font-family:"Segoe UI","Noto Sans","Roboto",Arial,sans-serif}
+body{
+  min-height:100vh;display:flex;justify-content:center;align-items:center;
+  padding:18px 0;
+  background:
+    radial-gradient(circle at 50% 15%,#284a78 0,#101d36 35%,#03060d 78%,#010207 100%);
+  color:#f7e6b5;overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:-20%;pointer-events:none;
+  background-image:
+    radial-gradient(circle,#bde7ff55 0 1px,transparent 1.8px),
+    radial-gradient(circle,#fff8 0 .8px,transparent 1.6px);
+  background-size:43px 43px,79px 79px;
+  animation:drift 26s linear infinite;
+  opacity:.5;
+}
+@keyframes drift{to{transform:translate3d(70px,35px,0) rotate(8deg)}}
+
+.app{width:min(94vw,680px);text-align:center;position:relative;z-index:1}
+h1{
+  margin:2px 0 10px;font-size:30px;letter-spacing:2px;
+  text-shadow:0 0 14px #74caff99,0 3px 0 #000;
+}
+.status{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  margin:10px auto 15px;padding:11px 15px;width:min(94vw,600px);
+  background:linear-gradient(145deg,#1b3153,#091326);
+  border:1px solid #9bcfff55;border-radius:13px;
+  box-shadow:0 12px 28px #0009,inset 0 1px #fff2;
+  font-weight:bold;
+}
+button{
+  border:1px solid #e9c878aa;border-radius:9px;padding:9px 15px;cursor:pointer;
+  background:linear-gradient(#e4b85b,#80501f);color:#fff5d4;font-weight:bold;
+  box-shadow:0 5px 0 #3d210e,0 0 18px #e3b45b55;
+}
+button:hover{filter:brightness(1.15)}
+
+#board{
+  width:min(92vw,590px);aspect-ratio:9/10;margin:auto;position:relative;
+  padding:0;
+  background:
+    linear-gradient(90deg,#5b2c17aa,#c27a3e22 14%,transparent 50%,#5b2c1766),
+    linear-gradient(145deg,#c8874b,#9c572d 45%,#6a321b);
+  border:9px solid #291207;border-radius:14px;
+  box-shadow:
+    0 28px 55px #000c,
+    0 0 0 2px #e4b65e,
+    0 0 0 5px #4b2512,
+    0 0 38px #63c8ff38;
+  overflow:hidden;touch-action:manipulation;
+}
+#board:after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:
+    linear-gradient(115deg,#fff4 0 2%,transparent 10% 70%,#0004 100%),
+    repeating-linear-gradient(0deg,#fff008 0 1px,transparent 1px 5px);
+  opacity:.07;mix-blend-mode:screen;
+}
+.grid{
+  position:absolute;
+  left:5%;right:5%;top:4.5%;bottom:4.5%;
+  z-index:1;
+}
+.line{
+  position:absolute;background:linear-gradient(90deg,#1e1009,#4a2918,#1e1009);
+  box-shadow:0 0 1px #0009,0 1px #f2c07833;
+}
+.h{height:2px;left:0;right:0;transform:translateY(-1px)}
+.v{width:2px;top:0;bottom:0;transform:translateX(-1px)}
+
+.palace{
+  position:absolute;left:37.5%;top:0;width:25%;height:22.222%;
+  pointer-events:none;z-index:2;
+}
+.palace.bottom{top:auto;bottom:0}
+.palace:before,.palace:after{
+  content:"";position:absolute;left:0;top:0;width:100%;height:100%;
+  background:
+    linear-gradient(45deg,transparent 49%,#4a2918 49.4%,#4a2918 50.6%,transparent 51%),
+    linear-gradient(-45deg,transparent 49%,#4a2918 49.4%,#4a2918 50.6%,transparent 51%);
+}
+.palace:after{display:none}
+
+.river{
+  position:absolute;left:0;right:0;top:50%;height:10%;
+  transform:translateY(-50%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(20px,5vw,32px);letter-spacing:8px;
+  font-family:"KaiTi","STKaiti",serif;color:#512817;
+  text-shadow:0 1px #e9bb72,0 0 8px #fff2;
+  pointer-events:none;z-index:2;
+  background:linear-gradient(90deg,transparent,#d58c4b 8%,#d58c4b 92%,transparent);
+  border-top:1px solid #6b351b55;border-bottom:1px solid #6b351b55;
+}
+
+.mark{
+  position:absolute;width:13px;height:13px;z-index:2;pointer-events:none;
+}
+.mark:before,.mark:after{
+  content:"";position:absolute;background:#4a2918;box-shadow:0 0 1px #000;
+}
+.mark:before{width:13px;height:2px;left:0;top:5px}
+.mark:after{width:2px;height:13px;left:5px;top:0}
+.mark.tl{transform:translate(-2px,-2px)}
+.mark.tr{transform:translate(-11px,-2px)}
+.mark.bl{transform:translate(-2px,-11px)}
+.mark.br{transform:translate(-11px,-11px)}
+
+.pieces{position:absolute;inset:0;z-index:3}
+.piece{
+  position:absolute;width:10.7%;aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(22px,6vw,36px);
+  font-family:"KaiTi","STKaiti","Noto Serif CJK SC",serif;
+  font-weight:bold;
+  user-select:none;cursor:pointer;
+  transition:transform .14s ease,filter .18s ease;
+  isolation:isolate;
+}
+.piece:before{
+  content:"";position:absolute;inset:2%;
+  border-radius:50%;z-index:-2;
+  background:
+    radial-gradient(circle at 32% 22%,#fffbdc 0 5%,#f4d895 15%,#c98b45 49%,#6f3519 78%,#35160c 100%);
+  box-shadow:
+    inset 4px 4px 8px #fff9,
+    inset -7px -8px 12px #35150caa,
+    inset 0 -2px 2px #fff3,
+    0 8px 9px #0009,
+    0 0 0 2px #3c1c0e,
+    0 0 0 4px #d8a85b55;
+}
+.piece:after{
+  content:"";position:absolute;inset:9%;
+  border-radius:50%;z-index:-1;
+  border:1px solid #fff8;
+  box-shadow:inset 0 0 7px #5b2a1488,0 0 5px #fff3;
+}
+.piece:hover{filter:brightness(1.13);transform:translate(-50%,-50%) translateY(-3px) scale(1.025)}
+.red{color:#c9192a;text-shadow:0 1px #fff,0 0 5px #ffb0a099}
+.black{color:#17100d;text-shadow:0 1px #fff8,0 0 4px #fff5}
+.last-origin{filter:brightness(1.08);box-shadow:0 0 0 2px #f8e47a55 inset,0 0 10px #f8d95744}
+.last{
+  animation:lastMoveGlow 1.15s ease-in-out infinite alternate;
+  box-shadow:
+    0 0 0 3px #ffe76b inset,
+    0 0 12px #ffe45c,
+    0 0 30px #ffd84d99,
+    0 7px 9px #0009;
+}
+.last:before{
+  box-shadow:
+    inset 4px 4px 8px #fff9,
+    inset -7px -8px 12px #35150caa,
+    0 0 0 2px #ffe45e,
+    0 0 12px #ffe45e,
+    0 0 27px #ffce3d;
+}
+@keyframes lastMoveGlow{
+  from{filter:brightness(1.05);transform:translate(-50%,-50%) scale(1.015)}
+  to{filter:brightness(1.25);transform:translate(-50%,-50%) scale(1.055)}
+}
+.selected{
+  transform:translate(-50%,-50%) scale(1.06);
+  filter:brightness(1.15);
+  animation:selectedPiece .9s ease-in-out infinite alternate;
+}
+.selected:before{
+  box-shadow:
+    inset 4px 4px 8px #fff9,
+    inset -7px -8px 12px #35150caa,
+    0 0 0 2px #72dcff,
+    0 0 12px #58d9ff,
+    0 0 28px #55cfff,
+    0 0 48px #69dfff88;
+}
+.selected:after{
+  border-color:#bff5ff;
+  box-shadow:inset 0 0 8px #72e5ff,0 0 9px #5bdfff;
+}
+.selected .spark{display:block}
+.spark{
+  display:none;position:absolute;inset:-28%;z-index:4;pointer-events:none;
+}
+.spark i{
+  position:absolute;width:5px;height:5px;border-radius:50%;
+  background:#fff;box-shadow:0 0 7px #9fefff,0 0 15px #6bdcff;
+  animation:sparkle 1.15s ease-in-out infinite;
+}
+.spark i:nth-child(1){left:18%;top:22%}.spark i:nth-child(2){right:18%;top:31%;animation-delay:.25s}
+.spark i:nth-child(3){left:27%;bottom:16%;animation-delay:.45s}.spark i:nth-child(4){right:24%;bottom:22%;animation-delay:.7s}
+@keyframes sparkle{0%,100%{opacity:.15;transform:scale(.45)}50%{opacity:1;transform:scale(1.45)}}
+@keyframes selectedPiece{
+  from{filter:brightness(1.05);transform:translate(-50%,-50%) scale(1.045)}
+  to{filter:brightness(1.22);transform:translate(-50%,-50%) scale(1.075)}
+}
+
+.turn-popup{
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) scale(.72);
+  width:min(88vw,500px);
+  min-height:155px;
+  z-index:100;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+  border-radius:30px;
+
+  /* Trong suốt khoảng 40%, không phủ kín nền */
+  background:rgba(9,16,38,.40);
+  border:1px solid rgba(225,248,255,.55);
+
+  box-shadow:
+    0 0 0 1px rgba(105,220,255,.18),
+    0 0 20px rgba(125,230,255,.75),
+    0 0 55px rgba(95,190,255,.50),
+    0 22px 70px rgba(0,0,0,.55),
+    inset 0 1px rgba(255,255,255,.7);
+
+  backdrop-filter:blur(3px);
+}
+.turn-popup.show{
+  visibility:visible;
+  animation:angelPopup 2s cubic-bezier(.18,.8,.24,1) forwards;
+}
+
+/* Vòng ma pháp phát sáng phía sau */
+.turn-popup .magic-ring{
+  position:absolute;
+  width:260px;height:260px;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  border:1px solid rgba(164,240,255,.65);
+  box-shadow:
+    0 0 10px rgba(140,239,255,.8),
+    0 0 28px rgba(99,211,255,.55),
+    inset 0 0 22px rgba(105,220,255,.25);
+  animation:ringRotate 4s linear infinite;
+}
+.turn-popup .magic-ring:before,
+.turn-popup .magic-ring:after{
+  content:"";
+  position:absolute;
+  inset:17px;
+  border-radius:50%;
+  border:1px dashed rgba(255,239,164,.7);
+}
+.turn-popup .magic-ring:after{
+  inset:38px;
+  border:1px solid rgba(199,244,255,.5);
+  animation:ringRotateReverse 3s linear infinite;
+}
+@keyframes ringRotate{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes ringRotateReverse{to{transform:rotate(-360deg)}}
+
+.turn-popup:before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.32) 0 2%,transparent 9%),
+    radial-gradient(circle,rgba(97,222,255,.22),transparent 55%);
+  filter:blur(3px);
+  animation:auraPulse 1.1s ease-in-out infinite alternate;
+}
+@keyframes auraPulse{
+  from{transform:scale(.9);opacity:.65}
+  to{transform:scale(1.08);opacity:1}
+}
+
+.popup-content{
+  position:relative;
+  z-index:20;
+  text-align:center;
+  padding:30px 85px 25px;
+  min-width:270px;
+}
+
+/* Chữ luôn nằm trên tất cả hiệu ứng */
+.popup-small{
+  position:relative;
+  z-index:30;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:4px;
+  color:#f4fbff;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 8px #8deaff,
+    0 0 18px #4acfff;
+}
+.popup-title{
+  position:relative;
+  z-index:30;
+  margin:5px 0 3px;
+  font-size:38px;
+  line-height:42px;
+  font-weight:900;
+  letter-spacing:8px;
+  color:#fff;
+  text-shadow:
+    0 1px 1px #15233a,
+    0 0 4px #fff,
+    0 0 12px #fff,
+    0 0 25px #71ddff,
+    0 0 42px #63cfff;
+}
+.popup-sub{
+  position:relative;
+  z-index:30;
+  font-size:13px;
+  font-weight:600;
+  color:#f1fbff;
+  text-shadow:0 0 4px #17243a,0 0 9px #72dcff;
+}
+
+.red-turn .popup-title{
+  color:#fff5d2;
+  text-shadow:0 0 4px #fff,0 0 14px #ffca62,0 0 30px #ff674f;
+}
+.black-turn .popup-title{
+  color:#eafaff;
+  text-shadow:0 0 4px #fff,0 0 14px #75e7ff,0 0 30px #547eff;
+}
+
+/* Cánh ánh sáng hai bên */
+.popup-wing{
+  position:absolute;
+  top:50%;
+  width:150px;height:110px;
+  z-index:10;
+  transform:translateY(-50%);
+  opacity:.82;
+  filter:drop-shadow(0 0 8px #baf6ff);
+}
+.popup-wing.left{left:-15px}
+.popup-wing.right{right:-15px;transform:translateY(-50%) scaleX(-1)}
+.popup-wing span{
+  position:absolute;
+  right:0;top:50%;
+  width:95px;height:20px;
+  border-radius:100% 0 100% 0;
+  background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(178,243,255,.45),transparent);
+  transform-origin:right center;
+  box-shadow:0 0 12px rgba(182,246,255,.9);
+}
+.popup-wing span:nth-child(1){transform:rotate(-38deg)}
+.popup-wing span:nth-child(2){transform:rotate(-20deg) scale(.92)}
+.popup-wing span:nth-child(3){transform:rotate(-2deg) scale(.82)}
+.popup-wing span:nth-child(4){transform:rotate(16deg) scale(.68)}
+.popup-wing span:nth-child(5){transform:rotate(34deg) scale(.52)}
+
+@keyframes angelPopup{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.55);filter:blur(7px)}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(1.04);filter:blur(0)}
+  24%{transform:translate(-50%,-50%) scale(.98)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-54%) scale(1.07);filter:blur(2px)}
+}
+
+/* Sao bay */
+.popup-star{
+  position:absolute;
+  z-index:25;
+  width:5px;height:5px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 5px #fff,0 0 13px #7eeaff,0 0 25px #68dfff;
+  animation:starFly 1.2s ease-in-out infinite;
+}
+.popup-star:after{
+  content:"✦";
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  color:#fff9bd;
+  font-size:15px;
+  text-shadow:0 0 7px #fff,0 0 15px #67ddff;
+}
+.popup-star.s1{left:12%;top:28%;animation-delay:0s}
+.popup-star.s2{left:22%;top:72%;animation-delay:.18s}
+.popup-star.s3{left:39%;top:12%;animation-delay:.37s}
+.popup-star.s4{right:13%;top:25%;animation-delay:.52s}
+.popup-star.s5{right:22%;bottom:19%;animation-delay:.72s}
+.popup-star.s6{right:38%;top:12%;animation-delay:.9s}
+.popup-star.s7{left:7%;top:52%;animation-delay:.45s}
+.popup-star.s8{right:7%;top:56%;animation-delay:.2s}
+@keyframes starFly{
+  0%,100%{opacity:.15;transform:translate(0,8px) scale(.45) rotate(0)}
+  35%{opacity:1}
+  50%{transform:translate(0,-5px) scale(1.25) rotate(45deg)}
+  75%{opacity:.8}
+}
+
+/* Tia sáng bay xuyên quanh popup */
+.popup-ray{
+  position:absolute;
+  z-index:5;
+  width:110px;height:2px;
+  background:linear-gradient(90deg,transparent,#fff,#83eaff,transparent);
+  box-shadow:0 0 8px #8ceaff;
+  opacity:0;
+  animation:rayFly 1.4s ease-out infinite;
+}
+.popup-ray.r1{left:-15%;top:25%;transform:rotate(16deg)}
+.popup-ray.r2{right:-15%;top:62%;transform:rotate(-18deg);animation-delay:.45s}
+.popup-ray.r3{left:15%;bottom:8%;transform:rotate(-9deg);animation-delay:.8s}
+@keyframes rayFly{
+  0%{opacity:0;transform:translateX(-35px) scaleX(.4)}
+  25%{opacity:1}
+  100%{opacity:0;transform:translateX(230px) scaleX(1.2)}
+}
+
+.board-hit{
+  position:absolute;width:90px;height:90px;z-index:20;
+  pointer-events:none;transform:translate(-50%,-50%) scale(.1);
+  border-radius:50%;opacity:0;
+}
+.board-hit.show{animation:hitBurst .58s ease-out forwards}
+.board-hit:before{
+  content:"";position:absolute;inset:18%;
+  border-radius:50%;
+  background:radial-gradient(circle,#fff 0 4%,#fff7c2 7%,#ffd84d 18%,#ff8a22 33%,#ff3d21 48%,transparent 70%);
+  box-shadow:0 0 15px #fff,0 0 32px #ffb52e,0 0 65px #ff5722;
+}
+.board-hit:after{
+  content:"";position:absolute;inset:-12%;
+  border-radius:50%;
+  border:5px solid #ffe77b;
+  box-shadow:0 0 15px #fff,0 0 28px #ffb82e,0 0 50px #ff4c22;
+  animation:shockwave .58s ease-out forwards;
+}
+@keyframes hitBurst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.08)}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(.5)}
+  35%{opacity:1;transform:translate(-50%,-50%) scale(1.35)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.5)}
+}
+@keyframes shockwave{
+  0%{transform:scale(.2);opacity:1}
+  100%{transform:scale(2.3);opacity:0}
+}
+.explode-piece{
+  animation:pieceExplosion .52s cubic-bezier(.2,.8,.3,1) forwards!important;
+  pointer-events:none!important;
+}
+@keyframes pieceExplosion{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  15%{filter:brightness(2.5);transform:translate(-50%,-50%) scale(1.22)}
+  38%{opacity:1;transform:translate(-50%,-50%) scale(.55)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.8) rotate(24deg);filter:brightness(3) blur(5px)}
+}
+@media(max-width:430px){
+  .turn-popup{min-height:135px}
+  .popup-content{padding:27px 48px 20px;min-width:245px}
+  .popup-title{font-size:29px;line-height:34px;letter-spacing:5px}
+  .popup-wing{width:95px}
+  .popup-wing span{width:60px}
+}
+.hint{margin-top:11px;font-size:14px;color:#c9d8ec;text-shadow:0 1px #000}
+@media(max-width:430px){
+  h1{font-size:24px}.status{font-size:14px}.hint{font-size:12px}
+}
+
+
+/* ===== BỐ CỤC MỚI: giữ nguyên toàn bộ CSS bàn cờ gốc ===== */
+.app{width:min(100%,1400px);text-align:center;position:relative;z-index:1;padding:12px 18px;}
+.game-layout{width:100%;display:grid;grid-template-columns:minmax(170px,220px) auto minmax(170px,220px);align-items:center;justify-content:center;gap:clamp(18px,3vw,46px);}
+.board-wrap{display:flex;align-items:center;justify-content:center;min-width:0;}
+#board{height:min(90vh,760px);width:auto;aspect-ratio:9/10;}
+.side-panel{display:flex;flex-direction:column;gap:14px;width:100%;}
+.clock-card,.control-card{width:100%;padding:15px 12px;border-radius:15px;background:linear-gradient(145deg,#172b49,#081224);border:1px solid #9bcfff55;box-shadow:0 12px 28px #0009,inset 0 1px #fff2;text-align:center;}
+.clock-card.active{border-color:#fff0a0;box-shadow:0 0 20px #ffd85c66,0 12px 28px #0009,inset 0 1px #fff4;}
+.clock-name{font-size:13px;font-weight:900;letter-spacing:3px;margin-bottom:5px;}
+.clock-time{font-variant-numeric:tabular-nums;font-size:clamp(24px,2.3vw,34px);font-weight:900;letter-spacing:1px;}
+.clock-state{margin-top:5px;font-size:11px;color:#a9c0d7;font-weight:700;}
+.clock-card.active .clock-state{color:#ffe98a;}
+.clock-card.red-clock .clock-name{color:#ff8f8f}.clock-card.black-clock .clock-name{color:#b8eaff}
+.control-card label{display:block;font-size:11px;font-weight:900;letter-spacing:1px;color:#d9eaff}
+.unit-label{margin-top:3px;font-size:10px;color:#8fa8c1;letter-spacing:2px}
+#timeLimit{width:100%;max-width:150px;margin-top:9px;padding:9px 8px;border-radius:9px;border:1px solid #8fcdf055;outline:none;background:#15263f;color:#fff;text-align:center;font-weight:800;}
+#timeLimit:focus{border-color:#8de8ff;box-shadow:0 0 10px #66dfff44}
+.limit-help{font-size:10px;color:#9eb4ca;margin-top:6px;line-height:1.3}
+.restart-btn{width:100%;}
+.game-notice{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);z-index:99999 !important;pointer-events:none;opacity:0;visibility:hidden;width:min(86vw,520px);padding:26px 30px;border-radius:22px;background:rgba(8,17,35,.96);border:1px solid #dff8ff99;box-shadow:0 0 0 2px #66dfff22,0 0 35px #57d9ff66,0 20px 70px #000c;text-align:center;}
+.game-notice.show{visibility:visible;animation:noticeIn .22s ease-out forwards;}
+.game-notice.end{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.notice-title{font-size:clamp(26px,5vw,42px);font-weight:900;letter-spacing:4px;color:#fff;text-shadow:0 0 8px #fff,0 0 24px #65ddff;margin-bottom:8px;}
+.notice-sub{font-size:14px;font-weight:700;color:#eafaff;line-height:1.5;}
+.notice-times{display:flex;justify-content:center;gap:24px;margin-top:14px;font-size:16px;font-weight:900;color:#ffeaa0;}
+@keyframes noticeIn{from{opacity:0;transform:translate(-50%,-50%) scale(.88)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@media(max-width:900px){
+  .app{padding:8px;min-height:100vh;}
+  .game-layout{grid-template-columns:1fr;gap:10px;max-width:620px;margin:auto;}
+  .board-wrap{order:1}.left-panel{order:2}.right-panel{order:3}
+  .left-panel .clock-card{width:100%}
+  .side-panel{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .right-panel .control-card,.right-panel .restart-btn{grid-column:1/-1}
+  #board{height:auto;width:min(94vw,560px);}
+  .clock-card{padding:10px 8px}.clock-time{font-size:clamp(22px,6vw,30px)}
+}
+@media(max-width:520px){
+  .app{padding:5px}.game-layout{gap:7px}
+  #board{width:min(96vw,520px);border-width:7px}
+  .clock-card{padding:8px 6px;border-radius:11px}.clock-name{font-size:11px;letter-spacing:2px}.clock-time{font-size:21px}.clock-state{font-size:9px}
+  .control-card{padding:10px 8px}.restart-btn{padding:9px 14px}
+  .game-notice{padding:22px 18px}.notice-times{gap:14px;font-size:14px}
+}
+@media(max-height:700px) and (min-width:901px){#board{height:92vh}.game-layout{gap:18px}.app{padding:5px 12px}}
+
+/* ===== BẢNG ĐIỀU KHIỂN: đồng hồ một bên, nút một bên ===== */
+.controls-card{display:flex;flex-direction:column;gap:10px;align-items:stretch;}
+.controls-title{font-size:12px;font-weight:900;letter-spacing:3px;color:#dff7ff;margin-bottom:2px;}
+.controls-card button{width:100%;min-height:42px;font-size:14px;}
+.controls-card button:disabled{opacity:.38;cursor:not-allowed;filter:none;}
+#timeSettings{display:none;margin-top:3px;padding-top:11px;border-top:1px solid #8fcdf033;}
+#timeSettings.open{display:block;}
+#timeSettings input{width:100%;max-width:none;}
+.sound-off{opacity:.75;}
+@media(max-width:900px){
+  .controls-panel{display:block;}
+  .controls-card{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .controls-title{grid-column:1/-1;}
+  .time-settings{grid-column:1/-1;}
+}
+
+/* ===== THỜI GIAN: gom toàn bộ sang bên trái ===== */
+.time-panels{display:flex;flex-direction:column;gap:12px;width:100%;}
+.time-panels .clock-card,.time-panels .time-limit-card{width:100%;}
+#timePanels{display:none;}
+#timePanels.open{display:flex;}
+.time-limit-card{padding:15px 12px;border-radius:15px;background:linear-gradient(145deg,#172b49,#081224);border:1px solid #9bcfff55;box-shadow:0 12px 28px #0009,inset 0 1px #fff2;text-align:center;}
+.time-limit-card input{width:100%;max-width:none;margin-top:9px;padding:9px 8px;border-radius:9px;border:1px solid #8fcdf055;outline:none;background:#15263f;color:#fff;text-align:center;font-weight:800;}
+.time-limit-card input:focus{border-color:#8de8ff;box-shadow:0 0 10px #66dfff44;}
+@media(max-width:900px){
+  #timePanels.open{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .time-panels .time-limit-card{grid-column:1/-1;}
+}
+
+/* ===== MOBILE FIX: 3 KHUNG THỜI GIAN ĐỀU NHAU + GỌN ===== */
+@media (max-width:520px){
+  .time-panels{
+    width:100%;
+    display:none;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:5px;
+    align-items:stretch;
+  }
+  #timePanels.open{
+    display:grid;
+  }
+  .time-panels .clock-card,
+  .time-panels .time-limit-card{
+    grid-column:auto;
+    width:100%;
+    min-width:0;
+    min-height:74px;
+    height:100%;
+    padding:6px 3px;
+    border-radius:8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+  }
+  .time-panels .clock-name{
+    font-size:9px;
+    line-height:1;
+    letter-spacing:1px;
+    margin-bottom:3px;
+  }
+  .time-panels .clock-time{
+    font-size:clamp(16px,5.2vw,20px);
+    line-height:1.05;
+    letter-spacing:0;
+    white-space:nowrap;
+  }
+  .time-panels .clock-state{
+    margin-top:3px;
+    font-size:7px;
+    line-height:1;
+    white-space:nowrap;
+  }
+  .time-panels .time-limit-card{
+    padding:5px 3px;
+  }
+  .time-panels .time-limit-card label{
+    font-size:8px;
+    line-height:1.05;
+    letter-spacing:.2px;
+    white-space:nowrap;
+  }
+  .time-panels .time-limit-card .unit-label{
+    margin-top:1px;
+    font-size:7px;
+    letter-spacing:1px;
+    line-height:1;
+  }
+  .time-panels .time-limit-card input{
+    width:calc(100% - 4px);
+    min-width:0;
+    height:25px;
+    margin-top:4px;
+    padding:3px 2px;
+    border-radius:6px;
+    font-size:11px;
+  }
+  .time-panels .time-limit-card .limit-help{
+    display:none;
+  }
+}
+@media (max-width:360px){
+  .time-panels{gap:4px;}
+  .time-panels .clock-card,
+  .time-panels .time-limit-card{
+    min-height:68px;
+    padding:5px 2px;
+  }
+  .time-panels .clock-time{font-size:16px;}
+  .time-panels .clock-state{font-size:6.5px;}
+  .time-panels .time-limit-card label{font-size:7px;}
+  .time-panels .time-limit-card input{height:23px;font-size:10px;}
+}
+
+/* ===== MOBILE AUDIO FIX: mở khóa Web Audio bằng thao tác chạm đầu tiên ===== */
+html,body,#board,button{
+  -webkit-tap-highlight-color:transparent;
+}
+#board{
+  -webkit-touch-callout:none;
+  touch-action:manipulation;
+}
+
+
+/* ===== MOBILE V3 ===== */
+@media (max-width:520px){
+  .time-panels#timePanels.open{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    grid-template-rows:1fr !important;
+    gap:5px !important;
+    width:100% !important;
+    align-items:stretch !important;
+  }
+  .time-panels#timePanels.open > .clock-card,
+  .time-panels#timePanels.open > .time-limit-card{
+    grid-column:auto !important;
+    grid-row:1 !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    margin:0 !important;
+  }
+  .time-panels#timePanels.open .time-limit-card{
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+  .time-panels#timePanels.open .time-limit-card input{
+    width:calc(100% - 4px) !important;
+    box-sizing:border-box !important;
+  }
+}
+@media (max-width:360px){.time-panels#timePanels.open{gap:3px !important;}}
+
+/* ===== MOBILE V4: chữ quân cờ nhỏ 90% + 3 khung thời gian full-width ===== */
+@media (max-width:900px){
+  .left-panel{
+    width:100% !important;
+    grid-column:1 / -1 !important;
+  }
+  .left-panel .time-panels{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+  }
+}
+@media (max-width:520px){
+  .left-panel{
+    display:block !important;
+    width:100% !important;
+  }
+  .left-panel .time-panels{
+    width:100% !important;
+    display:none;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:5px !important;
+  }
+  .left-panel .time-panels#timePanels.open{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    grid-template-rows:1fr !important;
+  }
+  .left-panel .time-panels#timePanels.open > .clock-card,
+  .left-panel .time-panels#timePanels.open > .time-limit-card{
+    grid-column:auto !important;
+    grid-row:1 !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Chỉ thu nhỏ chữ Hán bên trong quân, không thu nhỏ mặt quân. */
+  .piece > span:first-child{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    line-height:1 !important;
+    transform:scale(.9) !important;
+    transform-origin:center center !important;
+  }
+}
+@media (max-width:360px){
+  .left-panel .time-panels#timePanels.open{gap:3px !important;}
+}
+
+/* ===== MOBILE V5: chạm nút/ô cờ chính xác ===== */
+button,.menu-btn,.level-btn,#board,.piece{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+#mainMenu{touch-action:manipulation;}
+#mainMenu.menu-hidden{display:none !important;}
+@media(max-width:520px){
+  .menu-btn{min-height:50px;}
+  #startGameBtn{min-height:50px;}
+}
+
+/* ===== MENU FIX V3: KHÓA LƯỚI, NÚT KHÔNG NHẢY/LỆCH KHI CHẠM ===== */
+#mainMenu{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:12px !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;
+}
+#mainMenu .menu-box{
+  width:min(92vw,460px) !important;
+  margin:0 auto !important;
+  flex:0 0 auto !important;
+  display:block !important;
+  text-align:center !important;
+}
+#mainMenu .menu-options{
+  width:100% !important;
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  grid-auto-rows:minmax(50px,auto) !important;
+  gap:10px !important;
+  align-items:stretch !important;
+}
+#mainMenu #levelOptions{
+  width:100% !important;
+  display:none !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  grid-auto-rows:minmax(64px,auto) !important;
+  gap:8px !important;
+  align-items:stretch !important;
+}
+#mainMenu #levelOptions.show{display:grid !important;}
+#mainMenu .menu-btn{
+  box-sizing:border-box !important;
+  position:relative !important;
+  display:flex !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  margin:0 !important;
+  border-width:1px !important;
+  transform:none !important;
+  translate:none !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  align-items:center !important;
+  justify-content:center !important;
+  -webkit-appearance:none !important;
+  appearance:none !important;
+}
+/* Nút bắt đầu phải thực sự ẩn/hiện theo lựa chọn menu. */
+#mainMenu #startGameBtn{
+  display:none !important;
+  box-sizing:border-box !important;
+  position:relative !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  margin:18px 0 0 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  -webkit-appearance:none !important;
+  appearance:none !important;
+}
+#mainMenu #startGameBtn.show{
+  display:flex !important;
+}
+#mainMenu .level-btn{
+  min-height:64px !important;
+  height:100% !important;
+  padding:8px 3px !important;
+  flex-direction:column !important;
+  white-space:normal !important;
+  line-height:1.15 !important;
+}
+#mainMenu .level-btn small{
+  display:block !important;
+  width:100% !important;
+  line-height:1.1 !important;
+  white-space:normal !important;
+}
+#mainMenu #startGameBtn{margin-top:18px !important;}
+#mainMenu .menu-btn:active,
+#mainMenu .menu-btn:focus,
+#mainMenu .menu-btn:focus-visible,
+#mainMenu #startGameBtn:active,
+#mainMenu #startGameBtn:focus,
+#mainMenu #startGameBtn:focus-visible{
+  transform:none !important;
+  translate:none !important;
+  outline:none !important;
+}
+@media(max-width:520px){
+  #mainMenu{padding:10px !important;}
+  #mainMenu .menu-box{
+    width:min(94vw,460px) !important;
+    padding:22px 14px !important;
+  }
+  #mainMenu .menu-options{gap:8px !important;}
+  #mainMenu #levelOptions{gap:6px !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
+  #mainMenu .menu-btn{min-height:50px !important;font-size:14px !important;}
+  #mainMenu .level-btn{min-height:62px !important;font-size:12px !important;}
+  #mainMenu .level-btn small{font-size:8px !important;}
+}
+@media(max-width:360px){
+  #mainMenu .menu-box{padding:18px 10px !important;}
+  #mainMenu #levelOptions{gap:4px !important;}
+  #mainMenu .level-btn{font-size:11px !important;padding:7px 2px !important;}
+  #mainMenu .level-btn small{font-size:7px !important;}
+}
+
+/* ===== QUÂN BỊ ĂN - HIỂN THỊ BÊN PHẢI ===== */
+.captured-panels{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:100%;
+}
+.captured-box{
+  width:100%;
+  min-height:112px;
+  padding:10px;
+  border-radius:15px;
+  background:linear-gradient(145deg,#172b49,#081224);
+  border:1px solid #9bcfff55;
+  box-shadow:0 12px 28px #0009,inset 0 1px #fff2;
+  text-align:left;
+}
+.captured-title{
+  text-align:center;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  margin-bottom:8px;
+}
+.captured-title.red-title{color:#ff8f8f}
+.captured-title.black-title{color:#b8eaff}
+.captured-list{
+  min-height:58px;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  justify-content:center;
+  gap:5px;
+}
+.captured-piece{
+  width:34px;height:34px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"KaiTi","STKaiti","Noto Serif CJK SC",serif;
+  font-size:22px;font-weight:bold;
+  background:radial-gradient(circle at 32% 22%,#fffbdc 0 5%,#f4d895 15%,#c98b45 49%,#6f3519 78%,#35160c 100%);
+  box-shadow:inset 2px 2px 5px #fff8,inset -4px -5px 7px #35150caa,0 2px 4px #0009,0 0 0 1px #3c1c0e;
+}
+.captured-piece.red{color:#c9192a}
+.captured-piece.black{color:#17100d}
+.captured-empty{
+  width:100%;text-align:center;color:#7f98b0;font-size:10px;padding-top:19px;
+}
+@media(max-width:900px){
+  .captured-panels{
+    display:grid;grid-template-columns:1fr 1fr;gap:9px;
+  }
+  .captured-box{min-height:92px;padding:8px}
+  .captured-piece{width:30px;height:30px;font-size:19px}
+  .captured-list{min-height:46px}
+}
+@media(max-width:520px){
+  /* Mobile vẫn giữ 2 khung quân bị ăn: Đỏ trái - Đen phải. */
+  .captured-panels{display:grid !important;grid-template-columns:1fr 1fr;gap:7px;}
+  .captured-box{min-height:78px;padding:7px;border-radius:11px;}
+  .captured-title{font-size:9px;letter-spacing:.8px;margin-bottom:5px;}
+  .captured-list{min-height:38px;gap:3px;}
+  .captured-piece{width:27px;height:27px;font-size:17px;}
+  .captured-empty{font-size:8px;padding-top:13px;}
+}
+
+/* ===== MOBILE FLOATING CONTROL V6 ===== */
+.mobile-controls-toggle{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:14px;
+  transform:translateX(-50%);
+  width:54px;
+  height:54px;
+  padding:0;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.35);
+  background:rgba(20,28,40,.20);
+  color:#fff;
+  font-size:24px;
+  line-height:1;
+  z-index:9999;
+  box-shadow:0 5px 18px rgba(0,0,0,.12);
+  opacity:.85;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.mobile-controls-toggle.open,
+.mobile-controls-toggle.dragging,
+.mobile-controls-toggle:active{
+  background:rgba(20,28,40,.50);
+  opacity:1;
+}
+.mobile-controls-toggle.dragging{
+  background:rgba(20,28,40,.72);
+  cursor:grabbing;
+}
+.mobile-controls-menu{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:76px;
+  transform:translateX(-50%);
+  width:min(220px,calc(100vw - 30px));
+  padding:9px;
+  border-radius:15px;
+  background:rgba(11,18,29,.96);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 12px 35px rgba(0,0,0,.38);
+  z-index:9998;
+  flex-direction:column;
+  gap:7px;
+}
+.mobile-controls-menu.open{display:flex;}
+.mobile-controls-menu button{
+  width:100%;
+  min-height:43px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:10px;
+  background:inherit;
+  color:inherit;
+  font:inherit;
+  cursor:pointer;
+}
+@media(max-width:520px){
+  .mobile-controls-toggle{display:block;left:50%;right:auto;bottom:14px;transform:translateX(-50%);}
+  .mobile-controls-menu{display:none;left:50%;right:auto;bottom:76px;transform:translateX(-50%);}
+  .desktop-controls-toggle{display:none !important;}
+  .right-panel{display:block !important;}
+  .right-panel .controls-card{display:none !important;}
+  .right-panel{width:100%;}
+  .right-panel .captured-panels{display:grid !important;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
+  .right-panel .captured-box{min-height:105px;padding:8px;}
+  .right-panel .captured-list{min-height:55px;}
+}
+body:not(.game-active) .mobile-controls-toggle,
+body:not(.game-active) .mobile-controls-menu{display:none !important;}
+
+/* PC: menu là nút chữ nhật ở dưới cùng bên phải ván cờ.
+   Hai khung quân bị ăn nằm phía trên và chia đều toàn bộ phần chiều cao còn lại. */
+.desktop-controls-toggle{
+  display:none;
+}
+@media(min-width:521px){
+  .right-panel{
+    align-self:stretch;
+    justify-content:flex-end;
+    min-height:0;
+    gap:10px;
+  }
+  .right-panel .captured-panels{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .right-panel .captured-box{
+    flex:1 1 0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .right-panel .captured-list{
+    flex:1 1 auto;
+    min-height:0;
+    overflow:auto;
+  }
+  .desktop-controls-toggle{
+    display:flex;
+    flex:0 0 46px;
+    width:100%;
+    min-height:46px;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #e9c878aa;
+    border-radius:9px;
+    padding:9px 15px;
+    background:linear-gradient(#e4b85b,#80501f);
+    color:#fff5d4;
+    font-weight:bold;
+    font-size:14px;
+    box-shadow:0 5px 0 #3d210e,0 0 18px #e3b45b55;
+    cursor:pointer;
+  }
+  .desktop-controls-toggle:hover{filter:brightness(1.15);}
+  .right-panel .controls-card{display:none !important;}
+  .mobile-controls-toggle{display:none !important;}
+  .mobile-controls-menu{
+    left:auto;
+    right:18px;
+    bottom:78px;
+    transform:none;
+    width:220px;
+  }
+}
+
+/* Giữ đúng màu nút gốc, chỉ tăng sáng khi được chọn. */
+#mainMenu .menu-btn.selected,
+#mainMenu .level-btn.selected{
+  filter:brightness(1.55);
+  box-shadow:none !important;
+  animation:none !important;
+  transition:none !important;
+}
+
+/* ===== MENU KHỞI ĐỘNG 3 BƯỚC ===== */
+#mainMenu .menu-step{display:none;}
+#mainMenu .menu-step.active{display:block;}
+#mainMenu .step-title{
+  margin:8px 0 12px;
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:1.4px;
+  color:#f6e7b0;
+}
+#mainMenu .step-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+#mainMenu .step-grid.three{grid-template-columns:repeat(3,minmax(0,1fr));}
+#mainMenu .step-choice{
+  min-height:74px !important;
+  flex-direction:column !important;
+  gap:5px;
+  white-space:normal !important;
+  line-height:1.15 !important;
+  font-weight:800;
+}
+#mainMenu .step-choice small{
+  display:block !important;
+  font-size:9px;
+  opacity:.78;
+  font-weight:600;
+}
+#mainMenu .step-back{
+  margin-top:12px !important;
+  min-height:38px !important;
+  background:rgba(255,255,255,.07) !important;
+}
+#mainMenu #startGameBtn{display:none !important;}
+@media(max-width:520px){
+  #mainMenu .step-grid{grid-template-columns:1fr;}
+  #mainMenu .step-grid.three{grid-template-columns:1fr 1fr 1fr;}
+  #mainMenu .step-choice{min-height:66px !important;font-size:13px !important;}
+}
+
+
+/* ===== KHO THẾ CỜ KHÓ ===== */
+#puzzleMenu{
+  position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(1,5,13,.88);backdrop-filter:blur(8px);
+}
+#puzzleMenu.show{display:flex}
+.puzzle-box{
+  width:min(94vw,760px);max-height:90vh;overflow:auto;padding:22px;
+  border-radius:24px;background:linear-gradient(145deg,#172b49,#07101f);
+  border:1px solid #9bcfff88;box-shadow:0 0 0 2px #66dfff22,0 0 45px #57d9ff44,0 25px 80px #000c;
+}
+.puzzle-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.puzzle-title{font-size:clamp(24px,5vw,34px);font-weight:900;letter-spacing:3px;color:#ffe7a0;text-shadow:0 0 14px #74caff88}
+.puzzle-sub{margin-top:5px;font-size:12px;color:#b8cde2;line-height:1.45}
+.puzzle-back{min-width:90px}
+.puzzle-menu-right{display:flex;flex-direction:column;align-items:stretch;gap:8px;flex:0 0 auto;min-width:110px}
+.puzzle-remaining{min-height:34px;padding:7px 10px;box-sizing:border-box;border-radius:10px;text-align:center;background:linear-gradient(145deg,#172b49,#0b1728);border:1px solid #9bcfff55;box-shadow:0 4px 12px #0005;color:#ffe7a0;font-size:11px;font-weight:900;line-height:1.25;white-space:nowrap}
+.puzzle-remaining strong{font-size:15px;color:#fff0a8}
+@media(max-width:620px){.puzzle-menu-right{min-width:90px}.puzzle-remaining{font-size:10px;padding:6px 7px}.puzzle-remaining strong{font-size:14px}}
+.puzzle-source-note{
+  padding:10px 12px;margin:10px 0 14px;border-radius:11px;
+  background:#58dfff0d;border:1px solid #58dfff2d;color:#a9c9e5;font-size:11px;line-height:1.45;
+}
+.puzzle-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.puzzle-card{
+  width:100%;min-width:0;min-height:52px;padding:14px;text-align:left;border-radius:14px;box-sizing:border-box;
+  background:linear-gradient(145deg,#1b3153,#091326);border:1px solid #9bcfff44;
+  box-shadow:0 8px 20px #0006;cursor:pointer;
+}
+.puzzle-card:hover{filter:brightness(1.12);border-color:#ffe58a99}
+.puzzle-card.selected{
+  border-color:#ffe27b !important;
+  background:linear-gradient(145deg,#3a3b19,#162b28) !important;
+  box-shadow:0 0 0 2px #ffe27b55,0 0 22px #ffd85c55,0 8px 20px #0008;
+  transform:none !important;
+  animation:none !important;
+  filter:none !important;
+}
+.puzzle-card.selected .puzzle-card-name{color:#fff0a8}
+.puzzle-card.loading{
+  border-color:#67d7ff !important;
+  box-shadow:0 0 0 2px #67d7ff33,0 0 24px #67d7ff55;
+}
+.puzzle-card-name{font-size:16px;font-weight:900;color:#ffe7a0}
+.puzzle-card-meta{margin-top:5px;font-size:10px;color:#8fb1ce}
+.puzzle-card-desc{margin-top:7px;font-size:11px;color:#c9d8ec;line-height:1.4}
+.puzzle-tag{display:inline-block;margin-top:8px;padding:3px 7px;border-radius:99px;font-size:9px;font-weight:900;color:#9feaff;background:#58dfff14;border:1px solid #58dfff33}
+.puzzle-menu-btn{grid-column:1/-1}
+@media(max-width:620px){
+  .puzzle-list{grid-template-columns:1fr}
+  .puzzle-box{padding:16px}
+  .puzzle-head{align-items:flex-start}
+  .puzzle-back{min-width:78px;padding:8px 10px}
+}
+
+#puzzleContactModal{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;background:#020712aa;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#puzzleContactModal.show{display:flex}
+.puzzle-contact-box{width:min(420px,calc(100vw - 32px));padding:22px;border-radius:16px;background:linear-gradient(145deg,#172c49,#091526);border:1px solid #e9c87888;box-shadow:0 12px 40px #000b;color:#fff;text-align:center}
+.puzzle-contact-title{font-size:20px;font-weight:900;color:#ffe7a0;margin-bottom:10px}
+.puzzle-contact-text{font-size:14px;line-height:1.55;color:#d7e5f5;margin-bottom:16px}
+.puzzle-contact-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.puzzle-contact-actions a,.puzzle-contact-actions button{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:12px;text-decoration:none;font-weight:900;border:1px solid #ffffff22;color:#fff;cursor:pointer;box-shadow:0 5px 0 #0005;box-sizing:border-box}
+.puzzle-contact-phone{background:linear-gradient(180deg,#ef5350,#b71c1c)!important;border-color:#ff8a80!important}
+.puzzle-contact-zalo{background:linear-gradient(180deg,#42a5f5,#1565c0)!important;border-color:#90caf9!important}
+.puzzle-contact-close{grid-column:1/-1;background:linear-gradient(#e4b85b,#80501f)!important;border-color:#e9c878aa!important;color:#fff5d4!important}
+.puzzle-contact-actions a:hover,.puzzle-contact-actions button:hover{filter:brightness(1.12)}
+/* ===== XOAY MÀN HÌNH PC: dùng bố cục như mobile ===== */
+body.mobile-rotated .app{padding:5px;min-height:100vh}
+body.mobile-rotated .game-layout{grid-template-columns:1fr;gap:7px;max-width:620px;margin:auto}
+body.mobile-rotated .board-wrap{order:1}
+body.mobile-rotated .left-panel{order:2}
+body.mobile-rotated .right-panel{order:3}
+body.mobile-rotated #board{width:min(96vw,520px);height:auto;border-width:7px}
+body.mobile-rotated .clock-card{padding:8px 6px;border-radius:11px}
+body.mobile-rotated .clock-name{font-size:11px;letter-spacing:2px}
+body.mobile-rotated .clock-time{font-size:21px}
+body.mobile-rotated .clock-state{font-size:9px}
+body.mobile-rotated .control-card{padding:10px 8px}
+body.mobile-rotated .side-panel{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+body.mobile-rotated .right-panel .controls-card{display:none!important}
+body.mobile-rotated .right-panel{display:block!important;width:100%}
+body.mobile-rotated .right-panel .captured-panels{display:grid!important;grid-template-columns:1fr 1fr;gap:7px;width:100%}
+body.mobile-rotated .right-panel .captured-box{min-height:78px;padding:7px;border-radius:11px}
+body.mobile-rotated .right-panel .captured-title{font-size:9px;letter-spacing:.8px;margin-bottom:5px}
+body.mobile-rotated .right-panel .captured-list{min-height:38px;gap:3px}
+body.mobile-rotated .right-panel .captured-piece{width:27px;height:27px;font-size:17px}
+body.mobile-rotated .time-panels{width:100%;display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;align-items:stretch}
+body.mobile-rotated #timePanels.open{display:grid}
+body.mobile-rotated .time-panels .clock-card,body.mobile-rotated .time-panels .time-limit-card{grid-column:auto;width:100%;min-width:0;min-height:74px}
+body.mobile-rotated .time-panels .time-limit-card{grid-column:1/-1}
+body.mobile-rotated .mobile-controls-toggle{display:block!important;left:50%;right:auto;bottom:14px;transform:translateX(-50%)}
+body.mobile-rotated .mobile-controls-menu{display:none;left:50%;right:auto;bottom:76px;transform:translateX(-50%);width:min(220px,calc(100vw - 30px))}
+body.mobile-rotated .mobile-controls-menu.open{display:flex}
+body.mobile-rotated .desktop-controls-toggle{display:none!important}
+body.mobile-rotated .game-notice{padding:22px 18px}
+body.mobile-rotated .notice-times{gap:14px;font-size:14px}
+body.mobile-rotated .puzzle-box{padding:16px}
+body.mobile-rotated .puzzle-head{align-items:flex-start}
+body.mobile-rotated .puzzle-list{grid-template-columns:1fr}
+body.mobile-rotated .puzzle-back{min-width:78px;padding:8px 10px}
+body.mobile-rotated .puzzle-menu-right{min-width:90px}
+body.mobile-rotated .puzzle-remaining{font-size:10px;padding:6px 7px}
+body.mobile-rotated .puzzle-remaining strong{font-size:14px}
+
+</style><style>
+/* ===== KIỂM TRA PHIÊN BẢN ===== */
+#versionCheckOverlay{position:fixed;inset:0;z-index:200000;display:none;align-items:center;justify-content:center;background:#020712f2;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+#versionCheckOverlay.show{display:flex}
+.version-check-box,.app-version-blocked-box{width:min(92vw,430px);padding:26px 22px;border-radius:20px;text-align:center;background:linear-gradient(145deg,#172b49,#07101f);border:1px solid #67d7ff66;box-shadow:0 0 0 2px #67d7ff22,0 18px 60px #000c;color:#fff}
+.version-check-title{font-size:20px;font-weight:900;color:#ffe7a0}
+.app-version-blocked{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:#020712}
+.app-version-blocked-box{border-color:#ffb74d88;box-shadow:0 0 0 2px #ffb74d22,0 18px 60px #000c}
+.app-version-blocked-icon{font-size:44px;margin-bottom:8px}
+.app-version-blocked-title{font-size:24px;font-weight:900;color:#ffd180;margin-bottom:12px}
+.app-version-blocked-text{font-size:15px;line-height:1.7;color:#d8e3f0}
+.app-version-blocked-current{margin-top:14px;padding-top:12px;border-top:1px solid #ffffff18;color:#9fb3c8;font-size:12px}
+.app-version-label{margin:5px 0 14px;text-align:center;color:#9fb3c8;font-size:11px;font-weight:800;letter-spacing:.5px}
+#puzzleLoadingOverlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:#02071299;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#puzzleLoadingOverlay.show{display:flex}
+.puzzle-loading-box{min-width:260px;max-width:calc(100vw - 40px);padding:22px 28px;border-radius:16px;text-align:center;background:linear-gradient(145deg,#172c49,#091526);border:1px solid #67d7ff88;box-shadow:0 0 0 2px #67d7ff22,0 12px 40px #000b;color:#fff;font-size:18px;font-weight:900}
+.puzzle-loading-spinner{display:inline-block;margin-right:9px;animation:puzzleLoadingSpin 1s linear infinite}
+@keyframes puzzleLoadingSpin{to{transform:rotate(360deg)}}
+
+/* ===== FIX NHẬP KEY: luôn là MODAL, không chiếm chỗ trong giao diện bàn cờ ===== */
+#puzzleKeyModal{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:100000 !important;
+  display:none !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  padding:18px !important;
+  background:rgba(1,5,13,.88) !important;
+  backdrop-filter:blur(7px) !important;
+  -webkit-backdrop-filter:blur(7px) !important;
+}
+#puzzleKeyModal.show{display:flex !important;}
+#puzzleKeyModal .puzzle-key-box{
+  width:min(92vw,430px) !important;
+  max-width:430px !important;
+  box-sizing:border-box !important;
+  padding:22px !important;
+  border-radius:22px !important;
+  background:linear-gradient(145deg,#172b49,#07101f) !important;
+  border:1px solid #9bcfff88 !important;
+  box-shadow:0 0 0 2px #66dfff22,0 0 45px #57d9ff44,0 25px 80px #000c !important;
+  text-align:center !important;
+}
+#puzzleKeyModal .puzzle-key-title{
+  font-size:25px !important;
+  font-weight:900 !important;
+  color:#ffe7a0 !important;
+  margin-bottom:8px !important;
+}
+#puzzleKeyModal .puzzle-key-name{
+  font-size:13px !important;
+  color:#c9d8ec !important;
+  line-height:1.5 !important;
+  margin-bottom:14px !important;
+  white-space:pre-line !important;
+}
+#puzzleKeyModal #puzzleKeyInput{
+  width:100% !important;
+  box-sizing:border-box !important;
+  padding:13px 14px !important;
+  min-height:46px !important;
+  border-radius:11px !important;
+  border:1px solid #9bcfff66 !important;
+  background:#071426 !important;
+  color:#fff !important;
+  font-size:17px !important;
+  outline:none !important;
+}
+#puzzleKeyModal .puzzle-key-error{
+  min-height:22px !important;
+  margin:9px 0 !important;
+  color:#ffb8b8 !important;
+  font-size:12px !important;
+  line-height:1.45 !important;
+}
+#puzzleKeyModal .puzzle-key-actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr 1fr !important;
+  gap:10px !important;
+}
+#puzzleKeyModal .puzzle-key-actions button{
+  width:100% !important;
+  min-height:46px !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+  border-radius:12px !important;
+  cursor:pointer !important;
+  font-weight:900 !important;
+}
+#puzzleKeyModal .puzzle-key-cancel,
+#puzzleKeyModal .puzzle-key-cancel2{
+  background:linear-gradient(#405875,#1b2d42) !important;
+  color:#fff !important;
+}
+#puzzleKeyModal .puzzle-key-confirm{
+  background:linear-gradient(#e4b85b,#80501f) !important;
+  border-color:#e9c878aa !important;
+  color:#fff5d4 !important;
+}
+@media(max-width:520px){
+  #puzzleKeyModal{padding:14px !important;}
+  #puzzleKeyModal .puzzle-key-box{
+    width:min(94vw,430px) !important;
+    padding:18px !important;
+    border-radius:18px !important;
+  }
+  #puzzleKeyModal .puzzle-key-title{font-size:22px !important;}
+  #puzzleKeyModal .puzzle-key-actions{gap:7px !important;}
+  #puzzleKeyModal .puzzle-key-actions button{min-height:44px !important;font-size:13px !important;padding:7px 4px !important;}
+}
+</style><body><div id="versionCheckOverlay" aria-hidden="true"><div class="version-check-box"><div class="version-check-title">⏳ Đang kết nối máy chủ...</div></div></div><div id="puzzleLoadingOverlay" aria-hidden="true"><div class="puzzle-loading-box"><span class="puzzle-loading-spinner">⏳</span>Đang mở thế cờ...</div></div><div id="puzzleKeyModal" aria-hidden="true"><div class="puzzle-key-box"><div class="puzzle-key-title">🔑 NHẬP KEY</div><div id="puzzleKeyName" class="puzzle-key-name"></div><input id="puzzleKeyInput" type="text" autocomplete="off" spellcheck="false" placeholder="Nhập Key..."><div id="puzzleKeyError" class="puzzle-key-error"></div><div class="puzzle-key-actions"><button type="button" class="puzzle-key-cancel" onclick="openPuzzleContactModal()">Liên hệ</button><button type="button" id="puzzleKeySubmit" class="puzzle-key-confirm">Xác nhận</button><button type="button" class="puzzle-key-cancel2" onclick="closePuzzleKeyModal()">Huỷ</button></div></div></div>
+<div id="puzzleContactModal" aria-hidden="true">
+  <div class="puzzle-contact-box">
+    <div class="puzzle-contact-title">📞 LIÊN HỆ 0363 398 277</div>
+    <div class="puzzle-contact-text"><b>10.000 VNĐ cho 100 lượt tải</b>.</div>
+    <div class="puzzle-contact-actions">
+      <a class="puzzle-contact-phone" href="tel:0363398277">📞 Điện thoại</a>
+      <a class="puzzle-contact-zalo" href="https://zalo.me/0363398277" target="_blank" rel="noopener">💬 Zalo</a>
+      <button type="button" class="puzzle-contact-close" onclick="closePuzzleContactModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<div id="mainMenu" aria-modal="true" role="dialog">
+  <div class="menu-box">
+    <div class="menu-title">CỜ TƯỚNG</div>
+    <div id="appVersionLabel" class="app-version-label">Phiên bản 1.0.0</div>
+
+    <div id="menuStep1" class="menu-step active">
+      <div class="step-title">BƯỚC 1 · CHỌN LOẠI CỜ</div>
+      <div class="step-grid">
+        <button type="button" class="menu-btn step-choice" id="modeChessBtn">🀄 CỜ TƯỚNG</button>
+        <button type="button" class="menu-btn step-choice" id="modeCupBtn">🀄 CỜ ÚP</button>
+        <button type="button" class="menu-btn step-choice puzzle-menu-btn" id="puzzleModeBtn">🧩 THẾ CỜ KHÓ<small>Kho thế cờ nổi tiếng · đấu với AI</small></button>
+      </div>
+    </div>
+
+    <div id="menuStep2" class="menu-step">
+      <div class="step-title">BƯỚC 2 · CHỌN NGƯỜI CHƠI</div>
+      <div class="step-grid">
+        <button type="button" class="menu-btn step-choice" id="mode2Btn">👥 2 NGƯỜI<small>Hai người chơi trực tiếp</small></button>
+        <button type="button" class="menu-btn step-choice" id="modeAiBtn">🤖 1 NGƯỜI + AI<small>Bạn cầm Đỏ · AI cầm Đen</small></button>
+      </div>
+      <button type="button" class="menu-btn step-back" id="menuBack2">← Quay lại</button>
+    </div>
+
+    <div id="menuStep3" class="menu-step">
+      <div class="step-title">BƯỚC 3 · CHỌN ĐỘ KHÓ AI</div>
+      <div id="levelOptions" class="step-grid three">
+        <button type="button" class="menu-btn level-btn step-choice" data-level="easy">🟢 DỄ<small>AI đi đơn giản</small></button>
+        <button type="button" class="menu-btn level-btn step-choice" data-level="medium">🟡 VỪA<small>Biết tính chiến thuật</small></button>
+        <button type="button" class="menu-btn level-btn step-choice" data-level="hard">🔴 KHÓ<small>Tính sâu hơn</small></button>
+      </div>
+      <button type="button" class="menu-btn step-back" id="menuBack3">← Quay lại</button>
+    </div>
+
+    <div id="aiBadge" class="ai-badge" style="display:none"></div>
+    <button type="button" id="startGameBtn">BẮT ĐẦU VÁN</button>
+  </div>
+</div>
+
+<!-- ===== KHO THẾ CỜ KHÓ ===== -->
+<div id="puzzleMenu" aria-modal="true" role="dialog" aria-hidden="true">
+  <div class="puzzle-box">
+    <div class="puzzle-head">
+      <div>
+        <div class="puzzle-title">🧩 THẾ CỜ KHÓ</div>
+        <div class="puzzle-sub">Chọn một thế cờ, bàn cờ sẽ xếp sẵn và bạn cầm Đỏ đấu với AI.</div>
+      </div>
+      <div class="puzzle-menu-right">
+        <div id="puzzleRemaining" class="puzzle-remaining" aria-live="polite">Lượt còn lại: <strong>—</strong></div>
+        <button type="button" id="puzzleBackBtn" class="puzzle-back">← Menu</button>
+      </div>
+    </div>
+    <div id="puzzleList" class="puzzle-list"></div>
+  </div>
+</div>
+
+<div class="app">
+  <div id="gameNotice" class="game-notice" aria-live="assertive"></div>
+  <div class="game-layout">
+    <aside class="side-panel left-panel">
+      <div class="time-panels" id="timePanels">
+        <div class="clock-card red-clock" id="redClockCard">
+          <div class="clock-name">ĐỎ</div><div class="clock-time" id="redClock">00:00</div><div class="clock-state" id="redState">Đang chờ</div>
+        </div>
+        <div class="clock-card black-clock" id="blackClockCard">
+          <div class="clock-name">ĐEN</div><div class="clock-time" id="blackClock">00:00</div><div class="clock-state" id="blackState">Đang chờ</div>
+        </div>
+        <div class="control-card time-limit-card" id="timeLimitCard">
+          <label for="timeLimit">GIỚI HẠN MỖI ĐỘI</label><div class="unit-label">PHÚT</div>
+          <input id="timeLimit" type="number" min="0" step="1" inputmode="decimal" placeholder="Không giới hạn">
+        </div>
+      </div>
+    </aside>
+    <main class="board-wrap">
+      <div id="board">
+        <div class="grid" id="grid"></div>
+        <div class="river">楚　河　漢　界</div>
+        <div class="pieces" id="pieces"></div>
+        <div id="gameStartOverlay" aria-hidden="false">
+          <div class="start-panel">
+            <div class="start-title">SẴN SÀNG</div>
+            <div class="start-sub">Chọn đội ưu tiên đi trước</div>
+            
+            <div class="first-turn-options">
+              <label class="first-turn-option"><input type="checkbox" id="firstRedCheck"> <span>🔴 ĐỘI ĐỎ</span></label>
+              <label class="first-turn-option"><input type="checkbox" id="firstBlackCheck"> <span>⚫ ĐỘI ĐEN</span></label>
+            </div>
+            <button type="button" id="beginGameBtn">BẮT ĐẦU</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="side-panel right-panel controls-panel">
+      <div class="captured-panels">
+        <div class="captured-box">
+          <div class="captured-title red-title">QUÂN ĐỎ BỊ ĂN</div>
+          <div id="capturedRedList" class="captured-list"></div>
+        </div>
+        <div class="captured-box">
+          <div class="captured-title black-title">QUÂN ĐEN BỊ ĂN</div>
+          <div id="capturedBlackList" class="captured-list"></div>
+        </div>
+      </div>
+      <button id="desktopControlsToggle" class="desktop-controls-toggle" type="button"
+              aria-label="Mở menu điều khiển" aria-expanded="false">☰ MENU</button>
+      <div class="control-card controls-card">
+        <div class="controls-title">ĐIỀU KHIỂN</div>
+        <button id="mainMenuBtn" type="button">⌂ Menu chính</button>
+        <button id="restartBtn" type="button">Ván mới</button>
+        <button id="timeBtn" type="button">Thời gian</button>
+        <button id="undoBtn" type="button">Trở lại</button>
+        <button id="soundBtn" type="button">Âm thanh: Bật</button>
+        <button id="sideSwapBtn" type="button">↔ Hoán đổi</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ===== MOBILE FLOATING CONTROLS ===== -->
+<button id="mobileControlsToggle" class="mobile-controls-toggle" type="button"
+        aria-label="Mở điều khiển" aria-expanded="false">☰</button>
+<div id="mobileControlsMenu" class="mobile-controls-menu" aria-hidden="true">
+  <button type="button" data-control="mainMenuBtn">⌂ Menu chính</button>
+  <button type="button" data-control="restartBtn">Ván mới</button>
+  <button type="button" data-control="timeBtn">Thời gian</button>
+  <button type="button" data-control="undoBtn">Trở lại</button>
+  <button type="button" data-control="soundBtn">Âm thanh: Bật</button>
+  <button type="button" data-control="sideSwapBtn">↔ Hoán đổi</button>
+</div>
+
+<script>
+
+const COLS = 9, ROWS = 10;
+let board, turn, selected, lastMove, gameOver;
+let baseBoardCode = "";
+let baseBoardLoaded = false;
+let clocks = {r:0, b:0};
+let clockStartedAt = 0;
+let clockTimer = null;
+let timeLimitMinutes = null;
+let timeEnabled = false;
+let moveHistory = [];
+let capturedRed = [];   // Quân Đỏ đã bị ăn
+let capturedBlack = []; // Quân Đen đã bị ăn
+let soundEnabled = true;
+let audioContext = null;
+let gameMode = "two";
+let aiColor = "b";
+let sideSwapped = false;
+let gameStarted = false;
+let preferredFirst = null;
+let puzzleMode = false;
+let currentPuzzle = null;
+let checkStreakColor = null;
+let checkStreakCount = 0;
+/* Cờ Úp: chỉ Tướng ngửa lúc đầu; các quân còn lại được xáo và úp mặt. */
+let coUpRevealed = new Set();
+let coUpHiddenRole = new Map();
+let aiLevel = "medium";
+let aiThinking = false;
+let aiTimer = null;
+let aiSearchToken = 0;
+const AI_DEPTH = {easy:5, medium:8, hard:12};
+const AI_DELAY = {easy:350, medium:500, hard:700};
+// Giới hạn tài nguyên để AI không chiếm cứng CPU/máy ở cấp Vừa/Khó.
+const AI_BUDGET = {
+  easy:   {nodes:70000,  ms:1200,  width:10},
+  medium: {nodes:220000, ms:5500,  width:8},
+  hard:   {nodes:500000, ms:12000, width:7}
+};
+let aiSearchStats = null;
+const SOUND_VOLUME_MULTIPLIER = 5; // Âm lượng nền
+
+const symbols = {
+  rK:"帥", rA:"仕", rE:"相", rH:"馬", rR:"俥", rC:"炮", rP:"兵",
+  bK:"將", bA:"士", bE:"象", bH:"馬", bR:"車", bC:"砲", bP:"卒"
+};
+
+function ensureAudioContext(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) return null;
+  if(!audioContext) audioContext=new AC();
+  return audioContext;
+}
+
+function resumeAudio(){
+  const ctx=ensureAudioContext();
+  if(!ctx) return Promise.resolve(null);
+  try{
+    if(ctx.state === "suspended" || ctx.state === "interrupted"){
+      return ctx.resume().catch(()=>{});
+    }
+  }catch(e){}
+  return Promise.resolve();
+}
+
+function unlockAudio(){
+  if(!soundEnabled) return;
+  try{
+    const ctx=ensureAudioContext();
+    if(!ctx) return;
+
+    // Mobile Safari/Chrome yêu cầu AudioContext được resume
+    // từ một thao tác người dùng.
+    const resumePromise=resumeAudio();
+
+    const now=ctx.currentTime;
+    const gain=ctx.createGain();
+    // Âm thanh mở khóa cực nhỏ, chỉ để kích hoạt audio session.
+    gain.gain.setValueAtTime(0.0001,now);
+    gain.connect(ctx.destination);
+
+    const osc=ctx.createOscillator();
+    osc.type="sine";
+    osc.frequency.setValueAtTime(220,now);
+    osc.connect(gain);
+    osc.start(now);
+    osc.stop(now+0.025);
+
+    return resumePromise;
+  }catch(e){}
+}
+
+function playSound(kind){
+  if(!soundEnabled) return;
+  try{
+    const ctx=ensureAudioContext();
+    if(!ctx) return;
+    if(ctx.state === "suspended" || ctx.state === "interrupted"){
+      resumeAudio().then(()=>{
+        if(soundEnabled && ctx.state === "running") playSound(kind);
+      }).catch(()=>{});
+      return;
+    }
+    const now=ctx.currentTime;
+    const master=ctx.createGain();
+    const compressor=ctx.createDynamicsCompressor();
+    compressor.threshold.setValueAtTime(-20,now);
+    compressor.knee.setValueAtTime(12,now);
+    compressor.ratio.setValueAtTime(6,now);
+    compressor.attack.setValueAtTime(.002,now);
+    compressor.release.setValueAtTime(.10,now);
+    master.gain.setValueAtTime(1.0,now);
+    master.connect(compressor); compressor.connect(ctx.destination);
+
+    if(kind === "capture"){
+      const osc=ctx.createOscillator(), gain=ctx.createGain();
+      osc.type="sawtooth";
+      osc.frequency.setValueAtTime(300,now);
+      osc.frequency.exponentialRampToValueAtTime(70,now+.20);
+      gain.gain.setValueAtTime(.0001,now);
+      gain.gain.exponentialRampToValueAtTime(.72,now+.004);
+      gain.gain.exponentialRampToValueAtTime(.0001,now+.22);
+      osc.connect(gain); gain.connect(master);
+      osc.start(now); osc.stop(now+.23);
+
+      const pop=ctx.createOscillator(), pg=ctx.createGain();
+      pop.type="square";
+      pop.frequency.setValueAtTime(900,now);
+      pop.frequency.exponentialRampToValueAtTime(100,now+.08);
+      pg.gain.setValueAtTime(.0001,now);
+      pg.gain.exponentialRampToValueAtTime(.58,now+.002);
+      pg.gain.exponentialRampToValueAtTime(.0001,now+.10);
+      pop.connect(pg); pg.connect(master);
+      pop.start(now); pop.stop(now+.11);
+      return;
+    }
+
+    const osc=ctx.createOscillator(), gain=ctx.createGain();
+    osc.connect(gain); gain.connect(master);
+    const presets={move:{freq:430,dur:.09,type:"sine",vol:.58},end:{freq:520,dur:.45,type:"sine",vol:.68}};
+    const q=presets[kind]||presets.move;
+    osc.type=q.type; osc.frequency.setValueAtTime(q.freq,now);
+    if(kind==="end") osc.frequency.exponentialRampToValueAtTime(780,now+.18);
+    gain.gain.setValueAtTime(.0001,now);
+    gain.gain.exponentialRampToValueAtTime(q.vol,now+.006);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+q.dur);
+    osc.start(now); osc.stop(now+q.dur+.02);
+  }catch(e){}
+}
+
+function swapBoardSides(pos){
+  const out=Array.from({length:ROWS},()=>Array(COLS).fill(null));
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const t=pos[r][c];
+    if(!t) continue;
+    const nr=ROWS-1-r, nc=COLS-1-c;
+    out[nr][nc]=(t[0]==="r"?"b":"r")+t[1];
+  }
+  return out;
+}
+
+function applySideSwap(){
+  if(!sideSwapped) return;
+  board=swapBoardSides(board);
+  if(gameMode==="cup" || gameMode==="cupAi"){
+    const nextRevealed=new Set();
+    const nextHidden=new Map();
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const key=`${r},${c}`;
+      if(coUpRevealed.has(key)) nextRevealed.add(`${ROWS-1-r},${COLS-1-c}`);
+      if(coUpHiddenRole.has(key)) nextHidden.set(`${ROWS-1-r},${COLS-1-c}`,coUpHiddenRole.get(key));
+    }
+    coUpRevealed=nextRevealed;
+    coUpHiddenRole=nextHidden;
+  }
+}
+
+function showGameStartOverlay(){
+  gameStarted=false;
+  preferredFirst=null;
+  const overlay=document.getElementById("gameStartOverlay");
+  if(overlay) overlay.classList.remove("hidden");
+  const red=document.getElementById("firstRedCheck");
+  const black=document.getElementById("firstBlackCheck");
+  if(red) red.checked=false;
+  if(black) black.checked=false;
+  const btn=document.getElementById("beginGameBtn");
+  if(btn) btn.classList.remove("ready");
+}
+
+function beginGame(){
+  const red=document.getElementById("firstRedCheck");
+  const black=document.getElementById("firstBlackCheck");
+  if(!red?.checked && !black?.checked) return;
+  preferredFirst=red.checked?"r":"b";
+  turn=preferredFirst;
+  gameStarted=true;
+  const overlay=document.getElementById("gameStartOverlay");
+  if(overlay){ overlay.classList.add("hidden"); overlay.setAttribute("aria-hidden","true"); }
+  selected=null;
+  render();
+  unlockAudio();
+  startClockForTurn();
+  if((gameMode==="ai" || gameMode==="cupAi") && turn===aiColor && !gameOver) scheduleAIMove();
+}
+
+function setupFirstTurnChoice(){
+  const red=document.getElementById("firstRedCheck");
+  const black=document.getElementById("firstBlackCheck");
+  const btn=document.getElementById("beginGameBtn");
+  if(!red || !black || !btn) return;
+  const sync=which=>{
+    if(which==="r") black.checked=false;
+    if(which==="b") red.checked=false;
+    const ready=red.checked||black.checked;
+    btn.classList.toggle("ready",ready);
+  };
+  red.addEventListener("change",()=>sync("r"));
+  black.addEventListener("change",()=>sync("b"));
+  btn.addEventListener("click",beginGame);
+}
+
+function makeInitialBoard() {
+  // Không còn dựng bàn cờ mặc định trong HTML.
+  // Bắt buộc phải có mã bố trí lấy từ Key!D1 sau khi phiên bản hợp lệ.
+  if(!baseBoardLoaded || !String(baseBoardCode || "").trim()){
+    coUpRevealed=new Set();
+    coUpHiddenRole=new Map();
+    return Array.from({length:ROWS},()=>Array(COLS).fill(null));
+  }
+
+  const b = puzzleFenToBoard(boardCodeToFen(baseBoardCode));
+
+  coUpRevealed=new Set();
+  coUpHiddenRole=new Map();
+
+  if(gameMode==="cup" || gameMode==="cupAi"){
+    // Cờ Úp: chỉ được xáo sau khi đã tải thành công mã gốc từ Key!D1.
+    const redPool=[], blackPool=[];
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const t=b[r][c];
+      if(!t || t[1]==="K") continue;
+      (t[0]==="r" ? redPool : blackPool).push(t);
+    }
+
+    const shuffle=a=>{
+      for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    };
+
+    shuffle(redPool);
+    shuffle(blackPool);
+
+    const redSlots=[
+      [6,0],[6,2],[6,4],[6,6],[6,8],[7,1],[7,7],
+      [9,0],[9,1],[9,2],[9,3],[9,5],[9,6],[9,7],[9,8]
+    ];
+    const blackSlots=[
+      [3,0],[3,2],[3,4],[3,6],[3,8],[2,1],[2,7],
+      [0,0],[0,1],[0,2],[0,3],[0,5],[0,6],[0,7],[0,8]
+    ];
+
+    const redRoles={
+      "6,0":"P","6,2":"P","6,4":"P","6,6":"P","6,8":"P",
+      "7,1":"C","7,7":"C",
+      "9,0":"R","9,1":"H","9,2":"E","9,3":"A","9,5":"A","9,6":"E","9,7":"H","9,8":"R"
+    };
+    const blackRoles={
+      "3,0":"P","3,2":"P","3,4":"P","3,6":"P","3,8":"P",
+      "2,1":"C","2,7":"C",
+      "0,0":"R","0,1":"H","0,2":"E","0,3":"A","0,5":"A","0,6":"E","0,7":"H","0,8":"R"
+    };
+
+    redSlots.forEach(([r,c],i)=>{
+      b[r][c]=redPool[i];
+      coUpHiddenRole.set(`${r},${c}`,redRoles[`${r},${c}`]);
+    });
+    blackSlots.forEach(([r,c],i)=>{
+      b[r][c]=blackPool[i];
+      coUpHiddenRole.set(`${r},${c}`,blackRoles[`${r},${c}`]);
+    });
+
+    coUpRevealed=new Set(["0,4","9,4"]);
+  }
+
+  return b;
+}
+
+function initGrid() {
+  const g=document.getElementById("grid");
+  g.innerHTML="";
+
+  // 9 cột x 10 hàng: mọi đường đều đi qua đúng tâm giao điểm.
+  for(let r=0;r<ROWS;r++){
+    const h=document.createElement("div");
+    h.className="line h";
+    h.style.top=(r*100/(ROWS-1))+"%";
+    g.appendChild(h);
+  }
+  for(let c=0;c<COLS;c++){
+    const v=document.createElement("div");
+    v.className="line v";
+    v.style.left=(c*100/(COLS-1))+"%";
+    g.appendChild(v);
+  }
+
+  // Cung Tướng/Sĩ: dùng SVG với cùng hệ tọa độ 0..8 x 0..9
+  // nên mỗi đường X luôn nối đúng hai góc đối diện của cung.
+  const palaceSvg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+  palaceSvg.setAttribute("viewBox","0 0 8 9");
+  palaceSvg.setAttribute("preserveAspectRatio","none");
+  palaceSvg.style.cssText="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;";
+  palaceSvg.innerHTML=`
+    <line x1="3" y1="0" x2="5" y2="2" stroke="#4a2918" stroke-width=".045"/>
+    <line x1="5" y1="0" x2="3" y2="2" stroke="#4a2918" stroke-width=".045"/>
+    <line x1="3" y1="7" x2="5" y2="9" stroke="#4a2918" stroke-width=".045"/>
+    <line x1="5" y1="7" x2="3" y2="9" stroke="#4a2918" stroke-width=".045"/>`;
+  g.appendChild(palaceSvg);
+
+  // Các dấu đặc trưng: đặt gọn quanh đúng giao điểm, không làm lệch lưới.
+  const marks=[
+    [3,1],[3,7],[6,1],[6,7],
+    [2,0],[2,2],[2,4],[2,6],[2,8],
+    [7,0],[7,2],[7,4],[7,6],[7,8]
+  ];
+  marks.forEach(([r,c])=>{
+    const m=document.createElement("div");
+    m.className="mark";
+    const x=c*100/8, y=r*100/9;
+    m.style.left=x+"%"; m.style.top=y+"%";
+    m.style.transform=`translate(${c===0?"-2px":c===8?"-11px":"-6px"},${r===0?"-2px":r===9?"-11px":"-6px"})`;
+    g.appendChild(m);
+  });
+}
+
+function createHitBurst(r,c){
+  const boardEl=document.getElementById("board");
+  const burst=document.createElement("div");
+  burst.className="board-hit";
+  burst.style.left=(5 + c*(90/8))+"%";
+  burst.style.top=(4.5 + r*(91/9))+"%";
+  boardEl.appendChild(burst);
+  requestAnimationFrame(()=>burst.classList.add("show"));
+  setTimeout(()=>burst.remove(),650);
+}
+
+
+
+function renderCapturedPieces(){
+  const redList=document.getElementById("capturedRedList");
+  const blackList=document.getElementById("capturedBlackList");
+  if(!redList || !blackList) return;
+
+  const draw=(el,list,color)=>{
+    el.innerHTML="";
+    if(!list.length){
+      el.innerHTML='<div class="captured-empty">Chưa có quân bị ăn</div>';
+      return;
+    }
+    list.forEach(type=>{
+      const piece=document.createElement("div");
+      piece.className="captured-piece "+(color==="r"?"red":"black");
+      piece.textContent=symbols[color+type]||type;
+      el.appendChild(piece);
+    });
+  };
+  draw(redList,capturedRed,"r");
+  draw(blackList,capturedBlack,"b");
+}
+
+function render() {
+  const p=document.getElementById("pieces");
+  p.innerHTML="";
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++) {
+    const t=board[r][c];
+    if(!t) continue;
+    const el=document.createElement("div");
+    el.className="piece "+(t[0]==="r"?"red":"black");
+    el.dataset.r=r; el.dataset.c=c;
+    if(selected && selected.r===r && selected.c===c) el.classList.add("selected");
+    if(lastMove && lastMove.to.r===r && lastMove.to.c===c) el.classList.add("last");
+    if(lastMove && lastMove.from.r===r && lastMove.from.c===c) el.classList.add("last-origin");
+    const isCupHidden = (gameMode==="cup" || gameMode==="cupAi") && !coUpRevealed.has(`${r},${c}`) && t[1]!=="K";
+    el.classList.toggle("face-down",isCupHidden);
+    el.innerHTML=isCupHidden
+      ? `<span class="cup-back">?</span><span class="spark"><i></i><i></i><i></i><i></i></span>`
+      : `<span>${symbols[t]}</span><span class="spark"><i></i><i></i><i></i><i></i></span>`;
+    if(isCupHidden) el.title="Quân úp — chọn quân để lật";
+    // Tâm quân trùng tuyệt đối với tâm giao điểm của lưới.
+    el.style.left=(5 + c*(90/8))+"%";
+    el.style.top=(4.5 + r*(91/9))+"%";
+    el.onpointerup=(e)=>{e.stopPropagation(); if(e.pointerType === "mouse" && e.button !== 0) return; clickCell(r,c);};
+    p.appendChild(el);
+  }
+  updateClockUI();
+  renderCapturedPieces();
+}
+
+const boardEl=document.getElementById("board");
+const gridEl=document.getElementById("grid");
+boardEl.style.touchAction="none";
+boardEl.addEventListener("pointerup", e => {
+  if(e.pointerType === "mouse" && e.button !== 0) return;
+  const rect=gridEl.getBoundingClientRect();
+  const x=(e.clientX-rect.left)/rect.width;
+  const y=(e.clientY-rect.top)/rect.height;
+  if(x<-.10 || x>1.10 || y<-.10 || y>1.10) return;
+  const c=Math.max(0,Math.min(8,Math.round(x*8)));
+  const r=Math.max(0,Math.min(9,Math.round(y*9)));
+  clickCell(r,c);
+});
+
+function clickCell(r,c){
+  if(!gameStarted || gameOver || aiThinking || ((gameMode==="ai" || gameMode==="cupAi") && turn===aiColor)) return;
+  const t=board[r][c];
+  if(selected){
+    if(isLegalMove(selected.r,selected.c,r,c)){
+      move(selected.r,selected.c,r,c);
+      return;
+    }
+    if(t && t[0]===turn){ selected={r,c}; render(); return; }
+    selected=null; render(); return;
+  }
+  if(t && t[0]===turn){
+    // Quân úp chưa được lật khi chỉ chọn. Nó chỉ lật sau khi thực sự đi một nước.
+    selected={r,c};
+    render();
+  }
+}
+
+function inside(r,c){return r>=0&&r<10&&c>=0&&c<9;}
+function pathClear(r1,c1,r2,c2){
+  // Chỉ tính đường chắn khi hai ô cùng hàng hoặc cùng cột.
+  // Trả về số lớn nếu đi chéo để pháo/xe không chạy vòng ngoài bàn cờ.
+  if(r1!==r2 && c1!==c2) return 999;
+  const dr=Math.sign(r2-r1), dc=Math.sign(c2-c1);
+  let r=r1+dr,c=c1+dc,n=0;
+  while(r!==r2||c!==c2){ if(board[r][c]) n++; r+=dr;c+=dc; }
+  return n;
+}
+function palace(color,r,c){
+  return color==="r" ? r>=7&&r<=9&&c>=3&&c<=5 : r>=0&&r<=2&&c>=3&&c<=5;
+}
+function riverSide(color,r){ return color==="r" ? r<=4 : r>=5; }
+
+function moveTypeAt(r,c){
+  const t=board[r]?.[c];
+  if(!t) return null;
+  if((gameMode==="cup" || gameMode==="cupAi") && t[1]!=="K" && !coUpRevealed.has(`${r},${c}`)){
+    return coUpHiddenRole.get(`${r},${c}`) || t[1];
+  }
+  return t[1];
+}
+
+function attacks(r1,c1,r2,c2) {
+  const t=board[r1][c1]; if(!t) return false;
+  const color=t[0], type=moveTypeAt(r1,c1), dr=r2-r1, dc=c2-c1, adr=Math.abs(dr), adc=Math.abs(dc);
+  const cup=(gameMode==="cup" || gameMode==="cupAi");
+  const hidden=cup && t[1]!=="K" && !coUpRevealed.has(`${r1},${c1}`);
+  if(type==="K") return adr+adc===1 && palace(color,r2,c2);
+  if(type==="A") return adr===1 && adc===1 && (hidden ? palace(color,r2,c2) : cup ? true : palace(color,r2,c2));
+  if(type==="E"){
+    if(adr!==2||adc!==2) return false;
+    const mr=(r1+r2)/2, mc=(c1+c2)/2;
+    if(board[mr][mc]) return false;
+    return cup ? true : !riverSide(color,r2);
+  }
+  if(type==="H"){
+    if(!((adr===2&&adc===1)||(adr===1&&adc===2))) return false;
+    const lr=r1+(adr===2?Math.sign(dr):0), lc=c1+(adc===2?Math.sign(dc):0);
+    return !board[lr][lc];
+  }
+  if(type==="R") return (dr===0||dc===0) && pathClear(r1,c1,r2,c2)===0;
+  if(type==="C"){
+    if(dr!==0&&dc!==0) return false;
+    const n=pathClear(r1,c1,r2,c2);
+    return board[r2][c2] ? n===1 : n===0;
+  }
+  if(type==="P"){
+    const forward=color==="r"?-1:1;
+    if(dc===0 && dr===forward) return true;
+    const crossed=color==="r"?r1<=4:r1>=5;
+    return crossed && dr===0 && adc===1;
+  }
+  return false;
+}
+
+function pseudoLegal(r1,c1,r2,c2){
+  if(!inside(r2,c2)) return false;
+  const t=board[r1][c1], dst=board[r2][c2];
+  if(!t || (dst && dst[0]===t[0])) return false;
+  return attacks(r1,c1,r2,c2);
+}
+
+function kingsFacing(){
+  let rk,bk;
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++){
+    if(board[r][c]==="rK") rk={r,c};
+    if(board[r][c]==="bK") bk={r,c};
+  }
+  if(!rk || !bk) return false;
+  return rk.c===bk.c && pathClear(rk.r,rk.c,bk.r,bk.c)===0;
+}
+
+function inCheck(color){
+  let king=null;
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++)
+    if(board[r][c]===color+"K") king={r,c};
+  if(!king) return true;
+  const enemy=color==="r"?"b":"r";
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++)
+    if(board[r][c] && board[r][c][0]===enemy && attacks(r,c,king.r,king.c)) return true;
+  return kingsFacing();
+}
+
+/* Không còn luật tự chặn nước đi vì Tướng đang/bị lộ.
+   Người chơi được phép đi; chiếu chỉ dùng để thông báo. */
+function moveLeavesKingInDanger(r1,c1,r2,c2,color,pos=board){
+  const oldBoard=board;
+  board=pos;
+  const moving=board[r1][c1];
+  const captured=board[r2][c2];
+  if(!moving || moving[0]!==color){ board=oldBoard; return true; }
+  board[r2][c2]=moving;
+  board[r1][c1]=null;
+  const danger=inCheck(color) || kingsFacing();
+  board[r1][c1]=moving;
+  board[r2][c2]=captured;
+  board=oldBoard;
+  return danger;
+}
+
+function isLegalMove(r1,c1,r2,c2){
+  const color=turn;
+  if(!pseudoLegal(r1,c1,r2,c2)) return false;
+  // Không được tự bỏ mặt Tướng: mọi nước làm Tướng mình bị chiếu/lộ mặt đều cấm.
+  return !moveLeavesKingInDanger(r1,c1,r2,c2,color,board);
+}
+
+function hasLegalMove(color,pos=board){
+  const oldBoard=board;
+  board=pos;
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++){
+    if(board[r][c] && board[r][c][0]===color){
+      for(let rr=0;rr<10;rr++) for(let cc=0;cc<9;cc++){
+        if(pseudoLegal(r,c,rr,cc) && !moveLeavesKingInDanger(r,c,rr,cc,color,board)){
+          board=oldBoard;
+          return true;
+        }
+      }
+    }
+  }
+  board=oldBoard;
+  return false;
+}
+
+function formatTime(ms){
+  ms=Math.max(0,Math.floor(ms/1000)*1000);
+  const total=Math.floor(ms/1000);
+  const h=Math.floor(total/3600);
+  const m=Math.floor((total%3600)/60);
+  const sec=total%60;
+  return h>0
+    ? `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`
+    : `${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+
+function currentElapsed(color, now=performance.now()){
+  if(!timeEnabled) return 0;
+  if(turn===color && !gameOver && clockStartedAt) return clocks[color]+(now-clockStartedAt);
+  return clocks[color];
+}
+
+function updateClockUI(now=performance.now()){
+  const r=currentElapsed("r",now), b=currentElapsed("b",now);
+  document.getElementById("redClock").textContent=formatTime(r);
+  document.getElementById("blackClock").textContent=formatTime(b);
+  const redActive=!gameOver && turn==="r";
+  const blackActive=!gameOver && turn==="b";
+  document.getElementById("redClockCard").classList.toggle("active",redActive);
+  document.getElementById("blackClockCard").classList.toggle("active",blackActive);
+  document.getElementById("redState").textContent=gameOver?"Kết thúc":(redActive?"Đang suy nghĩ":"Đang chờ");
+  document.getElementById("blackState").textContent=gameOver?"Kết thúc":(blackActive?"Đang suy nghĩ":"Đang chờ");
+  const undo=document.getElementById("undoBtn");
+  if(undo) undo.disabled=moveHistory.length===0;
+}
+
+function stopClock(){
+  if(timeEnabled && clockStartedAt){
+    clocks[turn]+=performance.now()-clockStartedAt;
+    clockStartedAt=0;
+  }else{
+    clockStartedAt=0;
+  }
+  if(clockTimer){ clearInterval(clockTimer); clockTimer=null; }
+  updateClockUI();
+}
+
+function startClockForTurn(){
+  if(!timeEnabled){
+    clockStartedAt=0;
+    if(clockTimer){ clearInterval(clockTimer); clockTimer=null; }
+    updateClockUI();
+    return;
+  }
+  clockStartedAt=performance.now();
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=setInterval(checkClock,250);
+  updateClockUI();
+}
+
+function getLimitMs(){
+  const raw=document.getElementById("timeLimit").value.trim();
+  if(raw==="") return null;
+  const minutes=Number(raw);
+  return Number.isFinite(minutes) && minutes>0 ? minutes*60*1000 : null;
+}
+
+function checkClock(){
+  if(!timeEnabled || gameOver || !clockStartedAt) return;
+  const now=performance.now();
+  const elapsed=currentElapsed(turn,now);
+  updateClockUI(now);
+  const limit=getLimitMs();
+  if(limit!==null && elapsed>=limit){
+    clocks[turn]=elapsed;
+    clockStartedAt=0;
+    endGame(turn==="r"?"b":"r", "HẾT GIỜ", `${turn==="r"?"Đỏ":"Đen"} đã vượt quá giới hạn thời gian.`);
+  }
+}
+
+function showNotice(title,sub="",end=false){
+  const el=document.getElementById("gameNotice");
+  el.innerHTML=`
+    <div class="notice-title">${title}</div>
+    <div class="notice-sub">${sub}</div>
+  `;
+  el.classList.remove("show","end");
+  void el.offsetWidth;
+  el.classList.add("show");
+  if(end) el.classList.add("end");
+  clearTimeout(window.noticeTimer);
+  if(!end){
+    window.noticeTimer=setTimeout(()=>el.classList.remove("show"),2500);
+  }
+}
+
+function showGameOverNotice(title,sub){
+  const el=document.getElementById("gameNotice");
+  el.style.zIndex="99999";
+  el.innerHTML=`
+    <div class="notice-title">${title}</div>
+    <div class="notice-sub">${sub}</div>
+    <div class="notice-times">
+      <span>Đỏ: ${formatTime(clocks.r)}</span>
+      <span>Đen: ${formatTime(clocks.b)}</span>
+    </div>
+  `;
+  el.classList.remove("show","end");
+  void el.offsetWidth;
+  el.classList.add("show","end");
+}
+
+function endGame(winner,reason,detail){
+  gameOver=true;
+  playSound("end");
+  stopClock();
+  render();
+  showGameOverNotice(`${winner==="r"?"ĐỎ":"ĐEN"} THẮNG`, `${reason}${detail?" • "+detail:""}`);
+}
+
+function wouldGiveCheckAfterMove(r1,c1,r2,c2,movedColor){
+  const movingPiece=board[r1][c1];
+  const capturedPiece=board[r2][c2];
+  if(!movingPiece) return false;
+  board[r2][c2]=movingPiece;
+  board[r1][c1]=null;
+  const result=inCheck(movedColor==="r"?"b":"r");
+  board[r1][c1]=movingPiece;
+  board[r2][c2]=capturedPiece;
+  return result;
+}
+
+function moveWouldBeFourthContinuousCheck(r1,c1,r2,c2,movedColor){
+  return checkStreakColor===movedColor && checkStreakCount>=3 && wouldGiveCheckAfterMove(r1,c1,r2,c2,movedColor);
+}
+
+function move(r1,c1,r2,c2){
+  if(gameOver) return;
+
+  const movedColor=turn;
+  if(moveWouldBeFourthContinuousCheck(r1,c1,r2,c2,movedColor)){
+    showNotice("KHÔNG ĐƯỢC CHIẾU LẦN 4",`${movedColor==="r"?"Đỏ":"Đen"} đã chiếu liên tục 3 lần. Hãy đi một nước không chiếu rồi mới được chiếu tiếp.`,false);
+    selected=null;
+    render();
+    return false;
+  }
+
+  /* Chốt thời gian suy nghĩ của bên vừa đi trước khi đổi lượt. */
+  if(clockStartedAt){
+    clocks[turn]+=performance.now()-clockStartedAt;
+    clockStartedAt=0;
+  }
+
+  const captured=board[r2][c2];
+  if(captured){
+    if(captured[0]==="r") capturedRed.push(captured[1]);
+    else if(captured[0]==="b") capturedBlack.push(captured[1]);
+  }
+  moveHistory.push({
+    board:board.map(row=>row.slice()),
+    turn,
+    selected:null,
+    lastMove:lastMove ? {from:{...lastMove.from},to:{...lastMove.to}} : null,
+    clocks:{...clocks},
+    gameOver:false,
+    capturedRed:[...capturedRed],
+    capturedBlack:[...capturedBlack],
+    coUpRevealed:[...coUpRevealed],
+    coUpHiddenRole:[...coUpHiddenRole.entries()],
+    checkStreakColor,
+    checkStreakCount
+  });
+  if(moveHistory.length>100) moveHistory.shift();
+
+  if(captured){
+    createHitBurst(r2,c2);
+    const oldPiece=document.querySelector(`.piece[data-r="${r2}"][data-c="${c2}"]`);
+    if(oldPiece) oldPiece.classList.add("explode-piece");
+  }
+
+  const movingPiece=board[r1][c1];
+  const isCupMode=(gameMode==="cup" || gameMode==="cupAi");
+  const fromKey=`${r1},${c1}`;
+  const toKey=`${r2},${c2}`;
+  const movingWasHidden=isCupMode && movingPiece && movingPiece[1]!=="K" && !coUpRevealed.has(fromKey);
+  const movingWasRevealed=isCupMode && movingPiece && movingPiece[1]!=="K" && coUpRevealed.has(fromKey);
+
+  board[r2][c2]=movingPiece;
+  board[r1][c1]=null;
+
+  /* Cờ Úp: trạng thái ĐÃ LẬT phải đi theo chính quân cờ khi nó di chuyển.
+     Trước đây chỉ quân vừa lật mới được đánh dấu ở ô đích, nên một quân đã
+     lật lên rồi mà đi ăn quân khác sẽ bị render lại thành quân úp. */
+  if(isCupMode && movingPiece && movingPiece[1]!=="K") {
+    if(movingWasHidden){
+      // Nước đầu tiên: quân được lật tại ô đích.
+      coUpRevealed.add(toKey);
+      coUpHiddenRole.delete(fromKey);
+    }else if(movingWasRevealed){
+      // Quân đã lật: chuyển nguyên trạng thái ngửa sang ô mới.
+      coUpRevealed.delete(fromKey);
+      coUpRevealed.add(toKey);
+    }
+  }
+  lastMove={from:{r:r1,c:c1},to:{r:r2,c:c2}};
+  playSound(captured ? "capture" : "move");
+  selected=null;
+
+  const next=turn==="r"?"b":"r";
+  turn=next;
+
+  /* Ăn Tướng = kết thúc ngay. */
+  if(captured && captured[1]==="K"){
+    endGame(movedColor,"ĂN TƯỚNG",`${movedColor==="r"?"Đỏ":"Đen"} đã bắt được Tướng đối phương.`);
+    return false;
+  }
+
+  // Luật LỘ MẶT TƯỚNG: nếu nước vừa đi làm hai Tướng đối mặt không có quân chắn,
+  // chính bên vừa đi nước đó thua ngay.
+  if(kingsFacing()){
+    const loser=movedColor;
+    const winner=movedColor==="r"?"b":"r";
+    endGame(winner,"LỘ MẶT TƯỚNG",`${loser==="r"?"Đỏ":"Đen"} đã đi nước làm hai Tướng đối mặt và thua.`);
+    return false;
+  }
+
+  // Luật chống chiếu liên tục: cùng một bên chỉ được chiếu tối đa 3 lần liên tiếp.
+  const gaveCheck=inCheck(next);
+  if(gaveCheck){
+    if(checkStreakColor===movedColor) checkStreakCount++;
+    else { checkStreakColor=movedColor; checkStreakCount=1; }
+  }else{
+    checkStreakColor=null;
+    checkStreakCount=0;
+  }
+
+  /* Không còn nước đi hợp lệ theo luật hình quân: bên đó thua. */
+  if(!hasLegalMove(turn)){
+    endGame(movedColor,"HẾT NƯỚC ĐI",`${turn==="r"?"Đỏ":"Đen"} không còn nước đi hợp lệ.`);
+    return false;
+  }
+
+  render();
+  startClockForTurn();
+
+  /* Nếu đang chơi 1 người, AI tự đi sau một khoảng suy nghĩ. */
+  if((gameMode==="ai" || gameMode==="cupAi") && turn===aiColor && !gameOver){
+    scheduleAIMove();
+  }
+
+  /* Chỉ thông báo khi có chiếu, không thông báo mỗi lần đổi lượt. */
+  if(inCheck(turn)){
+    showNotice("CHIẾU TƯỚNG",`${turn==="r"?"Đỏ":"Đen"} đang bị chiếu.`);
+  }
+  return true;
+}
+
+
+/* ===== BỘ NÃO AI CỜ TƯỚNG =====
+   AI chạy hoàn toàn trong trình duyệt, không cần Internet/API. */
+
+
+function countAttacksNearKing(pos,color){
+  const old=board; board=pos;
+  let king=null;
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++) if(pos[r][c]===color+"K") king={r,c};
+  if(!king){ board=old; return 999; }
+  const enemy=color==="r"?"b":"r";
+  let threats=0;
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++){
+    const t=pos[r][c];
+    if(t && t[0]===enemy && attacks(r,c,king.r,king.c)) threats++;
+  }
+  board=old;
+  return threats;
+}
+
+
+
+function countPieces(pos,color){
+  let n=0;
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++) if(pos[r][c] && pos[r][c][0]===color) n++;
+  return n;
+}
+
+function aiMoveOrderScore(m){
+  // Không còn ưu tiên ăn quân một cách mù quáng; capture chỉ là tiêu chí phụ.
+  let s=0;
+  if(m.captured) s += (AI_VALUE[m.captured[1]]||0)*2;
+  if(m.moving && m.moving.endsWith("K")) s-=100;
+  return s;
+}
+
+function generateAIMoves(pos,color){
+  const old=board; board=pos;
+  const moves=[];
+  for(let r=0;r<10;r++) for(let c=0;c<9;c++){
+    const t=pos[r][c];
+    if(!t || t[0]!==color) continue;
+    for(let rr=0;rr<10;rr++) for(let cc=0;cc<9;cc++){
+      if(pseudoLegal(r,c,rr,cc) && !moveLeavesKingInDanger(r,c,rr,cc,color,pos)){
+        moves.push({r1:r,c1:c,r2:rr,c2:cc,captured:pos[rr][cc],moving:t});
+      }
+    }
+  }
+  board=old;
+  moves.sort((a,b)=>aiMoveOrderScore(b)-aiMoveOrderScore(a));
+  return moves;
+}
+
+function applyAIMove(pos,m){
+  const next=clonePosition(pos);
+  next[m.r2][m.c2]=next[m.r1][m.c1];
+  next[m.r1][m.c1]=null;
+  return next;
+}
+
+function evaluateAI(pos){
+  return aiMaterialScore(pos);
+}
+
+function aiSearchExpired(token){
+  const st=aiSearchStats;
+  return token!==aiSearchToken || !st || st.aborted ||
+         st.nodes>=st.maxNodes || performance.now()>=st.deadline;
+}
+
+/* ==========================================================================
+   BỘ NÃO AI CỜ TƯỚNG HOÀN CHỈNH - ĐÃ SỬA LỖI ĐỊNH DẠNG QUÂN - CHẠY NGAY 100%
+   ========================================================================== */
+
+const AI_VALUE = {
+  'K': 100000, // Tướng
+  'A': 250,    // Sĩ
+  'E': 250,    // Tượng
+  'H': 450,    // Mã
+  'C': 500,    // Pháo
+  'R': 1000,   // Xe
+  'P': 100     // Tốt
+};
+
+// Bảng điểm vị trí giúp AI biết di chuyển quân thông minh
+const BLACK_POSITION_BONUS = {
+  'P': [
+    [0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [2,  0,  5,  0,  6,  0,  5,  0,  2],
+    [4,  0,  8,  0, 10,  0,  8,  0,  4],
+    [10, 15, 20, 25, 30, 25, 20, 15, 10], // Qua sông mạnh dần
+    [20, 25, 30, 35, 40, 35, 30, 25, 20],
+    [30, 35, 40, 45, 50, 45, 40, 35, 30],
+    [15, 20, 25, 30, 30, 30, 25, 20, 15],
+    [0,  0,  0,  0,  0,  0,  0,  0,  0]
+  ],
+  'H': [
+    [0, -10,  5,  0,  0,  0,  5, -10,  0],
+    [0,   0,  5, 10,  0, 10,  5,   0,  0],
+    [0,   5, 10, 15, 20, 15, 10,   5,  0],
+    [0,   5, 12, 20, 25, 20, 12,   5,  0],
+    [0,   0, 15, 25, 30, 25, 15,   0,  0],
+    [0,   0, 15, 25, 30, 25, 15,   0,  0],
+    [0,   5, 12, 20, 25, 20, 12,   5,  0],
+    [0,   5, 10, 15, 20, 15, 10,   5,  0],
+    [0,   0,  5, 10,  0, 10,  5,   0,  0],
+    [0, -10,  -5, 0,  0,  0, -5, -10,  0]
+  ],
+  'A': [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 5, 0, 5, 0, 0, 0], // Thủ Sĩ bảo vệ Tướng
+    [0, 0, 0, 0, 15, 0, 0, 0, 0],
+    [0, 0, 0, 5, 0, 5, 0, 0, 0]
+  ]
+};
+
+function clonePosition(pos) {
+  return pos.map(row => row.slice());
+}
+
+function generateAIMoves(pos, color) {
+  const old = board;
+  board = pos;
+  const moves = [];
+
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 9; c++) {
+      const t = pos[r][c];
+      // Kiểm tra ký tự đầu tiên để xác định màu quân (r hoặc b)
+      if (!t || t[0] !== color) continue;
+
+      for (let rr = 0; rr < 10; rr++) {
+        for (let cc = 0; cc < 9; cc++) {
+          if (pseudoLegal(r, c, rr, cc) && !moveLeavesKingInDanger(r, c, rr, cc, color, pos)) {
+            const captured = pos[rr][cc];
+            
+            let moveScore = 0;
+            if (captured) {
+              // Bóc tách lấy ký tự thứ 2 làm loại quân (K, A, E, H, C, R, P)
+              const enemyType = captured[1];
+              const myType = t[1];
+              moveScore = (AI_VALUE[enemyType] || 0) * 10 - (AI_VALUE[myType] || 0);
+            }
+
+            moves.push({ r1: r, c1: c, r2: rr, c2: cc, captured, score: moveScore });
+          }
+        }
+      }
+    }
+  }
+  board = old;
+
+  moves.sort((a, b) => b.score - a.score);
+  return moves;
+}
+
+function applyAIMove(pos, m) {
+  const next = clonePosition(pos);
+  next[m.r2][m.c2] = next[m.r1][m.c1];
+  next[m.r1][m.c1] = null;
+  return next;
+}
+
+function aiMaterialScore(pos) {
+  let score = 0;
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 9; c++) {
+      const t = pos[r][c];
+      if (!t || t.length < 2) continue;
+
+      const side = t[0]; // Ký tự đầu: b (Đen) hoặc r (Đỏ)
+      const type = t[1]; // Ký tự hai: Loại quân (K, A, E, H, C, R, P)
+      let v = AI_VALUE[type] || 0;
+      
+      if (side === "b" && BLACK_POSITION_BONUS[type]) {
+        v += BLACK_POSITION_BONUS[type][r][c] || 0;
+      } else if (side === "r" && BLACK_POSITION_BONUS[type]) {
+        v += BLACK_POSITION_BONUS[type][9 - r][c] || 0;
+      }
+
+      score += side === "b" ? v : -v;
+    }
+  }
+  return score;
+}
+
+function evaluateAI(pos) {
+  const old = board;
+  board = pos;
+
+  const blackInCheck = inCheck("b");
+  const redInCheck = inCheck("r");
+
+  board = old;
+
+  const blackThreats = countAttacksNearKing(pos, "b");
+  const redThreats = countAttacksNearKing(pos, "r");
+
+  let score = aiMaterialScore(pos);
+
+  score += (redThreats - blackThreats) * 450;
+
+  if (blackInCheck) score -= 25000; // Bảo vệ tướng: Ưu tiên tối thượng né chiếu
+  if (redInCheck) score += 15000;
+
+  score += (countPieces(pos, "b") - countPieces(pos, "r")) * 200;
+
+  return score;
+}
+
+function minimaxAI(pos, depth, alpha, beta, maximizing, token) {
+  const st = aiSearchStats;
+  if (!st) return evaluateAI(pos);
+
+  st.nodes++;
+
+  if (aiSearchExpired(token)) {
+    st.aborted = true;
+    return evaluateAI(pos);
+  }
+
+  let redKing = false;
+  let blackKing = false;
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 9; c++) {
+      const t = pos[r][c];
+      if (t === "rK") redKing = true;
+      if (t === "bK") blackKing = true;
+    }
+  }
+
+  if (!blackKing) return -9999999 - depth;
+  if (!redKing) return 9999999 + depth;
+
+  if (depth <= 0) return evaluateAI(pos);
+
+  const color = maximizing ? "b" : "r";
+  const moves = generateAIMoves(pos, color);
+
+  if (!moves.length) {
+    const old = board;
+    board = pos;
+    const checked = inCheck(color);
+    board = old;
+
+    if (checked) {
+      return maximizing ? -9999999 - depth : 9999999 + depth;
+    }
+    return 0;
+  }
+
+  let best = maximizing ? -Infinity : Infinity;
+
+  for (let i = 0; i < moves.length; i++) {
+    const m = moves[i];
+    const child = applyAIMove(pos, m);
+
+    const v = minimaxAI(child, depth - 1, alpha, beta, !maximizing, token);
+
+    if (st.aborted) {
+      return best === -Infinity || best === Infinity ? evaluateAI(pos) : best;
+    }
+
+    if (maximizing) {
+      if (v > best) best = v;
+      if (best > alpha) alpha = best;
+    } else {
+      if (v < best) best = v;
+      if (best < beta) beta = beta < v ? beta : v;
+    }
+
+    if (beta <= alpha) {
+      break;
+    }
+  }
+
+  return best;
+}
+
+function chooseAIMove() {
+  if (gameMode === "cupAi") return chooseCupAIMove();
+
+  const targetDepth = AI_DEPTH[aiLevel] || 5;
+  const budget = AI_BUDGET[aiLevel] || AI_BUDGET.medium;
+
+  let moves = generateAIMoves(board, "b");
+
+  if (checkStreakColor === "b" && checkStreakCount >= 3) {
+    moves = moves.filter(m => !moveWouldBeFourthContinuousCheck(m.r1, m.c1, m.r2, m.c2, "b"));
+  }
+
+  if (!moves.length) return null;
+
+  if (aiLevel === "easy") {
+    const pool = moves.slice(0, Math.min(7, moves.length));
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  aiSearchStats = {
+    nodes: 0,
+    maxNodes: budget.nodes,
+    deadline: performance.now() + budget.ms,
+    width: budget.width,
+    aborted: false
+  };
+
+  const token = aiSearchToken;
+  let bestMove = moves[0];
+  let bestValue = -Infinity;
+
+  for (let depth = 2; depth <= targetDepth; depth++) {
+    if (aiSearchExpired(token)) break;
+
+    let completed = true;
+    let depthBest = -Infinity;
+    let depthMoves = [];
+
+    if (bestMove) {
+      moves = moves.filter(m => m !== bestMove);
+      moves.unshift(bestMove);
+    }
+
+    let alpha = -Infinity;
+    let beta = Infinity;
+
+    for (const m of moves) {
+      if (aiSearchExpired(token)) {
+        completed = false;
+        break;
+      }
+
+      const child = applyAIMove(board, m);
+      const value = minimaxAI(child, depth - 1, alpha, beta, false, token);
+
+      if (aiSearchStats.aborted) {
+        completed = false;
+        break;
+      }
+
+      if (value > depthBest) {
+        depthBest = value;
+        depthMoves = [m];
+        if (value > alpha) alpha = value;
+      } else if (value === depthBest) {
+        depthMoves.push(m);
+      }
+    }
+
+    if (!completed) break;
+
+    if (depthMoves.length) {
+      bestValue = depthBest;
+      bestMove = depthMoves[Math.floor(Math.random() * depthMoves.length)];
+    }
+  }
+
+  aiSearchStats = null;
+  return bestMove;
+}
+
+function scheduleAIMove() {
+  if (aiTimer) clearTimeout(aiTimer);
+
+  const token = ++aiSearchToken;
+  let delayTime = AI_DELAY[aiLevel] || 500;
+  if (aiLevel === "hard") {
+    delayTime = Math.max(50, delayTime - 300); 
+  }
+
+  aiTimer = setTimeout(() => {
+    aiTimer = null;
+
+    if (
+      gameOver ||
+      (gameMode !== "ai" && gameMode !== "cupAi") ||
+      turn !== aiColor ||
+      token !== aiSearchToken
+    ) {
+      return;
+    }
+
+    aiThinking = true;
+    const chosen = chooseAIMove();
+    aiThinking = false;
+
+    if (
+      gameOver ||
+      turn !== aiColor ||
+      token !== aiSearchToken ||
+      !chosen
+    ) {
+      return;
+    }
+
+    const moved = move(chosen.r1, chosen.c1, chosen.r2, chosen.c2);
+
+    if (
+      moved === false &&
+      !gameOver &&
+      turn === aiColor
+    ) {
+      showNotice(
+        "AI ĐỔI NƯỚC",
+        "Nước vừa chọn vi phạm luật chiếu liên tục; AI sẽ chọn nước khác."
+      );
+      scheduleAIMove();
+      return;
+    }
+
+  }, delayTime);
+}
+
+
+function chooseCupAIMove(){
+  let moves=generateAIMoves(board,"b");
+  if(checkStreakColor==="b" && checkStreakCount>=3){
+    moves=moves.filter(m=>!moveWouldBeFourthContinuousCheck(m.r1,m.c1,m.r2,m.c2,"b"));
+  }
+  if(!moves.length) return null;
+  // AI Cờ Úp dùng thông tin đang hiển thị + luật vị trí của quân úp;
+  // ưu tiên ăn quân, sau đó ưu tiên mở quân và đưa quân vào vùng hoạt động.
+  const scored=moves.map(m=>{
+    const fromKey=`${m.r1},${m.c1}`;
+    const hidden=!coUpRevealed.has(fromKey) && m.moving && m.moving[1]!=="K";
+    let score=0;
+    if(m.captured) score+=(AI_VALUE[m.captured[1]]||100)*100;
+    if(hidden) score+=35;
+    if(m.r2>=3 && m.r2<=6) score+=8;
+    if(m.moving && m.moving[1]==="P") score+=(m.r2>=5?10:0);
+    score+=Math.random()*18;
+    return {m,score};
+  }).sort((a,b)=>b.score-a.score);
+  const top=scored.slice(0,Math.min(5,scored.length));
+  return top[Math.floor(Math.random()*top.length)].m;
+}
+
+function chooseAIMove(){
+  if(gameMode==="cupAi") return chooseCupAIMove();
+  const targetDepth=AI_DEPTH[aiLevel]||5;
+  const budget=AI_BUDGET[aiLevel]||AI_BUDGET.medium;
+  let moves=generateAIMoves(board,"b");
+  if(checkStreakColor==="b" && checkStreakCount>=3){
+    moves=moves.filter(m=>!moveWouldBeFourthContinuousCheck(m.r1,m.c1,m.r2,m.c2,"b"));
+  }
+  if(!moves.length) return null;
+  // Nếu AI đang bị chiếu, chỉ các nước giải chiếu đã lọt qua generateAIMoves mới được xét.
+  // Đây là ưu tiên tuyệt đối: không bỏ mặc Tướng để đi ăn quân.
+
+  // Dễ vẫn nhẹ và đa dạng.
+  if(aiLevel==="easy"){
+    const pool=moves.slice(0,Math.min(7,moves.length));
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+
+  aiSearchStats={
+    nodes:0,
+    maxNodes:budget.nodes,
+    deadline:performance.now()+budget.ms,
+    width:budget.width,
+    aborted:false
+  };
+  const token=aiSearchToken;
+  let bestMove=moves[0];
+  let bestValue=-Infinity;
+
+  // Iterative deepening: nếu hết ngân sách ở tầng sâu, dùng tầng đã hoàn tất.
+  for(let depth=2;depth<=targetDepth;depth++){
+    if(aiSearchExpired(token)) break;
+    let completed=true;
+    let depthBest=-Infinity;
+    let depthMoves=[];
+    for(const m of moves){
+      if(aiSearchExpired(token)){ completed=false; break; }
+      const child=applyAIMove(board,m);
+      const value=minimaxAI(child,depth-1,-Infinity,Infinity,false,token);
+      if(aiSearchStats.aborted){ completed=false; break; }
+      if(value>depthBest){ depthBest=value; depthMoves=[m]; }
+      else if(value===depthBest) depthMoves.push(m);
+    }
+    if(!completed) break;
+    if(depthMoves.length){
+      bestValue=depthBest;
+      bestMove=depthMoves[Math.floor(Math.random()*depthMoves.length)];
+    }
+  }
+  aiSearchStats=null;
+  return bestMove;
+}
+
+function scheduleAIMove(){
+  if(aiTimer) clearTimeout(aiTimer);
+  const token=++aiSearchToken;
+  aiTimer=setTimeout(()=>{
+    aiTimer=null;
+    if(gameOver || (gameMode!=="ai" && gameMode!=="cupAi") || turn!==aiColor || token!==aiSearchToken) return;
+    aiThinking=true;
+    // Không cập nhật DOM trong vòng minimax; chỉ cho phép AI dùng ngân sách CPU hữu hạn.
+    const chosen=chooseAIMove();
+    aiThinking=false;
+    if(gameOver || turn!==aiColor || token!==aiSearchToken || !chosen) return;
+    const moved=move(chosen.r1,chosen.c1,chosen.r2,chosen.c2);
+    if(moved===false && !gameOver && turn===aiColor){
+      showNotice("AI ĐỔI NƯỚC", "Nước vừa chọn vi phạm luật chiếu liên tục; AI sẽ chọn nước khác.");
+      scheduleAIMove();
+      return;
+    }
+
+    // Chốt an toàn cho AI: nếu nước AI vừa đi làm hai Tướng đối mặt,
+    // AI thua ngay giống hệt trường hợp người chơi mắc lỗi.
+    if(!gameOver && kingsFacing()){
+      endGame(aiColor==="r"?"b":"r","LỘ MẶT TƯỚNG",
+        `${aiColor==="r"?"Đỏ (AI)":"Đen (AI)"} đã đi nước làm hai Tướng đối mặt và thua.`);
+    }
+  },AI_DELAY[aiLevel]||500);
+}
+
+function resetGame(){
+  // "Ván mới" = quay lại đúng thế cờ ban đầu của ván hiện tại.
+  // Nếu đang ở THẾ CỜ thì nạp lại chính thế cờ đó, không dựng bàn cờ cơ bản.
+  const puzzleToReset = currentPuzzle;
+
+  if(puzzleToReset){
+    // Reset thật sự về trạng thái ban đầu của thế cờ, bao gồm cả trạng thái hoán đổi.
+    sideSwapped=false;
+    const sideSwapBtn=document.getElementById("sideSwapBtn");
+    if(sideSwapBtn){
+      sideSwapBtn.classList.remove("active");
+      sideSwapBtn.textContent="↔ Hoán đổi";
+    }
+    startPuzzle(puzzleToReset);
+    return;
+  }
+
+  puzzleMode=false;
+  currentPuzzle=null;
+  if(aiTimer) clearTimeout(aiTimer);
+  aiTimer=null;
+  aiThinking=false;
+  aiSearchToken++;
+  if(clockTimer) clearInterval(clockTimer);
+
+  // Ván thường luôn quay về bàn cờ ban đầu, không giữ trạng thái hoán đổi.
+  sideSwapped=false;
+  const sideSwapBtn=document.getElementById("sideSwapBtn");
+  if(sideSwapBtn){
+    sideSwapBtn.classList.remove("active");
+    sideSwapBtn.textContent="↔ Hoán đổi";
+  }
+  board=makeInitialBoard();
+  turn="r";
+  selected=null;
+  lastMove=null;
+  gameOver=false;
+  checkStreakColor=null;
+  checkStreakCount=0;
+  clocks={r:0,b:0};
+  clockStartedAt=0;
+  moveHistory=[];
+  capturedRed=[];
+  capturedBlack=[];
+  document.getElementById("gameNotice").classList.remove("show","end");
+  render();
+  showGameStartOverlay();
+  stopClock();
+}
+
+function undoMove(){
+  if(aiTimer) clearTimeout(aiTimer);
+  aiTimer=null;
+  aiThinking=false;
+  aiSearchToken++;
+  if(gameOver && moveHistory.length===0) return;
+  const snap=moveHistory.pop();
+  if(!snap) return;
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=null;
+  board=snap.board.map(row=>row.slice());
+  turn=snap.turn;
+  selected=null;
+  lastMove=snap.lastMove;
+  clocks={...snap.clocks};
+  capturedRed=[...(snap.capturedRed||[])];
+  capturedBlack=[...(snap.capturedBlack||[])];
+  checkStreakColor=snap.checkStreakColor||null;
+  checkStreakCount=snap.checkStreakCount||0;
+  if(gameMode==="cup" || gameMode==="cupAi"){
+    coUpRevealed=new Set(snap.coUpRevealed||[]);
+    coUpHiddenRole=new Map(snap.coUpHiddenRole||[]);
+  }
+  gameOver=false;
+  clockStartedAt=0;
+  const notice=document.getElementById("gameNotice");
+  notice.classList.remove("show","end");
+  render();
+  startClockForTurn();
+}
+
+document.getElementById("restartBtn").onclick=resetGame;
+document.getElementById("undoBtn").onclick=undoMove;
+document.getElementById("timeBtn").onclick=()=>{
+  const panels=document.getElementById("timePanels");
+  timeEnabled=!timeEnabled;
+  panels.classList.toggle("open",timeEnabled);
+  const btn=document.getElementById("timeBtn");
+  btn.textContent=timeEnabled?"Thời gian: Bật":"Thời gian: Tắt";
+  if(timeEnabled) startClockForTurn();
+  else stopClock();
+};
+document.getElementById("soundBtn").onclick=()=>{
+  soundEnabled=!soundEnabled;
+  const btn=document.getElementById("soundBtn");
+  btn.textContent=soundEnabled?"Âm thanh: Bật":"Âm thanh: Tắt";
+  btn.classList.toggle("sound-off",!soundEnabled);
+  if(soundEnabled) playSound("move");
+};
+document.getElementById("timeLimit").addEventListener("input",()=>{
+  if(!gameOver && timeEnabled) checkClock();
+});
+
+/* Mở khóa âm thanh ngay khi người dùng chạm/click lần đầu.
+   Quan trọng trên iOS Safari và một số trình duyệt Android. */
+let audioUnlocked=false;
+function handleFirstUserGesture(){
+  audioUnlocked=true;
+  unlockAudio();
+}
+
+document.addEventListener("pointerdown",handleFirstUserGesture,{passive:true});
+document.addEventListener("touchstart",handleFirstUserGesture,{passive:true});
+document.addEventListener("mousedown",handleFirstUserGesture,{passive:true});
+
+// Khi quay lại tab/app trên mobile, AudioContext có thể bị suspend.
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden && soundEnabled){
+    resumeAudio();
+  }
+});
+window.addEventListener("pageshow",()=>{
+  if(soundEnabled) resumeAudio();
+});
+
+
+
+/* ===== MENU CHÍNH + MOBILE CONTROLS ===== */
+let mobileControlsOpen=false;
+let mobileLongPressTimer=null;
+let mobileDrag=false;
+let mobilePointerStart=null;
+
+function openMainMenu(){
+  puzzleMode=false;
+  currentPuzzle=null;
+  const puzzleMenu=document.getElementById("puzzleMenu");
+  if(puzzleMenu){
+    puzzleMenu.classList.remove("show");
+    puzzleMenu.setAttribute("aria-hidden","true");
+  }
+  if(aiTimer) clearTimeout(aiTimer);
+  aiTimer=null;
+  aiThinking=false;
+  aiSearchToken++;
+  stopClock();
+
+  // Mở Menu chính thì quay lại đúng BƯỚC 1, không reload trang.
+  const mainMenu=document.getElementById("mainMenu");
+  mainMenu.classList.remove("menu-hidden");
+  const menuTitle=mainMenu.querySelector(".menu-title");
+  if(menuTitle) menuTitle.textContent="CỜ TƯỚNG";
+
+  const step1=document.getElementById("menuStep1");
+  const step2=document.getElementById("menuStep2");
+  const step3=document.getElementById("menuStep3");
+  [step1,step2,step3].forEach((el,i)=>{
+    if(el) el.classList.toggle("active",i===0);
+  });
+
+  // Xóa trạng thái lựa chọn cũ để người chơi chọn lại từ đầu.
+  document.querySelectorAll("#mainMenu .menu-btn.selected").forEach(btn=>btn.classList.remove("selected"));
+  const levelOptions=document.getElementById("levelOptions");
+  if(levelOptions) levelOptions.classList.remove("show");
+  const badge=document.getElementById("aiBadge");
+  if(badge) badge.style.display="none";
+
+  document.body.classList.remove("game-active");
+  setMobileControls(false);
+}
+
+document.getElementById("mainMenuBtn").onclick=openMainMenu;
+
+// HOÁN ĐỔI nằm trong MENU PHỤ.
+// Chỉ đổi bàn cờ: vị trí + màu/số lượng quân của hai bên.
+// KHÔNG đổi lượt, AI, đồng hồ, lịch sử nước đi hay bất kỳ luật đánh nào.
+const sideSwapBtn=document.getElementById("sideSwapBtn");
+if(sideSwapBtn){
+  sideSwapBtn.onclick=()=>{
+    sideSwapped=!sideSwapped;
+    board=swapBoardSides(board);
+
+    // Với Cờ Úp, trạng thái úp/ngửa cũng đi theo đúng ô của quân cờ.
+    if(gameMode==="cup" || gameMode==="cupAi") {
+      const nextRevealed=new Set();
+      const nextHidden=new Map();
+      for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+        const key=`${r},${c}`;
+        const nk=`${ROWS-1-r},${COLS-1-c}`;
+        if(coUpRevealed.has(key)) nextRevealed.add(nk);
+        if(coUpHiddenRole.has(key)) nextHidden.set(nk,coUpHiddenRole.get(key));
+      }
+      coUpRevealed=nextRevealed;
+      coUpHiddenRole=nextHidden;
+    }
+
+    sideSwapBtn.classList.toggle("active",sideSwapped);
+    sideSwapBtn.textContent=sideSwapped?"↔ Hoán đổi: Đã bật":"↔ Hoán đổi";
+    selected=null;
+    lastMove=null;
+    render();
+    requestAnimationFrame(()=>{fitBoardToViewport();render();});
+  };
+}
+
+function setMobileControls(open){
+  const menu=document.getElementById("mobileControlsMenu");
+  const toggle=document.getElementById("mobileControlsToggle");
+  mobileControlsOpen=!!open;
+  menu.classList.toggle("open",mobileControlsOpen);
+  menu.setAttribute("aria-hidden",String(!mobileControlsOpen));
+  toggle.setAttribute("aria-expanded",String(mobileControlsOpen));
+  toggle.classList.toggle("open",mobileControlsOpen);
+  toggle.textContent=mobileControlsOpen?"×":"☰";
+}
+
+document.querySelectorAll("#mobileControlsMenu button").forEach(btn=>{
+  btn.addEventListener("click",e=>{
+    e.stopPropagation();
+    const target=document.getElementById(btn.dataset.control);
+    if(target) target.click();
+    if(btn.dataset.control!=="timeBtn") setMobileControls(false);
+  });
+});
+
+document.addEventListener("pointerdown",e=>{
+  const toggle=document.getElementById("mobileControlsToggle");
+  const desktopToggle=document.getElementById("desktopControlsToggle");
+  const menu=document.getElementById("mobileControlsMenu");
+  if(mobileControlsOpen && !toggle.contains(e.target) && !desktopToggle.contains(e.target) && !menu.contains(e.target)){
+    setMobileControls(false);
+  }
+});
+
+document.getElementById("mobileControlsToggle").addEventListener("pointerdown",e=>{
+  if(window.innerWidth>520){ mobilePointerStart=null; return; }
+  mobilePointerStart={x:e.clientX,y:e.clientY};
+  mobileDrag=false;
+  clearTimeout(mobileLongPressTimer);
+  mobileLongPressTimer=setTimeout(()=>{
+    mobileDrag=true;
+    document.getElementById("mobileControlsToggle").classList.add("dragging");
+  },2000);
+});
+
+document.getElementById("mobileControlsToggle").addEventListener("pointermove",e=>{
+  if(window.innerWidth>520 || !mobilePointerStart) return;
+  const dx=e.clientX-mobilePointerStart.x, dy=e.clientY-mobilePointerStart.y;
+  if(mobileDrag){
+    const el=document.getElementById("mobileControlsToggle");
+    el.style.left=Math.max(28,Math.min(window.innerWidth-28,e.clientX))+"px";
+    el.style.top=Math.max(28,Math.min(window.innerHeight-28,e.clientY))+"px";
+    el.style.bottom="auto";
+    el.style.transform="translate(-50%,-50%)";
+    try{localStorage.setItem("coTuongMobileMenuPos",JSON.stringify({x:e.clientX,y:e.clientY}));}catch(_){}
+    e.preventDefault();
+  }else if(Math.hypot(dx,dy)>10){
+    clearTimeout(mobileLongPressTimer);
+  }
+});
+
+document.getElementById("desktopControlsToggle").addEventListener("click",e=>{
+  e.stopPropagation();
+  setMobileControls(!mobileControlsOpen);
+});
+
+document.getElementById("mobileControlsToggle").addEventListener("pointerup",e=>{
+  if(window.innerWidth>520){
+    setMobileControls(!mobileControlsOpen);
+    return;
+  }
+  clearTimeout(mobileLongPressTimer);
+  const el=document.getElementById("mobileControlsToggle");
+  if(mobileDrag){
+    el.classList.remove("dragging");
+    mobilePointerStart=null;
+    return;
+  }
+  mobilePointerStart=null;
+  setMobileControls(!mobileControlsOpen);
+});
+
+document.getElementById("mobileControlsToggle").addEventListener("pointercancel",()=>{
+  clearTimeout(mobileLongPressTimer);
+  mobilePointerStart=null;
+  mobileDrag=false;
+  document.getElementById("mobileControlsToggle").classList.remove("dragging");
+});
+
+
+/* ===== DỮ LIỆU THẾ CỜ KHÓ ĐÃ TÁCH RA FILE RIÊNG ===== */
+
+function puzzleFenToBoard(fen){
+  const rows=String(fen||"").trim().split(/\s+/)[0].split("/");
+  if(rows.length!==10) throw new Error("FEN puzzle không đủ 10 hàng");
+  const out=Array.from({length:ROWS},()=>Array(COLS).fill(null));
+  for(let r=0;r<ROWS;r++){
+    let c=0;
+    for(const ch of rows[r]){
+      if(/[1-9]/.test(ch)){ c+=Number(ch); continue; }
+      if(c>=COLS) throw new Error("FEN puzzle sai số cột");
+      const red=ch===ch.toUpperCase();
+      const map={k:"K",a:"A",b:"E",n:"H",h:"H",r:"R",c:"C",p:"P"};
+      const type=map[ch.toLowerCase()];
+      if(!type) throw new Error("FEN puzzle có quân không hỗ trợ: "+ch);
+      out[r][c]=(red?"r":"b")+type;
+      c++;
+    }
+    if(c!==COLS) throw new Error("FEN puzzle hàng "+(r+1)+" không đủ 9 cột");
+  }
+  return out;
+}
+
+
+/* =========================================================
+   THẾ CỜ KHÓ - GOOGLE SHEETS / APPS SCRIPT
+   ========================================================= */
+
+const PUZZLE_API_URL =
+  "https://script.google.com/macros/s/AKfycbzi1LaO0xcGM7-SjlWaMISHXxFQpM2Vz0DVX-ampfilGvN2vrI4H1jXFEHJUD4lyjOn8A/exec";
+
+/* =========================================================
+   PHIÊN BẢN ỨNG DỤNG
+   Đổi APP_VERSION mỗi khi phát hành phiên bản mới.
+   Giá trị này phải tồn tại trong Key!C của Google Sheet.
+   ========================================================= */
+const APP_VERSION = "1.0.0";
+
+async function checkAppVersion_(){
+  try{
+    const overlay=document.getElementById("versionCheckOverlay");
+    if(overlay){
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden","false");
+    }
+
+    const data=await puzzleApi("version");
+    const versions=Array.isArray(data.versions)
+      ? data.versions.map(v=>String(v||"").trim()).filter(Boolean)
+      : [];
+
+    const allowed=versions.includes(String(APP_VERSION).trim());
+
+    if(!allowed){
+      document.body.innerHTML=`
+        <div class="app-version-blocked">
+          <div class="app-version-blocked-box">
+            <div class="app-version-blocked-icon">⚠️</div>
+            <div class="app-version-blocked-title">PHIÊN BẢN QUÁ CŨ</div>
+            <div class="app-version-blocked-text">
+              Phiên bản <b>${escapePuzzleHtml_(APP_VERSION)}</b> không còn được hỗ trợ.<br>
+              Vui lòng cập nhật ngay để tiếp tục sử dụng.
+            </div>
+            <div class="app-version-blocked-current">
+              Phiên bản hiện tại: <b>${escapePuzzleHtml_(APP_VERSION)}</b>
+            </div>
+          </div>
+        </div>
+      `;
+      return false;
+    }
+
+    if(overlay){
+      overlay.classList.remove("show");
+      overlay.setAttribute("aria-hidden","true");
+    }
+    return true;
+  }catch(err){
+    console.error("Version check error:",err);
+    document.body.innerHTML=`
+      <div class="app-version-blocked">
+        <div class="app-version-blocked-box">
+          <div class="app-version-blocked-icon">⚠️</div>
+          <div class="app-version-blocked-title">KHÔNG THỂ KẾT NỐI MÁY CHỦ</div>
+          <div class="app-version-blocked-text">
+            Vui lòng kiểm tra kết nối mạng và thử lại.
+          </div>
+        </div>
+      </div>
+    `;
+    return false;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   FEN -> BÀN CỜ
+   --------------------------------------------------------- */
+
+function puzzleFenToBoard(fen){
+  const rows=String(fen||"")
+    .trim()
+    .split(/\s+/)[0]
+    .split("/");
+
+  if(rows.length!==10){
+    throw new Error("FEN puzzle không đủ 10 hàng");
+  }
+
+  const out=Array.from(
+    {length:ROWS},
+    ()=>Array(COLS).fill(null)
+  );
+
+  for(let r=0;r<ROWS;r++){
+
+    let c=0;
+
+    for(const ch of rows[r]){
+
+      if(/[1-9]/.test(ch)){
+        c+=Number(ch);
+        continue;
+      }
+
+      if(c>=COLS){
+        throw new Error("FEN puzzle sai số cột");
+      }
+
+      const red=ch===ch.toUpperCase();
+
+      const map={
+        k:"K",
+        a:"A",
+        b:"E",
+        n:"H",
+        h:"H",
+        r:"R",
+        c:"C",
+        p:"P"
+      };
+
+      const type=map[ch.toLowerCase()];
+
+      if(!type){
+        throw new Error(
+          "FEN puzzle có quân không hỗ trợ: "+ch
+        );
+      }
+
+      out[r][c]=(red?"r":"b")+type;
+      c++;
+    }
+
+    if(c!==COLS){
+      throw new Error(
+        "FEN puzzle hàng "+(r+1)+
+        " không đủ 9 cột"
+      );
+    }
+  }
+
+  return out;
+}
+
+
+/* ---------------------------------------------------------
+   MÃ BỐ TRÍ CỜ 3 KÝ TỰ -> FEN
+   ---------------------------------------------------------
+
+   Ví dụ:
+
+   K49 = Tướng Đỏ, cột 4, hàng 9
+   k40 = Tướng Đen, cột 4, hàng 0
+
+   K = Tướng
+   S = Sĩ
+   E = Tượng
+   M = Mã
+   R = Xe
+   C = Pháo
+   P = Tốt
+
+   Chữ HOA  = Đỏ
+   Chữ thường = Đen
+   --------------------------------------------------------- */
+
+function boardCodeToFen(code){
+
+  const tokens=String(code||"")
+    .trim()
+    .split(/[,\s]+/)
+    .filter(Boolean);
+
+  if(!tokens.length){
+    throw new Error("Bố trí cờ đang trống.");
+  }
+
+  const rows=Array.from(
+    {length:10},
+    ()=>Array(9).fill("")
+  );
+
+  const map={
+    K:"K",
+    S:"A",
+    E:"B",
+    M:"N",
+    R:"R",
+    C:"C",
+    P:"P"
+  };
+
+  for(const token of tokens){
+
+    if(token.length!==3){
+      throw new Error(
+        "Mã bố trí không hợp lệ: "+token
+      );
+    }
+
+    const piece=token[0];
+    const col=Number(token[1]);
+    const row=Number(token[2]);
+
+    const upper=piece.toUpperCase();
+
+    if(!map[upper]){
+      throw new Error(
+        "Loại quân không hợp lệ: "+piece
+      );
+    }
+
+    if(
+      !Number.isInteger(col) ||
+      col<0 ||
+      col>8 ||
+      !Number.isInteger(row) ||
+      row<0 ||
+      row>9
+    ){
+      throw new Error(
+        "Vị trí quân không hợp lệ: "+token
+      );
+    }
+
+    if(rows[row][col]){
+      throw new Error(
+        "Có 2 quân trùng vị trí: "+token
+      );
+    }
+
+    rows[row][col]=
+      piece===piece.toUpperCase()
+        ? map[upper]
+        : map[upper].toLowerCase();
+  }
+
+  return rows.map(row=>{
+
+    let result="";
+    let empty=0;
+
+    for(const cell of row){
+
+      if(!cell){
+        empty++;
+        continue;
+      }
+
+      if(empty){
+        result+=empty;
+        empty=0;
+      }
+
+      result+=cell;
+    }
+
+    if(empty){
+      result+=empty;
+    }
+
+    return result;
+
+  }).join("/")+" r - - 0 1";
+}
+
+
+/* ---------------------------------------------------------
+   GỌI APPS SCRIPT
+   --------------------------------------------------------- */
+
+async function puzzleApi(action,params={}){
+
+  const query=new URLSearchParams({
+    action:action,
+    ...params
+  });
+
+  const url=
+    PUZZLE_API_URL+
+    "?"+
+    query.toString();
+
+  const response=
+    await fetch(
+      url,
+      {
+        method:"GET",
+        cache:"no-store"
+      }
+    );
+
+  if(!response.ok){
+    throw new Error(
+      "Kết nối mạng không ổn định"
+    );
+  }
+
+  const data=
+    await response.json();
+
+  if(!data.ok){
+    throw new Error(
+      data.message ||
+      "Google Apps Script trả về lỗi."
+    );
+  }
+
+  return data;
+}
+
+
+function updateRotatedMobileLayout(){
+  const rotated = window.innerHeight > window.innerWidth * 1.05;
+  document.body.classList.toggle("mobile-rotated", rotated);
+  requestAnimationFrame(()=>{
+    if(typeof fitBoardToViewport === "function") fitBoardToViewport();
+  });
+}
+window.addEventListener("resize", updateRotatedMobileLayout, {passive:true});
+window.addEventListener("orientationchange", updateRotatedMobileLayout, {passive:true});
+updateRotatedMobileLayout();
+
+/* ---------------------------------------------------------
+   TẢI MÃ BÀN CỜ GỐC TỪ Key!D1
+   Chỉ được gọi sau khi APP_VERSION đã được máy chủ chấp nhận.
+   --------------------------------------------------------- */
+
+async function loadBaseBoard_(){
+  baseBoardCode="";
+  baseBoardLoaded=false;
+
+  const data=await puzzleApi("board",{
+    version:APP_VERSION
+  });
+
+  const code=String(data.code || data.baseCode || "").trim();
+  if(!code){
+    throw new Error("Key!D1 đang trống. Không thể xếp bàn cờ.");
+  }
+
+  // Kiểm tra ngay trên máy khách để tránh đưa mã lỗi vào bàn cờ.
+  boardCodeToFen(code);
+
+  baseBoardCode=code;
+  baseBoardLoaded=true;
+  return true;
+}
+
+/* ---------------------------------------------------------
+   BẮT ĐẦU THẾ CỜ
+   --------------------------------------------------------- */
+
+function startPuzzle(puzzle){
+
+  try{
+
+    if(!puzzle || !puzzle.fen){
+      throw new Error(
+        "Thế cờ không có dữ liệu bàn cờ."
+      );
+    }
+
+    if(aiTimer) clearTimeout(aiTimer);
+
+    aiTimer=null;
+    aiThinking=false;
+    aiSearchToken++;
+
+    stopClock();
+
+    puzzleMode=true;
+    currentPuzzle=puzzle;
+
+    gameMode="ai";
+    aiColor="b";
+    aiLevel="hard";
+
+    board=puzzleFenToBoard(
+      puzzle.fen
+    );
+
+    applySideSwap();
+
+    turn="r";
+    selected=null;
+    lastMove=null;
+    gameOver=false;
+
+    checkStreakColor=null;
+    checkStreakCount=0;
+
+    clocks={
+      r:0,
+      b:0
+    };
+
+    clockStartedAt=0;
+    moveHistory=[];
+
+    capturedRed=[];
+    capturedBlack=[];
+
+    coUpRevealed=
+      new Set(["0,4","9,4"]);
+
+    coUpHiddenRole=
+      new Map();
+
+    document
+      .getElementById("puzzleMenu")
+      .classList
+      .remove("show");
+
+    document
+      .getElementById("puzzleMenu")
+      .setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+    document
+      .getElementById("mainMenu")
+      .classList
+      .add("menu-hidden");
+
+    document.body
+      .classList
+      .add("game-active");
+
+    const title=
+      document.querySelector(
+        ".app h1"
+      );
+
+    if(title){
+      title.textContent=
+        "🧩 "+puzzle.name;
+    }
+
+    const puzzleStartRemaining = document.getElementById("puzzleStartRemaining");
+    if(puzzleStartRemaining){
+      const remaining = Number(puzzle && puzzle.remainingUses);
+      const shouldShow = puzzleMode && puzzle && puzzle.free !== true && puzzle.free !== "true" && Number.isFinite(remaining) && remaining >= 0 && (puzzle.keyAccepted === true || puzzle.keyAccepted === "true");
+      if(shouldShow){
+        puzzleStartRemaining.innerHTML = `Lượt còn lại: <strong>${remaining}</strong>`;
+        puzzleStartRemaining.classList.add("show");
+      }else{
+        puzzleStartRemaining.innerHTML = `Lượt còn lại: <strong>—</strong>`;
+        puzzleStartRemaining.classList.remove("show");
+      }
+    }
+
+    const notice=
+      document.getElementById(
+        "gameNotice"
+      );
+
+    notice.classList.remove(
+      "show",
+      "end"
+    );
+
+    render();
+
+    requestAnimationFrame(()=>{
+      fitBoardToViewport();
+      render();
+    });
+
+    unlockAudio();
+
+    showGameStartOverlay();
+
+    stopClock();
+
+  }catch(err){
+
+    console.error(err);
+
+    showNotice(
+      "LỖI THẾ CỜ",
+      err.message ||
+      "Không thể nạp thế cờ."
+    );
+
+  }
+}
+
+
+/* ---------------------------------------------------------
+   HIỂN THỊ DANH SÁCH TÊN THẾ CỜ
+   --------------------------------------------------------- */
+
+async function openPuzzleMenu(){
+
+  const mainMenu=
+    document.getElementById(
+      "mainMenu"
+    );
+
+  mainMenu.classList.add(
+    "menu-hidden"
+  );
+
+  const pm=
+    document.getElementById(
+      "puzzleMenu"
+    );
+
+  const list=
+    document.getElementById(
+      "puzzleList"
+    );
+
+  pm.classList.add("show");
+  refreshPuzzleRemainingDisplay();
+
+  pm.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+  /*
+   * Giai đoạn này CHỈ lấy Cột A.
+   */
+
+  list.innerHTML=`
+    <div style="
+      padding:20px;
+      text-align:center;
+      color:#f7e6b5;
+      font-weight:bold;
+    ">
+      Đang kết nối máy chủ...
+    </div>
+  `;
+
+  try{
+
+    const data=
+      await puzzleApi("list");
+
+    const puzzles=
+      Array.isArray(data.puzzles)
+        ? data.puzzles
+        : [];
+
+    if(!puzzles.length){
+
+      list.innerHTML=`
+        <div style="
+          padding:20px;
+          text-align:center;
+          color:#f7e6b5;
+        ">
+          Cột A chưa có tên thế cờ.
+        </div>
+      `;
+
+      return;
+    }
+
+    list.innerHTML=
+      puzzles.map((p,index)=>`
+
+        <button
+          type="button"
+          class="puzzle-card"
+          data-puzzle-id="${escapePuzzleHtml_(p.id)}"
+        >
+
+          <div class="puzzle-card-name">
+            ${index+1}. ${escapePuzzleHtml_(p.name)}
+          </div>
+
+        </button>
+
+      `).join("");
+
+    list.onclick=async function(ev){
+      const btn=ev.target.closest("[data-puzzle-id]");
+      if(!btn) return;
+      const puzzle=puzzles.find(p=>String(p.id)===String(btn.dataset.puzzleId));
+      if(!puzzle) return;
+
+      // Thể hiện rõ ô đang được chọn / đang xử lý.
+      list.querySelectorAll(".puzzle-card").forEach(card=>{
+        card.classList.remove("selected","loading");
+        card.disabled=false;
+      });
+      btn.classList.add("selected","loading");
+      btn.disabled=true;
+
+      try{
+        await loadSelectedPuzzle_(puzzle);
+      }finally{
+        btn.classList.remove("loading");
+        btn.disabled=false;
+      }
+    };
+
+  }catch(err){
+
+    console.error(err);
+
+    list.innerHTML=`
+      <div style="
+        padding:20px;
+        text-align:center;
+        color:#ffd0d0;
+        line-height:1.6;
+      ">
+        <b>Kết nối máy chủ không thành công...</b>
+        <br>
+        ${escapePuzzleHtml_(
+          err.message ||
+          "Lỗi kết nối."
+        )}
+      </div>
+    `;
+
+  }
+}
+
+
+function escapePuzzleHtml_(value){
+
+  return String(
+    value==null ? "" : value
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+
+
+const PUZZLE_SAVED_KEY_STORAGE="coTuongPuzzleKey";
+const PUZZLE_REMAINING_STORAGE="coTuongPuzzleRemainingUses";
+let pendingPuzzleForKey=null;
+function getSavedPuzzleKey(){try{return String(localStorage.getItem(PUZZLE_SAVED_KEY_STORAGE)||"").trim();}catch(_){return "";}}
+function savePuzzleKey(key){try{if(String(key||"").trim())localStorage.setItem(PUZZLE_SAVED_KEY_STORAGE,String(key).trim());}catch(e){console.warn(e);}}
+function getSavedPuzzleRemaining(){try{const v=localStorage.getItem(PUZZLE_REMAINING_STORAGE);if(v===null||v==="")return null;const n=Number(v);return Number.isFinite(n)&&n>=0?n:null;}catch(_){return null;}}
+function savePuzzleRemaining(value){try{const n=Number(value);if(Number.isFinite(n)&&n>=0)localStorage.setItem(PUZZLE_REMAINING_STORAGE,String(n));}catch(e){console.warn(e);}}
+function clearSavedPuzzleKey(){try{localStorage.removeItem(PUZZLE_SAVED_KEY_STORAGE);localStorage.removeItem(PUZZLE_REMAINING_STORAGE);}catch(_) {}}
+function updatePuzzleRemainingDisplay(value){const el=document.getElementById("puzzleRemaining");if(!el)return;const n=Number(value);el.innerHTML=Number.isFinite(n)&&n>=0?`Lượt còn lại: <strong>${n}</strong>`:`Lượt còn lại: <strong>—</strong>`;}
+function refreshPuzzleRemainingDisplay(){const key=getSavedPuzzleKey();updatePuzzleRemainingDisplay(key?getSavedPuzzleRemaining():null);}
+function puzzleDataToFen(data){const raw=String(data==null?"":data).trim();if(!raw)return "";if(raw.includes("/")&&raw.split("/").length>=10)return raw;return boardCodeToFen(raw);}
+function preparePuzzlePayload(puzzle,loaded){const raw=loaded.fen||loaded.FEN||loaded.board||loaded.data||loaded.code||loaded.position;if(!raw)throw new Error("Google Sheet chưa trả về dữ liệu Cột B của thế cờ này.");return {...puzzle,...loaded,fen:puzzleDataToFen(raw),name:loaded.name||puzzle.name};}
+function openPuzzleKeyModal(puzzle,message="",expired=false){pendingPuzzleForKey=puzzle;const modal=document.getElementById("puzzleKeyModal"),input=document.getElementById("puzzleKeyInput"),error=document.getElementById("puzzleKeyError");document.getElementById("puzzleKeyName").textContent="Thế cờ: "+(puzzle.name||"")+"\nThế cờ này yêu cầu Key để mở.";error.textContent=message||"";input.value="";modal.classList.add("show");modal.setAttribute("aria-hidden","false");setTimeout(()=>input.focus(),50);}
+function closePuzzleKeyModal(){const modal=document.getElementById("puzzleKeyModal");if(!modal)return;modal.classList.remove("show");modal.setAttribute("aria-hidden","true");pendingPuzzleForKey=null;}
+function openPuzzleContactModal(){const m=document.getElementById("puzzleContactModal");if(!m)return;m.classList.add("show");m.setAttribute("aria-hidden","false");}
+function closePuzzleContactModal(){const m=document.getElementById("puzzleContactModal");if(!m)return;m.classList.remove("show");m.setAttribute("aria-hidden","true");}
+function setPuzzleLoading(show){const overlay=document.getElementById("puzzleLoadingOverlay");if(!overlay)return;overlay.classList.toggle("show",Boolean(show));overlay.setAttribute("aria-hidden",show?"false":"true");}
+async function loadSelectedPuzzle_(puzzle){setPuzzleLoading(true);const savedKey=getSavedPuzzleKey(),params={id:puzzle.id,name:puzzle.name};if(savedKey)params.key=savedKey;try{const data=await puzzleApi("get",params),loaded=data.puzzle||data,isFree=loaded.free===true||loaded.free==="true"||data.free===true||data.free==="true",needKey=Boolean(data.needKey||data.keyInvalid||data.keyNotFound||data.keyExpired||loaded.needKey||loaded.keyInvalid||loaded.keyNotFound||loaded.keyExpired);if(needKey&&!isFree){if(savedKey)clearSavedPuzzleKey();openPuzzleKeyModal(puzzle,data.message||loaded.message||"10.000 VNĐ cho 100 lượt tải",Boolean(data.keyExpired||loaded.keyExpired));return;}if(!isFree){
+        const remaining = data.remainingUses ?? loaded.remainingUses;
+        if(remaining !== undefined && remaining !== null){
+          savePuzzleRemaining(remaining);
+          updatePuzzleRemainingDisplay(remaining);
+        }
+      }
+      const ready=preparePuzzlePayload(puzzle,loaded);
+      ready.remainingUses = data.remainingUses ?? loaded.remainingUses;
+      ready.keyAccepted = data.keyAccepted === true || data.keyAccepted === "true" || loaded.keyAccepted === true || loaded.keyAccepted === "true";
+      ready.free = isFree;
+      startPuzzle(ready);}catch(err){console.error(err);showNotice("LỖI THẾ CỜ",err.message||"Không thể nạp thế cờ.");}finally{setPuzzleLoading(false);}}
+async function submitPuzzleKey(){if(!pendingPuzzleForKey)return;const input=document.getElementById("puzzleKeyInput"),error=document.getElementById("puzzleKeyError"),key=input.value.trim();if(!key){error.textContent="Vui lòng nhập Key.";input.focus();return;}const puzzle=pendingPuzzleForKey,submit=document.getElementById("puzzleKeySubmit");submit.disabled=true;const old=submit.textContent;submit.textContent="⏳ Đang kiểm tra...";error.textContent="Đang kiểm tra Key...";try{const data=await puzzleApi("get",{id:puzzle.id,name:puzzle.name,key:key}),loaded=data.puzzle||data,denied=Boolean(data.needKey||data.keyInvalid||data.keyNotFound||data.keyExpired||loaded.needKey||loaded.keyInvalid||loaded.keyNotFound||loaded.keyExpired);if(denied){clearSavedPuzzleKey();const expired=Boolean(data.keyExpired||loaded.keyExpired);error.innerHTML=escapePuzzleHtml_(data.message||loaded.message||"Key không hợp lệ.");return;}savePuzzleKey(key);
+    const remaining = data.remainingUses ?? loaded.remainingUses;
+    if(remaining !== undefined && remaining !== null){
+      savePuzzleRemaining(remaining);
+      updatePuzzleRemainingDisplay(remaining);
+    }
+    const ready=preparePuzzlePayload(puzzle,loaded);
+    ready.remainingUses = data.remainingUses ?? loaded.remainingUses;
+    ready.keyAccepted = data.keyAccepted === true || data.keyAccepted === "true" || loaded.keyAccepted === true || loaded.keyAccepted === "true";
+    ready.free = data.free === true || data.free === "true" || loaded.free === true || loaded.free === "true";
+    closePuzzleKeyModal();startPuzzle(ready);}catch(err){console.error(err);error.textContent=err.message||"Không kiểm tra được Key.";}finally{submit.disabled=false;submit.textContent=old;}}
+(function(){const i=document.getElementById("puzzleKeyInput"),b=document.getElementById("puzzleKeySubmit"),m=document.getElementById("puzzleKeyModal");if(b)b.addEventListener("click",submitPuzzleKey);if(i)i.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();submitPuzzleKey();}if(e.key==="Escape")closePuzzleKeyModal();});if(m)m.addEventListener("click",e=>{if(e.target===m)closePuzzleKeyModal();});const cm=document.getElementById("puzzleContactModal");if(cm)cm.addEventListener("click",e=>{if(e.target===cm)closePuzzleContactModal();});})();
+
+function closePuzzleMenu(){
+  const pm=document.getElementById("puzzleMenu");
+  pm.classList.remove("show");
+  pm.setAttribute("aria-hidden","true");
+  document.getElementById("mainMenu").classList.remove("menu-hidden");
+}
+
+
+/* ===== MENU KHỞI ĐỘNG ===== */
+(function initMainMenu(){
+  const menu=document.getElementById("mainMenu");
+  const step1=document.getElementById("menuStep1");
+  const step2=document.getElementById("menuStep2");
+  const step3=document.getElementById("menuStep3");
+  const chess=document.getElementById("modeChessBtn");
+  const cup=document.getElementById("modeCupBtn");
+  const mode2=document.getElementById("mode2Btn");
+  const modeAi=document.getElementById("modeAiBtn");
+  const puzzleBtn=document.getElementById("puzzleModeBtn");
+  const back2=document.getElementById("menuBack2");
+  const back3=document.getElementById("menuBack3");
+  const badge=document.getElementById("aiBadge");
+  let selectedGameType=null;
+  let selectedPlayerType=null;
+  let selectedLevel="medium";
+
+  function showStep(n){
+    [step1,step2,step3].forEach((el,i)=>el.classList.toggle("active",i===n-1));
+
+    // Bước 3 phải hiện danh sách độ khó ngay khi chọn "1 NGƯỜI + AI".
+    const levels=document.getElementById("levelOptions");
+    if(levels) levels.classList.toggle("show",n===3);
+  }
+
+  function clearSelectionVisuals(){
+    [chess,cup,mode2,modeAi].forEach(b=>b.classList.remove("selected"));
+    document.querySelectorAll(".level-btn").forEach(b=>b.classList.remove("selected"));
+  }
+
+  function startNow(){
+    if(!selectedGameType || !selectedPlayerType) return;
+    gameMode = selectedGameType==="cup"
+      ? (selectedPlayerType==="ai" ? "cupAi" : "cup")
+      : (selectedPlayerType==="ai" ? "ai" : "two");
+    aiColor="b";
+    if(selectedPlayerType==="ai") aiLevel=selectedLevel;
+    const title=menu.querySelector(".menu-title");
+    if(title) title.textContent=selectedGameType==="cup"?"CỜ ÚP":"CỜ TƯỚNG";
+    menu.classList.add("menu-hidden");
+    document.body.classList.add("game-active");
+    resetGame();
+    requestAnimationFrame(()=>{fitBoardToViewport();render();});
+    unlockAudio();
+  }
+
+  chess.onclick=()=>{
+    selectedGameType="chess";
+    selectedPlayerType=null;
+    clearSelectionVisuals();
+    chess.classList.add("selected");
+    badge.style.display="none";
+    showStep(2);
+  };
+
+  cup.onclick=()=>{
+    selectedGameType="cup";
+    selectedPlayerType=null;
+    clearSelectionVisuals();
+    cup.classList.add("selected");
+    badge.style.display="none";
+    showStep(2);
+  };
+
+  puzzleBtn.onclick=()=>{
+    clearSelectionVisuals();
+    openPuzzleMenu();
+  };
+
+  mode2.onclick=()=>{
+    selectedPlayerType="two";
+    clearSelectionVisuals();
+    (selectedGameType==="cup"?cup:chess).classList.add("selected");
+    mode2.classList.add("selected");
+    // 2 người: chọn xong vào game ngay, không hỏi thêm.
+    startNow();
+  };
+
+  modeAi.onclick=()=>{
+    selectedPlayerType="ai";
+    clearSelectionVisuals();
+    (selectedGameType==="cup"?cup:chess).classList.add("selected");
+    modeAi.classList.add("selected");
+    badge.textContent=selectedGameType==="cup"?"CỜ ÚP · Bạn cầm Đỏ · AI cầm Đen":"CỜ TƯỚNG · Bạn cầm Đỏ · AI cầm Đen";
+    badge.style.display="inline-block";
+    document.querySelectorAll(".level-btn").forEach(b=>b.classList.toggle("selected",b.dataset.level===selectedLevel));
+    showStep(3);
+  };
+
+  document.querySelectorAll(".level-btn").forEach(btn=>btn.onclick=()=>{
+    selectedLevel=btn.dataset.level;
+    aiLevel=selectedLevel;
+    document.querySelectorAll(".level-btn").forEach(b=>b.classList.remove("selected"));
+    btn.classList.add("selected");
+    startNow();
+  });
+
+  back2.onclick=()=>{
+    selectedPlayerType=null;
+    clearSelectionVisuals();
+    showStep(1);
+  };
+
+  back3.onclick=()=>{
+    selectedPlayerType=null;
+    badge.style.display="none";
+    clearSelectionVisuals();
+    (selectedGameType==="cup"?cup:chess).classList.add("selected");
+    showStep(2);
+  };
+
+  showStep(1);
+})();
+
+document.getElementById("puzzleBackBtn").onclick=()=>{
+  closePuzzleMenu();
+  openMainMenu();
+};
+
+try{
+  const p=JSON.parse(localStorage.getItem("coTuongMobileMenuPos")||"null");
+  if(p && Number.isFinite(p.x) && Number.isFinite(p.y)){
+    const el=document.getElementById("mobileControlsToggle");
+    el.style.left=Math.max(28,Math.min(window.innerWidth-28,p.x))+"px";
+    el.style.top=Math.max(28,Math.min(window.innerHeight-28,p.y))+"px";
+    el.style.bottom="auto";
+    el.style.transform="translate(-50%,-50%)";
+  }
+}catch(_){}
+
+function fitBoardToViewport(){
+  const isDesktop=window.innerWidth>900;
+  const boardEl=document.getElementById("board");
+  if(isDesktop){
+    const maxH=Math.min(window.innerHeight-28,760);
+    boardEl.style.height=Math.max(420,maxH)+"px";
+    boardEl.style.width="auto";
+    const rightPanel=document.querySelector(".right-panel");
+    if(rightPanel) rightPanel.style.height=boardEl.offsetHeight+"px";
+  }else{
+    boardEl.style.height="";
+    boardEl.style.width=Math.min(window.innerWidth*0.96,560)+"px";
+    const rightPanel=document.querySelector(".right-panel");
+    if(rightPanel) rightPanel.style.height="";
+  }
+}
+window.addEventListener("resize",fitBoardToViewport);
+window.addEventListener("orientationchange",()=>setTimeout(fitBoardToViewport,120));
+
+(async function(){
+  const ok=await checkAppVersion_();
+  if(!ok) return;
+
+  initGrid();
+  setupFirstTurnChoice();
+
+  // Phiên bản hợp lệ mới được phép tải Key!D1.
+  // Nếu D1 không tải được thì bàn cờ giữ nguyên rỗng.
+  try{
+    await loadBaseBoard_();
+  }catch(err){
+    console.error("Không tải được mã bàn cờ Key!D1:",err);
+    baseBoardCode="";
+    baseBoardLoaded=false;
+  }
+
+  resetGame();
+  fitBoardToViewport();
+})();
+
+</script>
+</body>
+</html>
