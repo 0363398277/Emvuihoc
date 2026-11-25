@@ -1,276 +1,739 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1565C0">
-<title>Tiếng Anh 4 - Global Success</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tiếng Anh 4 Global Success</title>
 <style>
-*{box-sizing:border-box}
-body{
-  font-family:"Segoe UI",Arial,sans-serif;
-  background:#eef5fb;
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-  color:#17324d;
-}
+
+*{box-sizing:border-box}body{font-family:Segoe UI,sans-serif;background:#eef5fb;max-width:80%;margin:auto;padding:20px}
 h1{
-  text-align:center;margin:8px 0 30px;color:#1565C0;
-  font-size:42px;font-weight:800;
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    color:#1565C0;
+
+    font-size:42px;
+
+    font-weight:800;
+
 }
-h1 span{font-size:46px;margin-right:8px}
+
+h1 span{
+
+    font-size:46px;
+
+    margin-right:8px;
+
+}
+
 h1 small{
-  display:block;margin-top:6px;font-size:22px;
-  color:#64B5F6;font-weight:600;
+
+    display:block;
+
+    margin-top:6px;
+
+    font-size:22px;
+
+    color:#64B5F6;
+
+    font-weight:600;
+
 }
-.top{
-  display:flex;gap:12px;justify-content:center;
-  flex-wrap:wrap;margin:18px 0;
+.top{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.top button{
+
+    padding:14px 24px;
+
+    border:none;
+
+    border-radius:40px;
+
+    background:linear-gradient(135deg,#ff9800,#f57c00);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:0 6px 18px rgba(255,152,0,.35);
+
 }
-.top a{
-  display:inline-block;padding:14px 24px;border:0;border-radius:40px;
-  background:linear-gradient(135deg,#ff9800,#f57c00);
-  color:#fff;font-size:16px;font-weight:bold;text-decoration:none;
-  box-shadow:0 6px 18px rgba(255,152,0,.25);transition:.2s;
+.top button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 10px 25px rgba(255,152,0,.45);
+
 }
-.top a:hover{transform:translateY(-2px)}
-.card{
-  background:#fff;border-radius:18px;padding:24px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
+.top button:active{
+
+    transform:scale(.95);
+
 }
-label{display:block;margin:4px 0 8px;font-weight:700}
+.card{background:#fff;padding:18px;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,.12)}
+label{display:block;margin:12px 0 6px;font-weight:bold}
 select{
-  width:100%;padding:14px;font-size:16px;
-  border:2px solid #BBDEFB;border-radius:12px;background:#fff;
+
+    width:100%;
+
+    padding:14px;
+
+    font-size:16px;
+
+    border:2px solid #BBDEFB;
+
+    border-radius:12px;
+
+    background:white;
+
+    transition:.25s;
+
 }
-select:focus{border-color:#2196F3;outline:none;box-shadow:0 0 0 4px rgba(33,150,243,.12)}
+select:focus{
+
+    border-color:#2196F3;
+
+    outline:none;
+
+    box-shadow:0 0 0 4px rgba(33,150,243,.15);
+
+}
+iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;margin-top:18px}
 .buttons{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:12px;margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:12px;
+    margin-top:20px;
 }
+
 .buttons button{
-  width:100%;min-height:58px;padding:14px 18px;border:0;border-radius:12px;
-  background:linear-gradient(135deg,#42A5F5,#1E88E5);
-  color:#fff;font-size:16px;font-weight:600;cursor:pointer;text-align:left;
-  transition:.2s;
+
+    width:100%;
+
+    min-height:60px;
+
+    padding:15px 18px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#42A5F5,#1E88E5);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    transition:.25s;
+
+    display:flex;
+
+    align-items:center;
+
 }
-.buttons button:hover{background:linear-gradient(135deg,#64B5F6,#2196F3);box-shadow:0 8px 18px rgba(30,136,229,.22)}
-.lesson-title{
-  grid-column:1/-1;margin-top:12px;padding:12px 16px;
-  background:#E3F2FD;color:#1565C0;border-radius:10px;
-  font-size:18px;font-weight:700;
+.buttons button:hover{
+
+    background:linear-gradient(135deg,#64B5F6,#2196F3);
+
+    box-shadow:0 10px 22px rgba(30,136,229,.30);
+
 }
+
+.buttons button:active{
+
+    transform:scale(.97);
+
+}
+
 #videoBtn{
-  display:block;width:100%;margin:20px 0;padding:16px 24px;border:0;
-  border-radius:15px;background:linear-gradient(135deg,#FF3D3D,#D50000);
-  color:#fff;font-size:18px;font-weight:700;cursor:pointer;
-  box-shadow:0 8px 22px rgba(229,57,53,.25);transition:.2s;
+
+    display:block;
+
+    width:100%;
+
+    margin:20px 0;
+
+    padding:16px 24px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:linear-gradient(135deg,#FF3D3D,#D50000);
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:0 8px 22px rgba(229,57,53,.35);
+
 }
-#videoBtn:hover{transform:translateY(-2px);background:linear-gradient(135deg,#FF5252,#E53935)}
-#videoBox{display:none;margin-top:15px;background:#fff;padding:14px;border-radius:16px;box-shadow:0 5px 18px rgba(0,0,0,.08)}
-.video-frame-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden}
-.video-frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.video-note{font-size:13px;color:#607d8b;margin:10px 2px 0;line-height:1.5}
-.empty{padding:18px;text-align:center;color:#607d8b;background:#f5f9fd;border-radius:10px}
-@media(max-width:768px){
-  body{max-width:100%;padding:12px}
-  h1{font-size:30px} h1 span{font-size:34px} h1 small{font-size:18px}
-  .card{padding:16px}
-  .buttons{grid-template-columns:1fr;gap:10px}
-  .buttons button{min-height:52px;padding:12px 14px;font-size:15px}
+
+#videoBtn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 12px 28px rgba(229,57,53,.45);
+
+    background:linear-gradient(135deg,#FF5252,#E53935);
+
 }
+
+#videoBtn:active{
+
+    transform:scale(.97);
+
+}
+
+#videoBox{
+    display:none;
+    margin-top:15px;
+}
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+/* Mobile */
+@media (max-width:768px){
+
+    body{
+        max-width:100%;
+        padding:12px;
+    }
+
+    h1{
+        font-size:30px;
+    }
+
+    h1 span{
+        font-size:34px;
+    }
+
+    h1 small{
+        font-size:18px;
+    }
+
+    .buttons{
+        grid-template-columns:1fr;
+        gap:10px;
+    }
+
+    .buttons button{
+        min-height:52px;
+        padding:12px 14px;
+        font-size:15px;
+        border-radius:10px;
+    }
+
+}
+
+.lesson-title {
+    grid-column: 1 / -1;
+
+    margin-top: 12px;
+    padding: 12px 16px;
+
+    background: #E3F2FD;
+    color: #1565C0;
+
+    border-radius: 10px;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+
+/* ===== Tải video & thư viện ===== */
+.dl{margin-top:20px}
+.dl h3{margin:0 0 12px;color:#1565C0}
+.dlrow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.dlrow select{flex:1;min-width:140px;width:auto}
+.dlrow button,.libbtn{padding:12px 18px;border:0;border-radius:10px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;background:linear-gradient(135deg,#43A047,#2E7D32)}
+.dlrow button.alt{background:linear-gradient(135deg,#8E24AA,#6A1B9A)}
+.dlrow button.gray,.libbtn.gray{background:#78909C}
+.dlrow button:disabled{opacity:.5;cursor:wait}
+#dlStatus{margin-top:10px;font-size:14px;color:#546E7A;min-height:20px}
+#dlStatus.error{color:#D32F2F}
+#dlBar{height:6px;background:#E3F2FD;border-radius:4px;overflow:hidden;margin-top:8px;display:none}
+#dlBar i{display:block;height:100%;width:0;background:#43A047}
+#folderInfo{font-size:13px;color:#607D8B;margin-bottom:8px}
+.item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:#F5F9FF;margin-top:8px}
+.item .name{flex:1;font-size:15px;word-break:break-word}
+.item button{border:0;border-radius:8px;padding:8px 12px;cursor:pointer;color:#fff;font-weight:600;background:#1E88E5}
+.item button.del{background:#E53935}
+#localPlayer video{width:100%;aspect-ratio:16/9;border-radius:12px;margin-top:12px;background:#000}
+#localPlayer audio{width:100%;margin-top:12px}
+
+#localVideo{width:100%;aspect-ratio:16/9;border-radius:12px;margin-top:18px;background:#000}
+#modeBar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-8px 0 12px}
+#modeNote{flex:1;font-size:14px;color:#2E7D32;font-weight:600}
+#modeBtn{display:none;padding:8px 14px;border:0;border-radius:20px;background:#78909C;color:#fff;font-weight:600;cursor:pointer}
+
+#settingsModal{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:16px}
+#settingsModal.open{display:flex}
+.modal-box{position:relative;width:100%;max-width:720px;max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal-box .dl{margin-top:0}
+#closeSettings{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:50%;background:#ECEFF1;color:#455A64;font-size:18px;cursor:pointer}
+
+#settingsBtn{position:fixed;top:12px;right:12px;z-index:90;width:46px;height:46px;border:0;border-radius:50%;background:#fff;color:#455A64;font-size:24px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:.3s}
+#settingsBtn:hover{transform:rotate(60deg);box-shadow:0 6px 18px rgba(0,0,0,.35)}
+#settingsBtn:active{transform:rotate(60deg) scale(.92)}
 </style>
 </head>
 <body>
-<h1><span>📘</span>Tiếng Anh 4<small>Global Success</small></h1>
-
+<button id="settingsBtn" title="Cài đặt" aria-label="Cài đặt">⚙️</button>
+<h1>
+<span>📘</span>
+Tiếng Anh 4
+<small>Global Success</small>
+</h1>
 <div class="top">
-  <a href="https://online.flipbuilder.com/sdtta/nhxm/" target="_blank" rel="noopener">📚 Sách học English</a>
-  <a href="English_quiz.html">🎯 Đấu Trường English</a>
+<button onclick="location.href='https://online.flipbuilder.com/sdtta/nhxm/'">📚 Sách học English</button>
+<button onclick="location.href='English_quiz.html'">🎯 Đấu Trường English</button>
+</div>
+<div class="card">
+<label>Chọn Unit</label>
+<select id="unitSelect"></select>
+<div id="lessonButtons" class="buttons"></div>
+</div>
+<button id="videoBtn">🎬 Xem video bài học</button>
+<div id="videoBox" style="display:none;">
+    <iframe id="videoFrame" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+    <video id="localVideo" controls playsinline style="display:none"></video>
 </div>
 
-<main class="card">
-  <label for="unitSelect">Chọn Unit</label>
-  <select id="unitSelect" aria-label="Chọn Unit"></select>
-  <div id="lessonButtons" class="buttons"></div>
-</main>
+<div id="modeBar"><span id="modeNote"></span><button id="modeBtn"></button></div>
 
-<button id="videoBtn" type="button">🎬 Xem video bài học</button>
-<section id="videoBox" aria-label="Video bài học">
-  <div class="video-frame-wrap">
-    <iframe id="videoFrame"
-      title="Video bài học"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen></iframe>
+<div class="card dl" id="dlCard">
+  <h3>⬇️ Tải video về máy</h3>
+  <div id="dlLink" style="font-size:13px;color:#607D8B;word-break:break-all"></div>
+  <div class="dlrow">
+    <select id="dlQ"><option value="">MP4 - Tốt nhất</option><option value="1080">MP4 - 1080p</option><option value="720" selected>MP4 - 720p</option><option value="480">MP4 - 480p</option><option value="360">MP4 - 360p</option></select>
+    <button id="dlMp4">Tải MP4</button>
   </div>
-  <p class="video-note">
-    Video được nhúng từ YouTube. Chế độ nhúng riêng tư giúp hạn chế cookie,
-    nhưng YouTube vẫn có thể hiển thị quảng cáo tùy video, tài khoản và khu vực.
-  </p>
-</section>
+  <div class="dlrow">
+    <select id="dlA"><option value="320">MP3 - 320 kbps</option><option value="192" selected>MP3 - 192 kbps</option><option value="128">MP3 - 128 kbps</option><option value="64">MP3 - 64 kbps</option></select>
+    <button id="dlMp3" class="alt">Tải MP3</button>
+  </div>
+  <div id="dlBar"><i></i></div>
+  <div id="dlStatus"></div>
+</div>
+
+<div id="settingsModal"><div class="modal-box">
+<button id="closeSettings" aria-label="Đóng">✕</button>
+<div class="dl">
+  <h3>⚙️ Cài đặt · 🎞️ Video đã tải</h3>
+  <div id="folderInfo"></div>
+  <div class="dlrow" style="margin-top:0">
+    <button id="pickDir" class="gray">📁 Chọn thư mục lưu</button>
+    <button id="reloadLib" class="gray">🔄 Làm mới</button>
+  </div>
+  <div id="libList"></div>
+  <div id="localPlayer"></div>
+</div>
+</div></div>
 
 <script src="data.js"></script>
+
 <script>
-(() => {
-  "use strict";
+const unitSelect = document.getElementById('unitSelect');
+const videoFrame = document.getElementById('videoFrame');
+const videoBox = document.getElementById('videoBox');
+const videoBtn = document.getElementById('videoBtn');
+const lessonButtons = document.getElementById('lessonButtons');
 
-  const unitSelect = document.getElementById("unitSelect");
-  const lessonButtons = document.getElementById("lessonButtons");
-  const videoFrame = document.getElementById("videoFrame");
-  const videoBox = document.getElementById("videoBox");
-  const videoBtn = document.getElementById("videoBtn");
 
-  // Kiểm tra data.js đã được tải và có dữ liệu hợp lệ.
-  if (typeof data === "undefined" || !data || typeof data !== "object") {
-    lessonButtons.innerHTML =
-      '<div class="empty">Không tải được dữ liệu bài học. Hãy kiểm tra file data.js đặt cùng thư mục với file HTML.</div>';
-    unitSelect.disabled = true;
-    videoBtn.disabled = true;
-    return;
-  }
+// ===============================
+// Tạo danh sách Unit
+// ===============================
+for (const key in data) {
+    const op = document.createElement('option');
 
-  // Chuyển URL YouTube thông dụng thành URL nhúng ở chế độ riêng tư.
-  function getYoutubeEmbedUrl(rawUrl) {
-    if (typeof rawUrl !== "string" || !rawUrl.trim()) return null;
+    op.value = key;
+    op.textContent = data[key].title;
 
-    try {
-      const url = new URL(rawUrl.trim());
-      const host = url.hostname.replace(/^www\./, "").toLowerCase();
-      let videoId = "";
+    unitSelect.appendChild(op);
+}
 
-      if (host === "youtu.be") {
-        videoId = url.pathname.split("/").filter(Boolean)[0] || "";
-      } else if (
-        host === "youtube.com" ||
-        host === "m.youtube.com" ||
-        host === "youtube-nocookie.com"
-      ) {
-        if (url.pathname === "/watch") {
-          videoId = url.searchParams.get("v") || "";
-        } else {
-          const match = url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/);
-          if (match) videoId = match[1];
-        }
-      } else {
-        // Cho phép URL embed đã có sẵn từ một nguồn video khác.
-        return rawUrl.trim();
-      }
 
-      if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
-        // Nếu dữ liệu đã là một URL embed hợp lệ, giữ nguyên.
-        if (host === "youtube-nocookie.com" && url.pathname.startsWith("/embed/")) {
-          return url.href;
-        }
-        return null;
-      }
+// ===============================
+// Khôi phục Unit đã chọn
+// ===============================
+const savedUnit = localStorage.getItem('unit');
 
-      return "https://www.youtube-nocookie.com/embed/" +
-        videoId + "?rel=0&playsinline=1";
-    } catch (error) {
-      return null;
-    }
-  }
+if (savedUnit && data[savedUnit]) {
+    unitSelect.value = savedUnit;
+}
 
-  // Tạo danh sách Unit từ data.js.
-  Object.keys(data).forEach(key => {
-    const option = document.createElement("option");
-    option.value = key;
-    option.textContent = data[key] && data[key].title ? data[key].title : key;
-    unitSelect.appendChild(option);
-  });
 
-  if (!unitSelect.options.length) {
-    lessonButtons.innerHTML = '<div class="empty">Chưa có dữ liệu Unit trong data.js.</div>';
-    unitSelect.disabled = true;
-    videoBtn.disabled = true;
-    return;
-  }
+// ===============================
+// Hiển thị tất cả Lesson
+// ===============================
+function loadLessons() {
 
-  // Khôi phục Unit đã chọn (nếu còn tồn tại).
-  try {
-    const savedUnit = localStorage.getItem("unit");
-    if (savedUnit && data[savedUnit]) unitSelect.value = savedUnit;
-  } catch (error) {
-    // Trang vẫn hoạt động nếu trình duyệt chặn localStorage.
-  }
+    const unit = data[unitSelect.value];
 
-  function closeVideo() {
+    // Lưu Unit
+    localStorage.setItem('unit', unitSelect.value);
+
+    // Đóng video khi đổi Unit
     videoFrame.src = "";
     videoBox.style.display = "none";
+
     updateVideoButton();
-  }
 
-  function updateVideoButton() {
-    videoBtn.textContent = "🎬 Xem video " + unitSelect.value;
-  }
-
-  function loadLessons() {
-    const unit = data[unitSelect.value];
-    closeVideo();
-
-    try {
-      localStorage.setItem("unit", unitSelect.value);
-    } catch (error) {}
-
+    // Xóa danh sách cũ
     lessonButtons.innerHTML = "";
 
-    if (!unit || !unit.lessons || typeof unit.lessons !== "object") {
-      lessonButtons.innerHTML = '<div class="empty">Unit này chưa có danh sách bài học.</div>';
-      return;
-    }
-
+    // Duyệt tất cả Lesson
     Object.keys(unit.lessons).forEach(lessonName => {
-      const heading = document.createElement("div");
-      heading.className = "lesson-title";
-      heading.textContent = lessonName;
-      lessonButtons.appendChild(heading);
 
-      const items = Array.isArray(unit.lessons[lessonName])
-        ? unit.lessons[lessonName] : [];
+        const lessonTitle = document.createElement('div');
 
-      items.forEach(item => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.textContent = item && item.title ? item.title : "Mở bài học";
-        button.addEventListener("click", () => {
-          if (item && item.url) window.location.href = item.url;
+        lessonTitle.className = "lesson-title";
+        lessonTitle.textContent = lessonName;
+
+        lessonButtons.appendChild(lessonTitle);
+
+
+        // Các bài trong Lesson
+        const list = unit.lessons[lessonName];
+
+        list.forEach(item => {
+
+            const button = document.createElement('button');
+
+            button.textContent = item.title;
+
+            button.onclick = () => {
+                location.href = item.url;
+            };
+
+            lessonButtons.appendChild(button);
+
         });
-        lessonButtons.appendChild(button);
-      });
+
     });
+}
+
+
+// ===============================
+// Đổi Unit
+// ===============================
+unitSelect.onchange = loadLessons;
+
+
+// ===============================
+// Làm sạch link YouTube (giảm quảng cáo/gợi ý khi tạm dừng)
+// Hỗ trợ: embed/ID, watch?v=ID, youtu.be/ID, shorts/ID và playlist
+// ===============================
+function cleanVideoUrl(url) {
+
+    const params = "rel=0&modestbranding=1&playsinline=1";
+    const base = "https://www.youtube-nocookie.com/embed/";
+
+    const listMatch = url.match(/[?&]list=([\w-]+)/);
+
+    // Link playlist: embed/videoseries?list=...
+    if (url.includes("videoseries") && listMatch) {
+        return base + "videoseries?list=" + listMatch[1] + "&" + params;
+    }
+
+    // Link video đơn
+    const idMatch = url.match(/(?:embed\/|watch\?v=|youtu\.be\/|shorts\/)([\w-]{11})/);
+
+    if (idMatch) {
+        return base + idMatch[1] + "?" + params +
+               (listMatch ? "&list=" + listMatch[1] : "");
+    }
+
+    // Không nhận dạng được thì giữ nguyên
+    return url;
+}
+
+
+// ===============================
+// Video
+// ===============================
+videoBtn.onclick = function () {
+
+    if (videoBox.style.display === "none") {
+
+        const video = data[unitSelect.value].video;
+
+        if (!video) {
+            alert("Unit này chưa có video.");
+            return;
+        }
+
+        videoFrame.src = cleanVideoUrl(video);
+
+        videoBox.style.display = "block";
+
+        videoBtn.textContent =
+            "❌ Đóng video " + unitSelect.value;
+
+        setTimeout(() => {
+
+            videoBox.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 200);
+
+    } else {
+
+        videoFrame.src = "";
+
+        videoBox.style.display = "none";
+
+        updateVideoButton();
+
+    }
+
+};
+
+
+// ===============================
+// Cập nhật tên nút video
+// ===============================
+function updateVideoButton() {
+
+    const unitName = unitSelect.value;
+
+    videoBtn.textContent =
+        "🎬 Xem video " + unitName;
+}
+
+
+// ===============================
+// Khởi động
+// ===============================
+loadLessons();
+
+</script>
+
+<script>
+(function(){
+// Nếu trang không chạy cùng máy chủ tải (yt-dlp) thì điền địa chỉ vào đây, ví dụ "http://localhost:8000"
+// Mở từ localhost -> gọi cùng máy chủ. Mở từ GitHub (hoặc file) -> gọi máy chủ trên PC của bạn.
+const API_BASE = ["localhost","127.0.0.1"].includes(location.hostname) ? "" : "http://localhost:8000";
+const $ = id => document.getElementById(id);
+
+// ---------- Video: tự mở khi chọn Unit ----------
+let shown='', forceOnline=false, hasLocal=false, localUrl=null;
+
+function unitPrefix(){
+  return (data[unitSelect.value].title.replace(/^[^\w]+/,'') + ' - ').replace(/[\\/:*?"<>|]/g,'-');
+}
+async function findLocal(){
+  const dir = await getDir(false); if(!dir) return null;
+  const pre = unitPrefix();
+  for await (const [n,h] of dir.entries())
+    if(h.kind==='file' && n.startsWith(pre) && /\.(mp4|webm)$/i.test(n)) return h;
+  return null;
+}
+// Kiểm tra video của Unit đang chọn: có bản đã tải -> phát bản trên máy, chưa có -> phát link + hiện phần tải
+async function applyMode(){
+  if(videoBox.style.display==="none") return;
+  const unitKey=unitSelect.value, link=data[unitKey].video;
+  const h = await findLocal().catch(()=>null);
+  if(unitKey!==unitSelect.value) return;               // đã đổi Unit trong lúc kiểm tra
+  hasLocal=!!h;
+  const useLocal = hasLocal && !forceOnline;
+  const key = useLocal ? 'local:'+unitKey+':'+h.name : 'yt:'+unitKey;
+  const lv=$('localVideo'), note=$('modeNote'), mb=$('modeBtn');
+  if(key!==shown){
+    shown=key;
+    if(localUrl){ URL.revokeObjectURL(localUrl); localUrl=null; }
+    if(useLocal){
+      videoFrame.src=""; videoFrame.style.display="none";
+      localUrl=URL.createObjectURL(await h.getFile());
+      lv.src=localUrl; lv.style.display="block";
+    }else{
+      lv.pause(); lv.removeAttribute('src'); lv.style.display="none";
+      videoFrame.style.display="";
+      videoFrame.src = link ? cleanVideoUrl(link) : "";
+    }
   }
+  $('dlCard').style.display = useLocal ? "none" : "";
+  note.textContent = useLocal ? "💾 Đang phát video đã tải trên máy" :
+    (needPerm ? "🔒 Mở ⚙️ Cài đặt để cấp quyền thư mục và kiểm tra video đã tải." : "");
+  mb.style.display = hasLocal ? "inline-block" : "none";
+  mb.textContent = useLocal ? "🌐 Xem bằng link YouTube" : "💾 Xem bản đã tải";
+}
+$('modeBtn').onclick = () => { forceOnline = hasLocal && !forceOnline ? true : false; shown=''; applyMode(); };
 
-  unitSelect.addEventListener("change", loadLessons);
+function openVideo(){
+  const v = data[unitSelect.value].video;
+  videoBox.style.display = "block";
+  videoBtn.textContent = "❌ Đóng video " + unitSelect.value;
+  if(!v) videoBtn.textContent = "❌ Đóng (Unit này chưa có link video)";
+  applyMode();
+}
+function closeVideo(){
+  videoFrame.src=""; $('localVideo').pause(); shown='';
+  videoBox.style.display="none";
+  videoBtn.textContent = "🎬 Xem video " + unitSelect.value;
+}
+videoBtn.onclick = () => videoBox.style.display==="none" ? openVideo() : closeVideo();
 
-  videoBtn.addEventListener("click", () => {
-    if (videoBox.style.display !== "none") {
-      closeVideo();
-      return;
+function watchUrl(){
+  const v = data[unitSelect.value].video || "";
+  const m = v.match(/(?:embed\/|watch\?v=|youtu\.be\/|shorts\/)([\w-]{11})/);
+  return m ? "https://www.youtube.com/watch?v=" + m[1] : "";
+}
+function showLink(){
+  const u = watchUrl();
+  $('dlLink').textContent = u ? "Link bắt được: " + u : "Unit này chưa có video để tải.";
+  $('dlMp4').disabled = $('dlMp3').disabled = !u;
+}
+unitSelect.addEventListener('change', () => { forceOnline=false; shown=''; openVideo(); showLink(); });
+
+// ---------- Lưu trữ: thư mục do người dùng chọn (hoặc bộ nhớ riêng của trình duyệt) ----------
+function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open('eng4',1);
+  r.onupgradeneeded=()=>r.result.createObjectStore('h'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function idbGet(k){ const db=await idb(); return new Promise(res=>{ const q=db.transaction('h').objectStore('h').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(null); }); }
+async function idbSet(k,v){ const db=await idb(); return new Promise(res=>{ const t=db.transaction('h','readwrite'); t.objectStore('h').put(v,k); t.oncomplete=()=>res(); t.onerror=()=>res(); }); }
+
+let dirHandle=null, usingOpfs=false, needPerm=false;
+async function getDir(ask){
+  if(!dirHandle){ try{ dirHandle = await idbGet('dir'); }catch(e){} }
+  if(dirHandle){
+    let p='granted';
+    if(dirHandle.queryPermission){
+      p = await dirHandle.queryPermission({mode:'readwrite'});
+      if(p!=='granted' && ask) p = await dirHandle.requestPermission({mode:'readwrite'});
     }
+    needPerm = p!=='granted'; return needPerm ? null : dirHandle;
+  }
+  if(navigator.storage && navigator.storage.getDirectory){
+    dirHandle = await navigator.storage.getDirectory(); usingOpfs=true; return dirHandle;
+  }
+  return null;
+}
+$('pickDir').onclick = async () => {
+  if(!window.showDirectoryPicker){ alert("Trình duyệt này không cho chọn thư mục. Hãy dùng Chrome hoặc Edge trên máy tính."); return; }
+  try{
+    dirHandle = await showDirectoryPicker({id:'eng4', mode:'readwrite'});
+    usingOpfs=false; await idbSet('dir', dirHandle); await refreshList(); shown=''; applyMode();
+  }catch(e){}
+};
+$('reloadLib').onclick = async () => { await refreshList(true); applyMode(); };
+if(!window.showDirectoryPicker) $('pickDir').style.display='none';
 
-    const unit = data[unitSelect.value];
-    const embedUrl = unit ? getYoutubeEmbedUrl(unit.video) : null;
+// ---------- Tải ----------
+function setStatus(m, err){ $('dlStatus').textContent=m; $('dlStatus').className = err?'error':''; }
+async function download(fmt){
+  const url = watchUrl(); if(!url) return;
+  const btns=[$('dlMp4'),$('dlMp3')]; btns.forEach(b=>b.disabled=true);
+  const bar=$('dlBar'), fill=bar.firstElementChild; bar.style.display='block'; fill.style.width='0';
+  try{
+    const dir = await getDir(true);
+    if(!dir) throw new Error("Chưa có thư mục lưu. Hãy mở ⚙️ Cài đặt và bấm “Chọn thư mục lưu”.");
+    setStatus("Đang xử lý " + fmt.toUpperCase() + ", vui lòng đợi…");
+    const q = fmt==='mp4' ? $('dlQ').value : $('dlA').value;
+    let res;
+    try{ res = await fetch(API_BASE + `/download?url=${encodeURIComponent(url)}&format=${fmt}&q=${q}`); }
+    catch(e){ throw new Error("Chưa bật máy chủ tải trên máy này. Hãy chạy start.bat (giữ cửa sổ đen mở) rồi bấm tải lại. Nếu trình duyệt hỏi quyền truy cập thiết bị/mạng nội bộ, chọn Cho phép."); }
+    if(!res.ok){ const er = await res.json().catch(()=>({})); throw new Error(er.error || "Tải thất bại"); }
 
-    if (!unit || !unit.video) {
-      alert("Unit này chưa có video.");
-      return;
+    const cd = res.headers.get('Content-Disposition') || '';
+    const m = cd.match(/filename\*=UTF-8''(.+)/);
+    let name = m ? decodeURIComponent(m[1]) : 'video.' + fmt;
+    const unitName = data[unitSelect.value].title.replace(/^[^\w]+/,'');
+    name = (unitName + ' - ' + name).replace(/[\\/:*?"<>|]/g,'-');
+
+    const fh = await dir.getFileHandle(name,{create:true});
+    const w = await fh.createWritable();
+    const total = +res.headers.get('Content-Length') || 0;
+    const reader = res.body.getReader(); let got=0;
+    while(true){
+      const {done,value} = await reader.read(); if(done) break;
+      await w.write(value); got += value.length;
+      if(total) fill.style.width = (got/total*100)+'%';
+      setStatus("Đang tải… " + (got/1048576).toFixed(1) + " MB");
     }
+    await w.close(); fill.style.width='100%';
+    setStatus("✅ Đã lưu: " + name);
+    await refreshList(); forceOnline=false; shown=''; await applyMode();
+    $('modeNote').textContent = "✅ Đã tải xong – đang phát bản trên máy.";
+  }catch(e){ setStatus(e.message,true); }
+  finally{ btns.forEach(b=>b.disabled=false); showLink(); setTimeout(()=>bar.style.display='none',1500); }
+}
+$('dlMp4').onclick = () => download('mp4');
+$('dlMp3').onclick = () => download('mp3');
 
-    if (!embedUrl) {
-      alert("Đường dẫn video chưa đúng định dạng. Hãy kiểm tra trường video trong file data.js.");
-      return;
-    }
-
-    videoFrame.src = embedUrl;
-    videoBox.style.display = "block";
-    videoBtn.textContent = "❌ Đóng video " + unitSelect.value;
-
-    videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
+// ---------- Thư viện video đã tải ----------
+let curUrl=null;
+async function refreshList(ask){
+  const list=$('libList'); list.innerHTML='';
+  const dir = await getDir(!!ask);
+  if(!dir){ $('folderInfo').textContent = "Chưa có quyền truy cập thư mục. Bấm “Làm mới” hoặc “Chọn thư mục lưu”."; return; }
+  $('folderInfo').textContent = "📁 Đang lưu tại: " + (usingOpfs ? "bộ nhớ riêng của trình duyệt (bấm “Chọn thư mục lưu” để dùng thư mục thật)" : dir.name);
+  const files=[];
+  for await (const [name,h] of dir.entries()) if(h.kind==='file' && /\.(mp4|mp3|webm|m4a)$/i.test(name)) files.push([name,h]);
+  files.sort((a,b)=>a[0].localeCompare(b[0],'vi',{numeric:true}));
+  if(!files.length){ list.innerHTML='<div style="color:#78909C;margin-top:8px">Chưa có video nào được tải.</div>'; return; }
+  files.forEach(([name,h])=>{
+    const row=document.createElement('div'); row.className='item';
+    row.innerHTML='<span class="name"></span><button>▶ Xem</button><button class="del">🗑</button>';
+    row.querySelector('.name').textContent=(/\.mp3$/i.test(name)?'🎵 ':'🎬 ')+name;
+    row.children[1].onclick=async()=>{
+      const f=await h.getFile(); if(curUrl) URL.revokeObjectURL(curUrl); curUrl=URL.createObjectURL(f);
+      const isAudio=/\.(mp3|m4a)$/i.test(name);
+      const el=document.createElement(isAudio?'audio':'video'); el.controls=true; el.autoplay=true; el.src=curUrl;
+      const box=$('localPlayer'); box.innerHTML=''; box.appendChild(el); el.scrollIntoView({behavior:'smooth',block:'center'});
+    };
+    row.children[2].onclick=async()=>{ if(confirm('Xóa "'+name+'"?')){ await dir.removeEntry(name); await refreshList(); shown=''; applyMode(); } };
+    list.appendChild(row);
   });
+}
 
-  loadLessons();
+// ---------- Cài đặt (cửa sổ) ----------
+const modal=$('settingsModal');
+$('settingsBtn').onclick = async () => { modal.classList.add('open'); await refreshList(true); applyMode(); };
+function closeSettings(){
+  modal.classList.remove('open');
+  const m=$('localPlayer').querySelector('video,audio'); if(m) m.pause();
+}
+$('closeSettings').onclick = closeSettings;
+modal.addEventListener('click', e => { if(e.target===modal) closeSettings(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeSettings(); });
+
+// Khởi động
+openVideo(); showLink(); refreshList();
 })();
 </script>
 </body>
