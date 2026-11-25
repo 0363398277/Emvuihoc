@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1565C0">
+<title>Tiếng Anh 4 - Global Success</title>
+<style>
+*{box-sizing:border-box}
+body{
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:#eef5fb;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+  color:#17324d;
+}
+h1{
+  text-align:center;margin:8px 0 30px;color:#1565C0;
+  font-size:42px;font-weight:800;
+}
+h1 span{font-size:46px;margin-right:8px}
+h1 small{
+  display:block;margin-top:6px;font-size:22px;
+  color:#64B5F6;font-weight:600;
+}
+.top{
+  display:flex;gap:12px;justify-content:center;
+  flex-wrap:wrap;margin:18px 0;
+}
+.top a{
+  display:inline-block;padding:14px 24px;border:0;border-radius:40px;
+  background:linear-gradient(135deg,#ff9800,#f57c00);
+  color:#fff;font-size:16px;font-weight:bold;text-decoration:none;
+  box-shadow:0 6px 18px rgba(255,152,0,.25);transition:.2s;
+}
+.top a:hover{transform:translateY(-2px)}
+.card{
+  background:#fff;border-radius:18px;padding:24px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+label{display:block;margin:4px 0 8px;font-weight:700}
+select{
+  width:100%;padding:14px;font-size:16px;
+  border:2px solid #BBDEFB;border-radius:12px;background:#fff;
+}
+select:focus{border-color:#2196F3;outline:none;box-shadow:0 0 0 4px rgba(33,150,243,.12)}
+.buttons{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:12px;margin-top:20px;
+}
+.buttons button{
+  width:100%;min-height:58px;padding:14px 18px;border:0;border-radius:12px;
+  background:linear-gradient(135deg,#42A5F5,#1E88E5);
+  color:#fff;font-size:16px;font-weight:600;cursor:pointer;text-align:left;
+  transition:.2s;
+}
+.buttons button:hover{background:linear-gradient(135deg,#64B5F6,#2196F3);box-shadow:0 8px 18px rgba(30,136,229,.22)}
+.lesson-title{
+  grid-column:1/-1;margin-top:12px;padding:12px 16px;
+  background:#E3F2FD;color:#1565C0;border-radius:10px;
+  font-size:18px;font-weight:700;
+}
+#videoBtn{
+  display:block;width:100%;margin:20px 0;padding:16px 24px;border:0;
+  border-radius:15px;background:linear-gradient(135deg,#FF3D3D,#D50000);
+  color:#fff;font-size:18px;font-weight:700;cursor:pointer;
+  box-shadow:0 8px 22px rgba(229,57,53,.25);transition:.2s;
+}
+#videoBtn:hover{transform:translateY(-2px);background:linear-gradient(135deg,#FF5252,#E53935)}
+#videoBox{display:none;margin-top:15px;background:#fff;padding:14px;border-radius:16px;box-shadow:0 5px 18px rgba(0,0,0,.08)}
+.video-frame-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#111;border-radius:12px;overflow:hidden}
+.video-frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-note{font-size:13px;color:#607d8b;margin:10px 2px 0;line-height:1.5}
+.empty{padding:18px;text-align:center;color:#607d8b;background:#f5f9fd;border-radius:10px}
+@media(max-width:768px){
+  body{max-width:100%;padding:12px}
+  h1{font-size:30px} h1 span{font-size:34px} h1 small{font-size:18px}
+  .card{padding:16px}
+  .buttons{grid-template-columns:1fr;gap:10px}
+  .buttons button{min-height:52px;padding:12px 14px;font-size:15px}
+}
+</style>
+</head>
+<body>
+<h1><span>📘</span>Tiếng Anh 4<small>Global Success</small></h1>
+
+<div class="top">
+  <a href="https://online.flipbuilder.com/sdtta/nhxm/" target="_blank" rel="noopener">📚 Sách học English</a>
+  <a href="English_quiz.html">🎯 Đấu Trường English</a>
+</div>
+
+<main class="card">
+  <label for="unitSelect">Chọn Unit</label>
+  <select id="unitSelect" aria-label="Chọn Unit"></select>
+  <div id="lessonButtons" class="buttons"></div>
+</main>
+
+<button id="videoBtn" type="button">🎬 Xem video bài học</button>
+<section id="videoBox" aria-label="Video bài học">
+  <div class="video-frame-wrap">
+    <iframe id="videoFrame"
+      title="Video bài học"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
+  </div>
+  <p class="video-note">
+    Video được nhúng từ YouTube. Chế độ nhúng riêng tư giúp hạn chế cookie,
+    nhưng YouTube vẫn có thể hiển thị quảng cáo tùy video, tài khoản và khu vực.
+  </p>
+</section>
+
+<script src="data.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  const unitSelect = document.getElementById("unitSelect");
+  const lessonButtons = document.getElementById("lessonButtons");
+  const videoFrame = document.getElementById("videoFrame");
+  const videoBox = document.getElementById("videoBox");
+  const videoBtn = document.getElementById("videoBtn");
+
+  // Kiểm tra data.js đã được tải và có dữ liệu hợp lệ.
+  if (typeof data === "undefined" || !data || typeof data !== "object") {
+    lessonButtons.innerHTML =
+      '<div class="empty">Không tải được dữ liệu bài học. Hãy kiểm tra file data.js đặt cùng thư mục với file HTML.</div>';
+    unitSelect.disabled = true;
+    videoBtn.disabled = true;
+    return;
+  }
+
+  // Chuyển URL YouTube thông dụng thành URL nhúng ở chế độ riêng tư.
+  function getYoutubeEmbedUrl(rawUrl) {
+    if (typeof rawUrl !== "string" || !rawUrl.trim()) return null;
+
+    try {
+      const url = new URL(rawUrl.trim());
+      const host = url.hostname.replace(/^www\./, "").toLowerCase();
+      let videoId = "";
+
+      if (host === "youtu.be") {
+        videoId = url.pathname.split("/").filter(Boolean)[0] || "";
+      } else if (
+        host === "youtube.com" ||
+        host === "m.youtube.com" ||
+        host === "youtube-nocookie.com"
+      ) {
+        if (url.pathname === "/watch") {
+          videoId = url.searchParams.get("v") || "";
+        } else {
+          const match = url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/);
+          if (match) videoId = match[1];
+        }
+      } else {
+        // Cho phép URL embed đã có sẵn từ một nguồn video khác.
+        return rawUrl.trim();
+      }
+
+      if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+        // Nếu dữ liệu đã là một URL embed hợp lệ, giữ nguyên.
+        if (host === "youtube-nocookie.com" && url.pathname.startsWith("/embed/")) {
+          return url.href;
+        }
+        return null;
+      }
+
+      return "https://www.youtube-nocookie.com/embed/" +
+        videoId + "?rel=0&playsinline=1";
+    } catch (error) {
+      return null;
+    }
+  }
+
+  // Tạo danh sách Unit từ data.js.
+  Object.keys(data).forEach(key => {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = data[key] && data[key].title ? data[key].title : key;
+    unitSelect.appendChild(option);
+  });
+
+  if (!unitSelect.options.length) {
+    lessonButtons.innerHTML = '<div class="empty">Chưa có dữ liệu Unit trong data.js.</div>';
+    unitSelect.disabled = true;
+    videoBtn.disabled = true;
+    return;
+  }
+
+  // Khôi phục Unit đã chọn (nếu còn tồn tại).
+  try {
+    const savedUnit = localStorage.getItem("unit");
+    if (savedUnit && data[savedUnit]) unitSelect.value = savedUnit;
+  } catch (error) {
+    // Trang vẫn hoạt động nếu trình duyệt chặn localStorage.
+  }
+
+  function closeVideo() {
+    videoFrame.src = "";
+    videoBox.style.display = "none";
+    updateVideoButton();
+  }
+
+  function updateVideoButton() {
+    videoBtn.textContent = "🎬 Xem video " + unitSelect.value;
+  }
+
+  function loadLessons() {
+    const unit = data[unitSelect.value];
+    closeVideo();
+
+    try {
+      localStorage.setItem("unit", unitSelect.value);
+    } catch (error) {}
+
+    lessonButtons.innerHTML = "";
+
+    if (!unit || !unit.lessons || typeof unit.lessons !== "object") {
+      lessonButtons.innerHTML = '<div class="empty">Unit này chưa có danh sách bài học.</div>';
+      return;
+    }
+
+    Object.keys(unit.lessons).forEach(lessonName => {
+      const heading = document.createElement("div");
+      heading.className = "lesson-title";
+      heading.textContent = lessonName;
+      lessonButtons.appendChild(heading);
+
+      const items = Array.isArray(unit.lessons[lessonName])
+        ? unit.lessons[lessonName] : [];
+
+      items.forEach(item => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = item && item.title ? item.title : "Mở bài học";
+        button.addEventListener("click", () => {
+          if (item && item.url) window.location.href = item.url;
+        });
+        lessonButtons.appendChild(button);
+      });
+    });
+  }
+
+  unitSelect.addEventListener("change", loadLessons);
+
+  videoBtn.addEventListener("click", () => {
+    if (videoBox.style.display !== "none") {
+      closeVideo();
+      return;
+    }
+
+    const unit = data[unitSelect.value];
+    const embedUrl = unit ? getYoutubeEmbedUrl(unit.video) : null;
+
+    if (!unit || !unit.video) {
+      alert("Unit này chưa có video.");
+      return;
+    }
+
+    if (!embedUrl) {
+      alert("Đường dẫn video chưa đúng định dạng. Hãy kiểm tra trường video trong file data.js.");
+      return;
+    }
+
+    videoFrame.src = embedUrl;
+    videoBox.style.display = "block";
+    videoBtn.textContent = "❌ Đóng video " + unitSelect.value;
+
+    videoBox.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  loadLessons();
+})();
+</script>
+</body>
+</html>
